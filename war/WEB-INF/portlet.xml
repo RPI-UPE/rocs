@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<portlet-app xmlns="http://java.sun.com/xml/ns/portlet/portlet-app_1_0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.0" xsi:schemaLocation="http://java.sun.com/xml/ns/portlet/portlet-app_1_0.xsd      http://java.sun.com/xml/ns/portlet/portlet-app_1_0.xsd">
+	<portlet>
+		<portlet-name>rocs</portlet-name>
+		<display-name>Rensselaer Open Source Scheduler</display-name>
+		<portlet-class>edu.rpi.rocs.Scheduler</portlet-class>
+		<init-param>
+			<name>contextConfigLocation</name>
+			<value>/WEB-INF/context/rocs-portlet.xml</value>
+		</init-param>
+		<supports>
+			<mime-type>text/html</mime-type>
+			<portlet-mode>view</portlet-mode>
+		</supports>
+		<portlet-info>
+			<title>Rensselaer Open Course Scheduler</title>
+			<short-title>RPI Scheduler</short-title>
+			<keywords>rensselaer rpi course scheduler</keywords>
+		</portlet-info>
+		<security-role-ref>
+			<role-name>administrator</role-name>
+		</security-role-ref>
+		<security-role-ref>
+			<role-name>user</role-name>
+		</security-role-ref>
+	</portlet>
+</portlet-app>
