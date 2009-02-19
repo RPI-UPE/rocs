@@ -4,6 +4,7 @@
   <property name="name" value="rocs"/>
   <property name="war.dir" value="war"/>
   <property name="src.dir" value="src"/>
+  <property name="src.java.dir" value="${src.dir}/java"/>
   <property name="build.dir" value=".classes"/>
   <property name="docs.dir" value="${war.dir}/docs"/>
   <property name="weblib.dir" value="${war.dir}/WEB-INF/lib"/>
@@ -66,7 +67,7 @@
     <mkdir dir="${build.dir}"/>
     <javac destdir="${build.dir}" source="1.5" target="1.5" debug="true"
 	   deprecation="false" optimize="false" failonerror="true">
-      <src path="${src.dir}"/>
+      <src path="${src.java.dir}"/>
       <classpath refid="master-classpath"/>
       <classpath refid="build-classpath"/>
     </javac>
@@ -105,7 +106,7 @@
     <delete dir="${docs.dir}"/>
     <mkdir dir="${docs.dir}"/>
 
-    <javadoc sourcepath="${src.dir}" destdir="${docs.dir}"
+    <javadoc sourcepath="${src.java.dir}" destdir="${docs.dir}"
 	     windowtitle="Rensselaer Open Course Scheduler"
 	     source="1.5" author="true" version="true" use="true"
 	     packagenames="*">
