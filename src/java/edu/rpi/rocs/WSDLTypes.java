@@ -62,7 +62,7 @@ public class WSDLTypes {
 	public static final int xsdIDREFS=49;
 	public static final int xsdNMTOKENS=50;
 	
-	static Hashtable nameIndexMap;
+	static Hashtable<String, Integer> nameIndexMap;
 	static int counter=51;
 	
 	public static int getComplexTypeIndex(String aName) {
