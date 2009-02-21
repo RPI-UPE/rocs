@@ -1,0 +1,35 @@
+<!ELEMENT CourseDB (CrossListing, Course)*>
+<!ELEMENT CrossListing (Course)*>
+<!ELEMENT Course (Section*, Extra?)>
+<!ELEMENT Section (Time)*>
+<!ELEMENT Period EMPTY>
+<!ELEMENT Extra ANY>
+
+<!ATTLIST CourseDB
+	  timestamp CDATA #REQUIRED
+>
+
+<!ATTLIST Course
+	  name CDATA #REQUIRED
+	  dept CDATA #REQUIRED
+	  num CDATA #REQUIRED
+	  credmin CDATA #REQUIRED
+	  credmax CDATA #REQUIRED
+	  gradetype CDATA #REQUIRED
+	  closed CDATA #REQUIRED
+>
+
+<!ATTLIST Section
+	  crn ID #REQUIRED
+	  num CDATA #REQUIRED
+	  students CDATA #REQUIRED
+	  seats CDATA #REQUIRED
+>
+
+<!ATTLIST Period
+	  type CDATA #REQUIRED
+	  prof CDATA #REQUIRED
+	  day CDATA #REQUIRED
+	  start CDATA #REQUIRED
+	  end CDATA #REQUIRED
+>
