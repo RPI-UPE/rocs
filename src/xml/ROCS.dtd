@@ -1,12 +1,15 @@
 <!ELEMENT CourseDB (CrossListing, Course)*>
 <!ELEMENT CrossListing (Course)*>
-<!ELEMENT Course (Section*, Extra?)>
+<!ELEMENT Course (Section*, Note?, Extra?)>
 <!ELEMENT Section (Time)*>
 <!ELEMENT Period EMPTY>
 <!ELEMENT Extra ANY>
+<!ELEMENT Note CDATA>
 
 <!ATTLIST CourseDB
 	  timestamp CDATA #REQUIRED
+	  semesternumber CDATA #REQUIRED
+	  semesterdesc CDATA #REQUIRED
 >
 
 <!ATTLIST Course
@@ -28,8 +31,9 @@
 
 <!ATTLIST Period
 	  type CDATA #REQUIRED
-	  prof CDATA #REQUIRED
+	  instructor CDATA #REQUIRED
 	  day CDATA #REQUIRED
 	  start CDATA #REQUIRED
 	  end CDATA #REQUIRED
+	  location CDATA #REQUIRED
 >
