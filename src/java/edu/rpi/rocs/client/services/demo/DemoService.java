@@ -9,11 +9,10 @@ public interface DemoService extends RemoteService {
 	
 	public static class Singleton {
 		private static DemoServiceAsync instance = null;
-
-		public static synchronized DemoServiceAsync getInstance() {
+		public static DemoServiceAsync getInstance() {
 			if (instance == null) {
-				instance = (DemoServiceAsync) GWT.create(DemoService.class);
-				((ServiceDefTarget) instance).setServiceEntryPoint(GWT.getModuleBaseURL() + "DemoService");
+				instance = (DemoServiceAsync)GWT.create(DemoService.class);
+				((ServiceDefTarget)instance).setServiceEntryPoint(GWT.getModuleBaseURL() + "DemoService");
 			}
 			return instance;
 		}

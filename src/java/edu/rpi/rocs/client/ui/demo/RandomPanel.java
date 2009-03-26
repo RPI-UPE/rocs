@@ -4,12 +4,12 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
 
 import edu.rpi.rocs.client.services.demo.DemoService;
 
-public class RandomPanel extends HorizontalPanel implements ClickHandler {
+public class RandomPanel extends FlowPanel implements ClickHandler {
 
 	Label random = new Label("Waiting...");
 	Button getNumber = new Button("Take a number!");

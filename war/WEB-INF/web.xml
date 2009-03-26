@@ -13,6 +13,6 @@
 
 	<servlet-mapping>
 		<servlet-name>DemoService</servlet-name>
-		<url-pattern>/DemoService</url-pattern>
+		<url-pattern>/rocs.gwt/DemoService</url-pattern>
 	</servlet-mapping>
 </web-app>
