@@ -1,26 +1,33 @@
 <?xml version="1.0"?>
 
-<project name="rocs" basedir="." default="usage">
+<project name="rocs" basedir="." default="war">
 	<property name="war.dir" value="war"/>
+	<property name="war.webinf" value="${war.dir}/WEB-INF"/>
+	<property name="war.classes" value="${war.webinf}/classes"/>
+	<property name="war.lib"	value="${war.webinf}/lib"/>
 	<property name="src.dir" value="src"/>
 	<property name="src.java.dir" value="${src.dir}/java"/>
-	<property name="src.web.dir" value="${src.dir}/webapp"/>
 	<property name="src.resources.dir" value="${src.dir}/resources"/>
-	<property name="build.dir" value="build"/>
 	<property name="docs.dir" value="${war.dir}/docs"/>
- 	<property name="dist.dir" value="dist"/>
+	<property name="lib.dir" value="lib"/>
 
 	<property name="liferay.root" value="/Frameworks/liferay/current/"/>
 
 	<path id="build-classpath">
-		<pathelement path="lib/commons-fileupload.jar"/>
-		<pathelement path="lib/commons-io.jar"/>
-		<pathelement path="lib/commons-logging.jar"/>
-		<pathelement path="lib/log4j-1.2.15.jar"/>
-		<pathelement path="lib/standard.jar"/>
-		<pathelement path="lib/portal-service.jar"/>
-		<pathelement path="lib/portlet.jar"/>
-		<pathelement path="lib/servlet-api.jar"/>
+		<pathelement path="${war.lib}/commons-fileupload.jar"/>
+		<pathelement path="${war.lib}/commons-io.jar"/>
+		<pathelement path="${war.lib}/commons-logging.jar"/>
+		<pathelement path="${war.lib}/log4j-1.2.15.jar"/>
+		<pathelement path="${war.lib}/standard.jar"/>
+		<pathelement path="${war.lib}/portal-service.jar"/>
+		<pathelement path="${war.lib}/portlet.jar"/>
+		<pathelement path="${war.lib}/servlet-api.jar"/>
+		<pathelement path="${lib.dir}/gwt-user.jar"/>
+		<!-- Select the correct element for your platform, this will 
+			hopefully be automatic in the future -->
+		<pathelement path="${lib.dir}/gwt-dev-linux.jar"/>
+		<!-- <pathelement path="${lib.dir}/gwt-dev-windows.jar"/> -->
+		<!-- <pathelement path="${lib.dir}/gwt-dev-mac.jar"/> -->
 	</path>
 
 	<target name="usage">
@@ -41,19 +48,8 @@
 
 	<target name="clean"
 		description="Clean output dirs (build, docs, weblib, dist)">
-		<delete dir="${build.dir}"/>
 		<delete dir="${docs.dir}"/>
-		<delete dir="${dist.dir}"/>
-	</target>
-
-	<target name="build"
-		description="Compile main source tree java files into class files">
-		<mkdir dir="${build.dir}"/>
-		<javac destdir="${build.dir}" source="1.5" target="1.5" debug="true"
-		 deprecation="false" optimize="false" failonerror="true">
-			<src path="${src.java.dir}"/>
-			<classpath refid="build-classpath"/>
-		</javac>
+		<delete dir="${war.classes}"/>
 	</target>
 
 	<target name="docs">
@@ -61,29 +57,62 @@
 		<mkdir dir="${docs.dir}"/>
 
 		<javadoc sourcepath="${src.java.dir}" destdir="${docs.dir}"
-			 windowtitle="Rensselaer Open Course Scheduler"
-			 source="1.5" author="true" version="true" use="true"
-			 packagenames="*">
+			windowtitle="Rensselaer Open Course Scheduler"
+			source="1.5" author="true" version="true" use="true"
+			packagenames="*"
+			classpathref="build-classpath">
 			<doctitle><![CDATA[<h1>Rensselaer Open Course Scheduler</h1>]]></doctitle>
 			<bottom><![CDATA[<i>UPE, RCOS, DotCIO, RPI</i>]]></bottom>
-			<classpath refid="build-classpath"/>
 		</javadoc>
 	</target>
+	
+	<target name="javac" description="Compile java source">
+		<mkdir dir="${war.classes}"/>
+		<javac srcdir="${src.java.dir}" includes="**" encoding="utf-8"
+			destdir="${war.classes}"
+			source="1.5" target="1.5" nowarn="true"
+			debug="true" debuglevel="lines,vars,source">
+			<classpath refid="build-classpath"/>
+		</javac>
+		<copy todir="${war.classes}">
+			<fileset dir="${src.resources.dir}"/>
+		</copy>
+	</target>
+	
 
-	<target name="war" depends="build,docs"
-		description="Build the web application archive">
-		<mkdir dir="${dist.dir}"/>
-		<war warfile="${dist.dir}/${ant.project.name}.war" webxml="${src.web.dir}/web.xml">
-			<lib dir="lib"/>
-			<classes dir="${build.dir}"/>
-			<classes dir="${src.resources.dir}"/>
-			<webinf dir="${src.web.dir}"/>
-		</war>
+	<target name="gwtc" description="GWT compile to JavaScript">
+		<java failonerror="true" fork="true" classname="com.google.gwt.dev.Compiler">
+			<classpath>
+				<pathelement location="${src.java.dir}"/>
+				<path refid="build-classpath"/>
+			</classpath>
+			<!-- add jvmarg -Xss16M or similar if you see a StackOverflowError -->
+			<jvmarg value="-Xmx256M"/>
+			<arg value="-war"/><arg value="${war.dir}"/>
+			<arg value="-style"/><arg value="PRETTY"/>
+			<!-- Additional arguments like -style PRETTY or -logLevel DEBUG -->
+			<arg value="edu.rpi.rocs.Scheduler"/>
+	    </java>
 	</target>
 
-	<target name="all" depends="clean,build,docs,war"
+
+	<target name="war" depends="gwtc,javac,docs"
+		description="Build the web application archive">
+		<zip destfile="${ant.project.name}.war" basedir="war"/>
+	</target>
+
+	<target name="all" depends="clean,docs,war"
 		description="Clean,build,docs,warfile"/>
 
+	<target name="deploy-remote" depends="war"
+		description="Deploy war file to remote liferay installation">
+		<exec executable="curl">
+			<arg value="-F"/>
+			<arg value="portlet=@${ant.project.name}.war"/>
+			<arg value="http://pattoe.stu.rpi.edu/rocs-portlet/send.php"/>
+		</exec>
+	</target>
+	
 	<target name="deploy" depends="war"
 		description="Deploy warfile to liferay installation">
 		<copy todir="${liferay.root}/deploy">

@@ -59,6 +59,10 @@ public class Scheduler extends GenericPortlet {
 		if(name.equalsIgnoreCase("") || Character.getNumericValue(name.charAt(0)) == -1)
 			name = "&lt;anonymous&gt;";
 		out.print(name);
+		
+		out.println("<script language='javascript' src='" + aRequest.getContextPath() + "/edu.rpi.rocs.Scheduler.nocache.js'></script>");
+		out.println("GWT test:");
+		out.println("<div id='uid'></div>");
 		out.print("</p>");
 	}
 	
