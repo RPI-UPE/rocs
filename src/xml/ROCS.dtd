@@ -1,15 +1,20 @@
 <!ELEMENT CourseDB (CrossListing, Course)*>
-<!ELEMENT CrossListing (Course)*>
+<!ELEMENT CrossListing (CRN)*>
 <!ELEMENT Course (Section*, Note?, Extra?)>
-<!ELEMENT Section (Time)*>
-<!ELEMENT Period EMPTY>
+<!ELEMENT Section (Period)*>
+<!ELEMENT Period (Day)*>
 <!ELEMENT Extra ANY>
 <!ELEMENT Note CDATA>
+<!ELEMENT CRN CDATA>
 
 <!ATTLIST CourseDB
 	  timestamp CDATA #REQUIRED
 	  semesternumber CDATA #REQUIRED
 	  semesterdesc CDATA #REQUIRED
+>
+
+<!ATTLIST CrossListing
+	  seats
 >
 
 <!ATTLIST Course
@@ -19,7 +24,6 @@
 	  credmin CDATA #REQUIRED
 	  credmax CDATA #REQUIRED
 	  gradetype CDATA #REQUIRED
-	  closed CDATA #REQUIRED
 >
 
 <!ATTLIST Section
@@ -27,13 +31,14 @@
 	  num CDATA #REQUIRED
 	  students CDATA #REQUIRED
 	  seats CDATA #REQUIRED
+	  closed CDATA #REQUIRED
 >
 
 <!ATTLIST Period
 	  type CDATA #REQUIRED
 	  instructor CDATA #REQUIRED
-	  day CDATA #REQUIRED
 	  start CDATA #REQUIRED
 	  end CDATA #REQUIRED
 	  location CDATA #REQUIRED
 >
+
