@@ -1,5 +1,7 @@
 package edu.rpi.rocs.objectmodel;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -22,6 +24,18 @@ public class CourseDB {
     
     public static CourseDB getInstance(Integer semesterId) {
     	return semesters.get(semesterId);
+    }
+    
+    public static Collection<CourseDB> getSemesterList() {
+    	//Make a copy of the semester list since returning
+    	//semesters.values() would provide a list that
+    	//would allow outside classes to directly modify
+    	//the backing map
+    	Collection<CourseDB> semesterList = new ArrayList<CourseDB>();
+    	for(CourseDB current : semesters.values()) {
+    		semesterList.add(current);
+    	}
+    	return semesterList;
     }
     
     //accessor functions
