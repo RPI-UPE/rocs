@@ -1,6 +1,6 @@
 package edu.rpi.rocs.objectmodel;
 
-public class Period {
+public class Period extends MajorMinorRevisionObject {
 
     //class variables
     private String type;

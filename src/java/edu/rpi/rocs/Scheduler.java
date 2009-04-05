@@ -49,7 +49,7 @@ public class Scheduler extends GenericPortlet {
 				" existing JSR-168 portlet via a HandlerAdapter</p>");
 		out.println("<p>Portlet name: " + this.getPortletName() + "</p>");
 		out.println("<p>Init Parameters: </p><ul>");
-		for(Enumeration e = this.getInitParameterNames();e.hasMoreElements();) {
+		for(Enumeration<String> e = this.getInitParameterNames();e.hasMoreElements();) {
 			String name = (String)e.nextElement();
 			out.println("<li>" + name + " = " + this.getInitParameter(name) + "</li>");
 		}

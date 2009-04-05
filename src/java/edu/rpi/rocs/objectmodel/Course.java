@@ -1,6 +1,6 @@
 package edu.rpi.rocs.objectmodel;
 
-public class Course {
+public class Course extends MajorMinorRevisionObject {
 	  
     //class variables
     private String name;

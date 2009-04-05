@@ -1,6 +1,6 @@
 package edu.rpi.rocs.objectmodel;
 
-public class Section {
+public class Section extends MajorMinorRevisionObject {
     
     //class variables
     private int crn;
