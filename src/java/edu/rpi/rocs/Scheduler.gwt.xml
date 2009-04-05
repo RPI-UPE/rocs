@@ -1,0 +1,6 @@
+<module rename-to="rocs.gwt">
+	<inherits name='com.google.gwt.user.User'/>
+	<entry-point class='edu.rpi.rocs.client.ui.entry.MainEntryPoint'/>
+	
+	<servlet path="/rocs.gwt/DemoService" class="edu.rpi.rocs.server.services.demo.DemoServiceImpl"/>
+</module>
