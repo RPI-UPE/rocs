@@ -1,7 +1,21 @@
 package edu.rpi.rocs.objectmodel;
 
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
+
+import edu.rpi.rocs.exceptions.InvalidCourseDatabaseException;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -9,17 +23,23 @@ public class CourseDB {
 //coursedb is an object and return an instance of it
     
     //class variables
-    private String timestamp;
-    private String semesternumber;
+    private int timestamp;
+    private int semesternumber;
     private String semesterdesc;
+    private HashMap<Integer, Course> courses;
+    private HashMap<Integer, CrossListing> crosslistings;
+    static private CourseDB latest=null;
     
     private static final Map<Integer, CourseDB> semesters =
     	new HashMap<Integer, CourseDB>();
     
-    public static void addCourseDB(String xmlFile) {
+    public static void addCourseDB(String xmlFile) throws InvalidCourseDatabaseException, SAXException, ParserConfigurationException, IOException {
     	//XML File should get parsed, key should
     	//be the semesterID from the XML file
-    	semesters.put(new Integer(0), new CourseDB("","",""));
+   		CourseDB newdb = CourseDB.LoadCourseDB(xmlFile);
+   		if(latest == null) latest = newdb;
+   		else if(latest.getSemesterNum() < newdb.getSemesterNum()) latest = newdb;
+   		semesters.put(new Integer(newdb.semesternumber), newdb);
     }
     
     public static CourseDB getInstance(Integer semesterId) {
@@ -39,25 +59,50 @@ public class CourseDB {
     }
     
     //accessor functions
-    private CourseDB(String gts, String gsn, String gsd){
-        timestamp = gts;
-        semesternumber = gsn;
-        semesterdesc = gsd;
+    public CourseDB(int aTimeStamp, int aSemesterNumber, String aSemesterDesc){
+        timestamp = aTimeStamp;
+        semesternumber = aSemesterNumber;
+        semesterdesc = aSemesterDesc;
+        courses = new HashMap<Integer, Course>();
+        crosslistings = new HashMap<Integer, CrossListing>();
     }
     
-    public void setTimeStamp(String newValue){
+    static public CourseDB LoadCourseDB(String path) throws MalformedURLException, IOException, ParserConfigurationException, SAXException, InvalidCourseDatabaseException {
+    	return LoadCourseDB(new URL(path));
+    }
+    
+    static public CourseDB LoadCourseDB(URL path) throws IOException, ParserConfigurationException, SAXException, InvalidCourseDatabaseException {
+    	DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+    	DocumentBuilder db = dbf.newDocumentBuilder();
+    	Document doc = db.parse(path.openStream());
+    	CourseDB database=null;
+    	if(doc.getDocumentElement().getNodeName() == "CourseDB") {
+    		int time,num;
+    		String desc;
+    		time = Integer.parseInt(doc.getDocumentElement().getAttribute("timestamp"));
+    		num = Integer.parseInt(doc.getDocumentElement().getAttribute("semesternumber"));
+    		desc = doc.getDocumentElement().getAttribute("semesterdesc");
+    		database = new CourseDB(time, num, desc);
+    	}
+    	else {
+    		throw new InvalidCourseDatabaseException("Document does not contain a course database.");
+    	}
+    	return database;
+    }
+    
+    public void setTimeStamp(int newValue){
         timestamp = newValue;
     }
     
-    public String getTimeStamp(){
+    public int getTimeStamp(){
         return timestamp;
     }
     
-    public void setSemesterNum(String newValue){
+    public void setSemesterNum(int newValue){
         semesternumber = newValue;
     }
     
-    public String getSemesterNum(){
+    public int getSemesterNum(){
         return semesternumber;
     }
     
