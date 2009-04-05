@@ -2,8 +2,6 @@ package edu.rpi.rocs.client.objectmodel;
 
 import java.util.ArrayList;
 
-import org.w3c.dom.Node;
-
 /**
  * CrossListing class which stores information about multiple classes if they 
  * are crosslisted in SIS.
@@ -21,10 +19,6 @@ public class CrossListing extends MajorMinorRevisionObject {
 	 */
 	public CrossListing() {
 		crns = new ArrayList<Integer>();
-	}
-	
-	public CrossListing(Node src) {
-		
 	}
 	
 	/**
