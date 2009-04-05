@@ -1,24 +1,28 @@
 package edu.rpi.rocs.objectmodel;
 
+import java.util.ArrayList;
+
 public class Course extends MajorMinorRevisionObject {
 	  
     //class variables
     private String name;
     private String dept;
-    private String num;
-    private String credmin;
-    private String credmax;
+    private int num;
+    private int credmin;
+    private int credmax;
     private String gradetype;
-    private String closed;
+    private ArrayList<String> notes;
     
-    public Course(String gname, String gdept, String gnum, String gcredmin, String gcredmax, String ggradetype, String gclosed){
-        name = gname;
-        dept = gdept;
-        num = gnum;
-        credmin = gcredmin;
-        credmax = gcredmax;
-        gradetype = ggradetype;
-        closed = gclosed;
+    public Course(String aName, String aDept, int aNumber, int aCredMin, int aCredMax, String aGradeType, ArrayList<String> someNotes){
+        name = aName;
+        dept = aDept;
+        num = aNumber;
+        credmin = aCredMin;
+        credmax = aCredMax;
+        gradetype = aGradeType;
+        notes = someNotes;
+        if(someNotes == null)
+        	notes = new ArrayList<String>();
     }
     
     //accesssor functions
@@ -38,27 +42,27 @@ public class Course extends MajorMinorRevisionObject {
         return dept;
     }
     
-    public void setNum(String newValue){
+    public void setNum(int newValue){
         num = newValue;
     }
     
-    public String getNum(){
+    public int getNum(){
         return num;
     }
     
-    public void setCredmin(String newValue){
+    public void setCredmin(int newValue){
         credmin = newValue;
     }
     
-    public String getCredmin(){
+    public int getCredmin(){
         return credmin;
     }
     
-    public void setCredmax(String newValue){
+    public void setCredmax(int newValue){
         credmax = newValue;
     }
     
-    public String getCredmax(){
+    public int getCredmax(){
         return credmax;
     }
     
@@ -70,11 +74,16 @@ public class Course extends MajorMinorRevisionObject {
         return gradetype;
     }
     
-    public void setClosed(String newValue){
-        closed = newValue;
+    public void addNote(String newValue) {
+    	notes.add(newValue);
     }
     
-    public String getClosed(){
-        return closed;
+    public ArrayList<String> getNotes() {
+    	return notes;
     }
+    
+    public void removeNote(String note) {
+    	notes.remove(note);
+    }
+    
 }

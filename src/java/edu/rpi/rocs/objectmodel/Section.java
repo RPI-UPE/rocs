@@ -4,9 +4,10 @@ public class Section extends MajorMinorRevisionObject {
     
     //class variables
     private int crn;
-    private String num;
-    private String students;
-    private String seats;
+    private int number;
+    private int students;
+    private int seats;
+    private boolean closed;
     
     //accessor functions
     public void setCRN(int newValue){
@@ -17,27 +18,35 @@ public class Section extends MajorMinorRevisionObject {
         return crn;
     }
     
-    public void setNum(String newValue){
-        num = newValue;
+    public void setNum(int newValue){
+        number = newValue;
     }
     
-    public String getNum(){
-        return num;
+    public int getNum(){
+        return number;
     }
     
-    public void setStudents(String newValue){
+    public void setStudents(int newValue){
         students = newValue;
     }
     
-    public String getStudents(){
+    public int getStudents(){
         return students;
     }
     
-    public void setSeats(String newValue){
+    public void setSeats(int newValue){
         seats = newValue;
     }
     
-    public String getSeats(){
+    public int getSeats(){
         return seats;
+    }
+    
+    public void setClosed(boolean newValue){
+        closed = newValue;
+    }
+    
+    public boolean getClosed(){
+        return closed;
     }
 }

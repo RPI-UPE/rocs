@@ -1,14 +1,33 @@
 package edu.rpi.rocs.objectmodel;
 
+import java.util.ArrayList;
+import java.util.Date;
+
 public class Period extends MajorMinorRevisionObject {
 
     //class variables
     private String type;
     private String instructor;
-    private String day;
-    private String start;
-    private String end;
+    private ArrayList<Integer> days;
+    private Date start;
+    private Date end;
     private String location;
+    
+    /**
+     * Default constructor
+     * 
+     * @param newValue
+     */
+    public Period(String aType, String aInstructor, ArrayList<Integer> someDays, Date aStart, Date aEnd, String aLocation) {
+    	type = aType;
+    	instructor = aInstructor;
+    	days = someDays;
+    	if(someDays == null)
+    		days = new ArrayList<Integer>();
+    	start = aStart;
+    	end = aEnd;
+    	location = aLocation;
+    }
     
     //accessor functions
     public void setType(String newValue){
@@ -27,27 +46,39 @@ public class Period extends MajorMinorRevisionObject {
         return instructor;
     }
     
-    public void setDay(String newValue){
-        day = newValue;
+    public void addDay(int day) {
+    	days.add(new Integer(day));
     }
     
-    public String getDay(){
-        return day;
+    public void addDay(Integer day) {
+    	days.add(day);
     }
     
-    public void setStart(String newValue){
+    public ArrayList<Integer> getDays() {
+    	return days;
+    }
+    
+    public void removeDay(int day) {
+    	days.remove(new Integer(day));
+    }
+    
+    public void removeDay(Integer day) {
+    	days.remove(day);
+    }
+    
+    public void setStart(Date newValue){
         start = newValue;
     }
     
-    public String getStart(){
+    public Date getStart(){
         return start;
     }
     
-    public void setEnd(String newValue){
+    public void setEnd(Date newValue){
         end = newValue;
     }
     
-    public String getEnd(){
+    public Date getEnd(){
         return end;
     }
     
