@@ -1,4 +1,4 @@
-package edu.rpi.rocs.objectmodel;
+package edu.rpi.rocs.client.objectmodel;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -6,6 +6,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -16,6 +17,8 @@ import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
 import edu.rpi.rocs.exceptions.InvalidCourseDatabaseException;
+import edu.rpi.rocs.client.objectmodel.CourseDB;
+import edu.rpi.rocs.client.objectmodel.CrossListing;
 
 import java.util.Map;
 
@@ -23,8 +26,8 @@ public class CourseDB {
 //coursedb is an object and return an instance of it
     
     //class variables
-    private int timestamp;
-    private int semesternumber;
+    private Integer timestamp;
+    private Integer semesterId;
     private String semesterdesc;
     private HashMap<String, Course> courses;
     private HashMap<Integer, CrossListing> crosslistings;
@@ -39,31 +42,38 @@ public class CourseDB {
     	//be the semesterID from the XML file
    		CourseDB newdb = CourseDB.LoadCourseDB(xmlFile);
    		if(latest == null) latest = newdb;
-   		else if(latest.getSemesterNum() < newdb.getSemesterNum()) latest = newdb;
-   		semesters.put(new Integer(newdb.semesternumber), newdb);
+   		else if(latest.getSemesterId() < newdb.getSemesterId()) latest = newdb;
+   		semesters.put(new Integer(newdb.semesterId), newdb);
     }
     
     public static CourseDB getInstance(Integer semesterId) {
     	return semesters.get(semesterId);
     }
     
-    public static Collection<CourseDB> getSemesterList() {
-    	//Make a copy of the semester list since returning
-    	//semesters.values() would provide a list that
-    	//would allow outside classes to directly modify
-    	//the backing map
-    	Collection<CourseDB> semesterList = new ArrayList<CourseDB>();
+    public static List<SemesterDescription> getSemesterList() {
+    	List<SemesterDescription> semesterList = new ArrayList<SemesterDescription>();
     	for(CourseDB current : semesters.values()) {
-    		semesterList.add(current);
+    		semesterList.add(
+    				new SemesterDescription(current.getSemesterId(),
+    						current.getSemesterDesc()));
     	}
     	return semesterList;
+    }
+    
+    public static CourseDB getCurrentSemester() {
+    	Integer max = -1;
+    	for( Integer curr : semesters.keySet()) {
+    		if (curr > max)
+    			max = curr;
+    	}
+    	return semesters.get(max);
     }
     
     //accessor functions
     public CourseDB(int aTimeStamp, int aSemesterNumber, String aSemesterDesc){
     	counter = 0;
         timestamp = aTimeStamp;
-        semesternumber = aSemesterNumber;
+        semesterId = aSemesterNumber;
         semesterdesc = aSemesterDesc;
         courses = new HashMap<String, Course>();
         crosslistings = new HashMap<Integer, CrossListing>();
@@ -115,12 +125,12 @@ public class CourseDB {
         return timestamp;
     }
     
-    public void setSemesterNum(int newValue){
-        semesternumber = newValue;
+    public void setSemesterId(int newValue){
+        semesterId = newValue;
     }
     
-    public int getSemesterNum(){
-        return semesternumber;
+    public int getSemesterId(){
+        return semesterId;
     }
     
     public void setSemesterDesc(String newValue){

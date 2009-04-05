@@ -1,4 +1,4 @@
-package edu.rpi.rocs.objectmodel;
+package edu.rpi.rocs.client.objectmodel;
 
 import java.util.ArrayList;
 import java.util.Date;

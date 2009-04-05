@@ -8,7 +8,7 @@
 	<property name="war.webinf" value="${war.dir}/WEB-INF"/>
 	<property name="war.classes" value="${war.webinf}/classes"/>
 	<property name="war.lib"	value="${war.webinf}/lib"/>
-	<property name="gwt.dir"	value="${war.dir}/${rocs.gwt}"/>
+	<property name="gwt.dir"	value="${war.dir}/${gwt.module}"/>
 	<property name="src.dir" value="src"/>
 	<property name="src.java.dir" value="${src.dir}/java"/>
 	<property name="src.resources.dir" value="${src.dir}/resources"/>

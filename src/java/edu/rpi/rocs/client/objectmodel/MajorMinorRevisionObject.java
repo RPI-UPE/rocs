@@ -1,4 +1,4 @@
-package edu.rpi.rocs.objectmodel;
+package edu.rpi.rocs.client.objectmodel;
 
 /**
  * Superclass for objects which have major and minor revisions.
