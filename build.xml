@@ -26,6 +26,7 @@
 		<pathelement path="${war.lib}/portal-service.jar"/>
 		<pathelement path="${war.lib}/portlet.jar"/>
 		<pathelement path="${war.lib}/servlet-api.jar"/>
+		<pathelement path="${war.lib}/hsqldb.jar"/>
 		<pathelement path="${lib.dir}/gwt-user.jar"/>
 		<!-- Select the correct element for your platform, this will 
 			hopefully be automatic in the future -->
@@ -121,7 +122,7 @@
 	<target name="deploy" depends="war"
 		description="Deploy warfile to liferay installation">
 		<copy todir="${liferay.root}/deploy">
-			<fileset dir="${dist.dir}">
+			<fileset dir="${basedir}">
 				<include name="${ant.project.name}.war"/>
 			</fileset>
 		</copy>

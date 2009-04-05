@@ -15,5 +15,6 @@
 	<classpathentry kind="lib" path="war/WEB-INF/lib/portlet.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/servlet-api.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/standard.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/hsqldb.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
