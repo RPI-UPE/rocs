@@ -26,7 +26,7 @@ public class CourseDB {
     private int timestamp;
     private int semesternumber;
     private String semesterdesc;
-    private HashMap<Integer, Course> courses;
+    private HashMap<String, Course> courses;
     private HashMap<Integer, CrossListing> crosslistings;
     static private CourseDB latest=null;
     
@@ -112,5 +112,9 @@ public class CourseDB {
     
     public String getSemesterDesc(){
         return semesterdesc;
+    }
+    
+    public void addCourse(Course course) {
+    	courses.put(course.getDept() + Integer.toString(course.getNum()), course);
     }
 }

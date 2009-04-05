@@ -1,5 +1,7 @@
 package edu.rpi.rocs.objectmodel;
 
+import java.util.ArrayList;
+
 public class Section extends MajorMinorRevisionObject {
     
     //class variables
@@ -8,6 +10,7 @@ public class Section extends MajorMinorRevisionObject {
     private int students;
     private int seats;
     private boolean closed;
+    private ArrayList<Period> periods;
     
     //accessor functions
     public void setCRN(int newValue){

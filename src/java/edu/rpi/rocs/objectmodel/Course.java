@@ -12,6 +12,7 @@ public class Course extends MajorMinorRevisionObject {
     private int credmax;
     private String gradetype;
     private ArrayList<String> notes;
+    private ArrayList<Section> sections;
     
     public Course(String aName, String aDept, int aNumber, int aCredMin, int aCredMax, String aGradeType, ArrayList<String> someNotes){
         name = aName;
