@@ -1,9 +1,11 @@
 //-S.Whitney
 
+package test.objectModelTests;
+
 import java.util.ArrayList;
 import junit.framework.TestCase;
 
-import edu.rpi.rocs.objectmodel.Course;
+import edu.rpi.rocs.client.objectmodel.Course;
 
 public class courseTest extends TestCase{
 
@@ -13,10 +15,10 @@ public class courseTest extends TestCase{
 	
 	public void testCredits(){
 		try{
-			assertFalse( testObject.getCredmax() == 0 );
+			assertTrue( testObject.getCredmax() == 0 );
 		} catch(NullPointerException e){};
 		try{
-			assertFalse( testObject.getCredmin() == 0 );
+			assertTrue( testObject.getCredmin() == 0 );
 		} catch(NullPointerException e){};
 		
 		testObject.setCredmax(10);

@@ -1,6 +1,8 @@
 //-S.Whitney
 
-import edu.rpi.rocs.objectmodel.*;
+package test.objectModelTests;
+
+import edu.rpi.rocs.client.objectmodel.*;
 import java.util.ArrayList;
 import junit.framework.TestCase;
 

@@ -1,6 +1,8 @@
 //-S.Whitney
 
-import edu.rpi.rocs.objectmodel.*;
+package test.objectModelTests;
+
+import edu.rpi.rocs.client.objectmodel.*;
 import junit.framework.TestCase;
 
 public class majorMinorTest extends TestCase{
