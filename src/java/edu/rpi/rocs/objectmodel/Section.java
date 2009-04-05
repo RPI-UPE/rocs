@@ -12,6 +12,10 @@ public class Section extends MajorMinorRevisionObject {
     private boolean closed;
     private ArrayList<Period> periods;
     
+    public Section() {
+    	periods = new ArrayList<Period>();
+    }
+    
     //accessor functions
     public void setCRN(int newValue){
         crn = newValue;
@@ -51,5 +55,17 @@ public class Section extends MajorMinorRevisionObject {
     
     public boolean getClosed(){
         return closed;
+    }
+    
+    public void addPeriod(Period p) {
+    	periods.add(p);
+    }
+    
+    public ArrayList<Period> getPeriods() {
+    	return periods;
+    }
+    
+    public void removePeriod(Period p) {
+    	periods.remove(p);
     }
 }

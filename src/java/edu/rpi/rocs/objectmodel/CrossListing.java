@@ -12,6 +12,7 @@ import java.util.ArrayList;
 public class CrossListing extends MajorMinorRevisionObject {
 	ArrayList<Integer> crns;
 	int numberOfSeats;
+	int uid;
 	
 	/**
 	 * Default constructor
@@ -37,6 +38,16 @@ public class CrossListing extends MajorMinorRevisionObject {
 	 */
 	public ArrayList<Integer> getCRNs() {
 		return crns;
+	}
+	
+	/**
+	 * Remove a CRN from a cross listing.
+	 * 
+	 * @param crn The CRN to be removed.
+	 */
+	public void removeCRNFromCrossListing(int crn) {
+		crns.remove(new Integer(crn));
+		updateMajorRevision();
 	}
 	
 	/**
@@ -66,5 +77,13 @@ public class CrossListing extends MajorMinorRevisionObject {
 	 */
 	public int getNumberOfSeats() {
 		return numberOfSeats;
+	}
+	
+	public int getUID() {
+		return uid;
+	}
+	
+	public void setUID(int id) {
+		uid = id;
 	}
 }

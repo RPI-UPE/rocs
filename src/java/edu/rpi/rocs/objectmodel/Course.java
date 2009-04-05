@@ -87,4 +87,15 @@ public class Course extends MajorMinorRevisionObject {
     	notes.remove(note);
     }
     
+    public void addSection(Section s) {
+    	sections.add(s);
+    }
+    
+    public ArrayList<Section> getSections() {
+    	return sections;
+    }
+    
+    public void removeSection(Section s) {
+    	sections.remove(s);
+    }
 }

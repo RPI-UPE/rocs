@@ -16,7 +16,6 @@ import org.xml.sax.SAXException;
 
 import edu.rpi.rocs.exceptions.InvalidCourseDatabaseException;
 
-import java.util.HashMap;
 import java.util.Map;
 
 public class CourseDB {
@@ -29,6 +28,7 @@ public class CourseDB {
     private HashMap<String, Course> courses;
     private HashMap<Integer, CrossListing> crosslistings;
     static private CourseDB latest=null;
+    private int counter;
     
     private static final Map<Integer, CourseDB> semesters =
     	new HashMap<Integer, CourseDB>();
@@ -60,10 +60,11 @@ public class CourseDB {
     
     //accessor functions
     public CourseDB(int aTimeStamp, int aSemesterNumber, String aSemesterDesc){
+    	counter = 0;
         timestamp = aTimeStamp;
         semesternumber = aSemesterNumber;
         semesterdesc = aSemesterDesc;
-        courses = new HashMap<Integer, Course>();
+        courses = new HashMap<String, Course>();
         crosslistings = new HashMap<Integer, CrossListing>();
     }
     
@@ -116,5 +117,24 @@ public class CourseDB {
     
     public void addCourse(Course course) {
     	courses.put(course.getDept() + Integer.toString(course.getNum()), course);
+    }
+    
+    public Collection<Course> getCourses() {
+    	return courses.values();
+    }
+    
+    public void removeCourse(Course course) {
+    	courses.remove(course.getDept() + Integer.toString(course.getNum()));
+    }
+    
+    public Integer addCrosslisting(CrossListing c) {
+    	c.setUID(counter);
+    	crosslistings.put(new Integer(counter), c);
+    	counter++;
+    	return new Integer(c.getUID());
+    }
+    
+    public void removeCrosslisting(Integer id) {
+    	crosslistings.remove(id);
     }
 }
