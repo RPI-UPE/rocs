@@ -2,6 +2,8 @@ package edu.rpi.rocs.objectmodel;
 
 import java.util.ArrayList;
 
+import org.w3c.dom.Node;
+
 public class Course extends MajorMinorRevisionObject {
 	  
     //class variables
@@ -24,6 +26,10 @@ public class Course extends MajorMinorRevisionObject {
         notes = someNotes;
         if(someNotes == null)
         	notes = new ArrayList<String>();
+    }
+    
+    public Course(Node src) {
+    	
     }
     
     //accesssor functions

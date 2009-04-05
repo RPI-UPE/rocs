@@ -12,6 +12,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.w3c.dom.Document;
+import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
 import edu.rpi.rocs.exceptions.InvalidCourseDatabaseException;
@@ -84,6 +85,21 @@ public class CourseDB {
     		num = Integer.parseInt(doc.getDocumentElement().getAttribute("semesternumber"));
     		desc = doc.getDocumentElement().getAttribute("semesterdesc");
     		database = new CourseDB(time, num, desc);
+    		for(Node n = doc.getDocumentElement().getFirstChild(); n.getNextSibling() != null; n = n.getNextSibling()) {
+    			if(n.getNodeName()=="CrossListing") {
+    				CrossListing c = new CrossListing(n);
+    				database.addCrosslisting(c);
+    			}
+    			else if(n.getNodeName()=="Course") {
+    				Course c = new Course(n);
+    				database.addCourse(c);
+    			}
+    			else if(n.getNodeName()=="#text") {
+    				// Do nothing
+    			}
+    			else
+    				throw new InvalidCourseDatabaseException("CourseDB contains node that is not a Course or CrossListing.");
+    		}
     	}
     	else {
     		throw new InvalidCourseDatabaseException("Document does not contain a course database.");
