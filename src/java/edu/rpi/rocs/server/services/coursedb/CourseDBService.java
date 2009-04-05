@@ -1,4 +1,4 @@
-package edu.rpi.rocs.server.services.demo;
+package edu.rpi.rocs.server.services.coursedb;
 
 import java.util.List;
 
