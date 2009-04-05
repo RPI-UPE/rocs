@@ -1,0 +1,35 @@
+package edu.rpi.rocs.test;
+
+public class SectionTest extends TestCase{
+
+	Section testSection = new Section;
+
+	public void testCRN(){
+		assertTrue(testSection.getCRN() == null);
+		
+		testSection.setCRN(12345);
+		assertTrue(testSection.getCRN() == 12345);
+	}//end crn tests
+	
+	public void testNum(){
+		assertTrue(testSection.getNum() == null);
+		
+		testSection.setNum("123");
+		assertTrue((testSection.getNum()).equals("123"));
+	}//end num tests
+	
+	public void testStudents(){
+		assertTrue(testSection.getStudents() == null);
+		
+		testSection.setStudents("456");
+		assertTrue((testSection.getStudents()).equals("456"));	
+	}//end students tests
+	
+	public void testSeats(){
+		assertTrue(testSection.getSeats() == null);
+		
+		testSection.setSeats("789");
+		assertTrue((testSection.setSeats()).equals("789"));	
+	}//end seats tests
+	
+}//end sectionTests
