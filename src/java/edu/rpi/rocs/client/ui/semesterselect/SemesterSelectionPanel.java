@@ -1,4 +1,4 @@
-package edu.rpi.rocs.client.ui.demo;
+package edu.rpi.rocs.client.ui.semesterselect;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
