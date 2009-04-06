@@ -3,20 +3,42 @@ package edu.rpi.rocs.client.objectmodel;
 import java.util.ArrayList;
 import java.util.Date;
 
+/**
+ * Stores time information about a particular section of a course.
+ * 
+ * @author elsajg
+ * @author ewpatton
+ *
+ */
 public class Period extends MajorMinorRevisionObject {
 
-    //class variables
-    private String type;
-    private String instructor;
-    private ArrayList<Integer> days;
-    private Date start;
-    private Date end;
-    private String location;
+    /**
+	 * UID for Serializable interface
+	 */
+	private static final long serialVersionUID = 9074143218077988582L;
+	
+	/** Protected data members set by @see edu.rpi.rocs.server.objectmodel.PeriodImpl */
+    protected String type;
+    protected String instructor;
+    protected ArrayList<Integer> days;
+    protected Date start;
+    protected Date end;
+    protected String location;
     
     /**
-     * Default constructor
-     * 
-     * @param newValue
+     * Default constructor needed for Serializable interface
+     */
+    public Period() {
+    	type = "";
+    	instructor = "";
+    	days = new ArrayList<Integer>();
+    	start = new Date();
+    	end = new Date();
+    	location = "";
+    }
+    
+    /**
+     * Custom constructor to populate protected members
      */
     public Period(String aType, String aInstructor, ArrayList<Integer> someDays, Date aStart, Date aEnd, String aLocation) {
     	type = aType;
@@ -29,63 +51,56 @@ public class Period extends MajorMinorRevisionObject {
     	location = aLocation;
     }
     
-    //accessor functions
-    public void setType(String newValue){
-        type = newValue;
-    }
-    
+    /**
+     * Gets the type of period this is. Examples: "LEC", "LAB"
+     * 
+     * @return Period type
+     */
     public String getType(){
         return type;
     }
     
-    public void setInstructor(String newValue){
-        instructor = newValue;
-    }
-    
+    /**
+     * Gets the name of the instructor for this section.
+     * 
+     * @return The instructor's name (if applicable)
+     */
     public String getInstructor(){
         return instructor;
     }
     
-    public void addDay(int day) {
-    	days.add(new Integer(day));
-    }
-    
-    public void addDay(Integer day) {
-    	days.add(day);
-    }
-    
+    /**
+     * Gets the days this period occurs on.
+     * 
+     * @return A list of days
+     */
     public ArrayList<Integer> getDays() {
-    	return days;
+    	return new ArrayList<Integer>(days);
     }
     
-    public void removeDay(int day) {
-    	days.remove(new Integer(day));
-    }
-    
-    public void removeDay(Integer day) {
-    	days.remove(day);
-    }
-    
-    public void setStart(Date newValue){
-        start = newValue;
-    }
-    
+    /**
+     * Gets the starting time of this period.
+     * 
+     * @return The start "time" (as Date)
+     */
     public Date getStart(){
-        return start;
+        return (Date)start.clone();
     }
     
-    public void setEnd(Date newValue){
-        end = newValue;
-    }
-    
+    /**
+     * Gets the ending time of this period.
+     * 
+     * @return The end "time" (as Date)
+     */
     public Date getEnd(){
-        return end;
+        return (Date)end.clone();
     }
     
-    public void setLocation(String newValue){
-        location = newValue;
-    }
-    
+    /**
+     * Gets the location where this section meets.
+     * 
+     * @return Location string
+     */
     public String getLocation(){
         return location;
     }

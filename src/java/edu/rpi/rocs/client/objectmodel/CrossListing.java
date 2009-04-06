@@ -10,9 +10,15 @@ import java.util.ArrayList;
  *
  */
 public class CrossListing extends MajorMinorRevisionObject {
-	ArrayList<Integer> crns;
-	int numberOfSeats;
-	int uid;
+	/**
+	 * UID for Serializable interface
+	 */
+	private static final long serialVersionUID = 3406898058852760862L;
+	
+	/** Protected members set by @see edu.rpi.rocs.server.objectmodel.CrossListing */
+	protected ArrayList<Integer> crns;
+	protected int numberOfSeats;
+	protected int uid;
 	
 	/**
 	 * Default constructor
@@ -22,52 +28,12 @@ public class CrossListing extends MajorMinorRevisionObject {
 	}
 	
 	/**
-	 * Adds a CRN to a cross listing.
-	 * 
-	 * @param crn The CRN to be added.
-	 */
-	public void addCRNToCrossListing(int crn) {
-		crns.add(new Integer(crn));
-		updateMajorRevision();
-	}
-	
-	/**
 	 * Gets the list of CRNs for this cross listing.
 	 * 
 	 * @return An array of CRNs
 	 */
 	public ArrayList<Integer> getCRNs() {
-		return crns;
-	}
-	
-	/**
-	 * Remove a CRN from a cross listing.
-	 * 
-	 * @param crn The CRN to be removed.
-	 */
-	public void removeCRNFromCrossListing(int crn) {
-		crns.remove(new Integer(crn));
-		updateMajorRevision();
-	}
-	
-	/**
-	 * Sets the number of seats in the crosslisting
-	 * 
-	 * @param seats Total number of seats
-	 */
-	public void setNumberOfSeats(int seats) {
-		numberOfSeats = seats;
-		updateMinorRevision();
-	}
-	
-	/**
-	 * Sets the number of seats in the crosslisting
-	 * 
-	 * @param seats Total number of seats
-	 */
-	public void setNumberOfSeats(Integer seats) {
-		numberOfSeats = seats;
-		updateMinorRevision();
+		return new ArrayList<Integer>(crns);
 	}
 	
 	/**
@@ -79,11 +45,12 @@ public class CrossListing extends MajorMinorRevisionObject {
 		return numberOfSeats;
 	}
 	
+	/**
+	 * Gets the unique identifier of this cross listing
+	 * 
+	 * @return Unique Identifier
+	 */
 	public int getUID() {
 		return uid;
-	}
-	
-	public void setUID(int id) {
-		uid = id;
 	}
 }

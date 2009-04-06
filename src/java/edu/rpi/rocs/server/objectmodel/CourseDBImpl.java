@@ -18,30 +18,55 @@ import org.xml.sax.SAXException;
 
 import edu.rpi.rocs.client.objectmodel.Course;
 import edu.rpi.rocs.client.objectmodel.CourseDB;
-import edu.rpi.rocs.client.objectmodel.CrossListing;
+import edu.rpi.rocs.client.objectmodel.MajorMinorRevisionObject;
 import edu.rpi.rocs.client.objectmodel.SemesterDescription;
 import edu.rpi.rocs.exceptions.InvalidCourseDatabaseException;
 
+/**
+ * Course Database Implementation on the server side. Extends the implementation for the client side.
+ * 
+ * @author ewpatton
+ *
+ */
 public class CourseDBImpl extends edu.rpi.rocs.client.objectmodel.CourseDB {
     /**
-	 * 
+	 * UID for Serializable interface
 	 */
 	private static final long serialVersionUID = -6328488261276368411L;
 
+	/** The latest course database by semester */
 	static private CourseDB latest=null;
     
+	/** All loaded semesters */
     private static final Map<Integer, CourseDB> semesters =
     	new HashMap<Integer, CourseDB>();
 
+    /**
+     * Constructor
+     * 
+     * @param timeStamp Unix time when the database was generated
+     * @param semesterNumber Semester identifier
+     * @param semesterDesc Human-readable description for semester
+     * @deprecated Use {@link #addCourseDB(String)} instead
+     */
 	public CourseDBImpl(int timeStamp, int semesterNumber, String semesterDesc) {
 		super(timeStamp, semesterNumber, semesterDesc);
 		// TODO Auto-generated constructor stub
 	}
 
-    public static void addCourseDB(String xmlFile) throws InvalidCourseDatabaseException, SAXException, ParserConfigurationException, IOException {
+    public static void addCourseDB(String xmlFile) throws Exception {
     	//XML File should get parsed, key should
     	//be the semesterID from the XML file
-   		CourseDB newdb = CourseDBImpl.LoadCourseDB(xmlFile);
+    	Long oldrev = MajorMinorRevisionObject.getCurrentRevision();
+    	MajorMinorRevisionObject.setCurrentRevision(System.currentTimeMillis()/1000);
+    	CourseDB newdb;
+    	try {
+    		newdb = CourseDBImpl.LoadCourseDB(xmlFile);
+    	}
+    	catch(Exception e) {
+    		MajorMinorRevisionObject.setCurrentRevision(oldrev);
+    		throw e;
+    	}
    		if(latest == null) latest = newdb;
    		else if(latest.getSemesterId() < newdb.getSemesterId()) latest = newdb;
    		semesters.put(new Integer(newdb.getSemesterId()), newdb);
@@ -92,7 +117,7 @@ public class CourseDBImpl extends edu.rpi.rocs.client.objectmodel.CourseDB {
     		database = new CourseDBImpl(time, num, desc);
     		for(Node n = doc.getDocumentElement().getFirstChild(); n.getNextSibling() != null; n = n.getNextSibling()) {
     			if(n.getNodeName()=="CrossListing") {
-    				CrossListing c = new CrossListingImpl(n);
+    				CrossListingImpl c = new CrossListingImpl(n);
     				database.addCrosslisting(c);
     			}
     			else if(n.getNodeName()=="Course") {
@@ -128,7 +153,7 @@ public class CourseDBImpl extends edu.rpi.rocs.client.objectmodel.CourseDB {
     	courses.remove(course.getDept() + Integer.toString(course.getNum()));
     }
     
-    public Integer addCrosslisting(CrossListing c) {
+    public Integer addCrosslisting(CrossListingImpl c) {
     	c.setUID(counter);
     	crosslistings.put(new Integer(counter), c);
     	counter++;

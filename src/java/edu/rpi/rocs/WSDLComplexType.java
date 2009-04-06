@@ -70,6 +70,7 @@ public class WSDLComplexType {
 		}
 	}
 	
+	@SuppressWarnings("unchecked")
 	protected ArrayList components=new ArrayList();
 	
 	/**

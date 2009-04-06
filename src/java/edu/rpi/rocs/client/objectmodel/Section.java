@@ -2,70 +2,86 @@ package edu.rpi.rocs.client.objectmodel;
 
 import java.util.ArrayList;
 
+/**
+ * Describes a particular course section.
+ * 
+ * @author elsajg
+ * @author ewpatton
+ *
+ */
 public class Section extends MajorMinorRevisionObject {
     
-    //class variables
-    private int crn;
-    private int number;
-    private int students;
-    private int seats;
-    private boolean closed;
-    private ArrayList<Period> periods;
+    /**
+	 * UID for Serializable interface
+	 */
+	private static final long serialVersionUID = 4374452349065230201L;
+	
+	/** Protected members populated by @see edu.rpi.rocs.server.objectmodel.SectionImpl */
+    protected int crn;
+    protected int number;
+    protected int students;
+    protected int seats;
+    protected boolean closed;
+    protected ArrayList<Period> periods;
     
+    /**
+     * Default constructor needed for Serializable
+     */
     public Section() {
     	periods = new ArrayList<Period>();
     }
     
-    //accessor functions
-    public void setCRN(int newValue){
-        crn = newValue;
-    }
-    
+    /**
+     * Gets the CRN identifier for this section.
+     * 
+     * @return CRN
+     */
     public int getCRN(){
         return crn;
     }
     
-    public void setNum(int newValue){
-        number = newValue;
-    }
-    
-    public int getNum(){
+    /**
+     * Gets the section number within its parent course.
+     * 
+     * @return Section number
+     */
+    public int getNumber(){
         return number;
     }
     
-    public void setStudents(int newValue){
-        students = newValue;
-    }
-    
+    /**
+     * Gets the number of students in this section.
+     * 
+     * @return Number of registered students
+     */
     public int getStudents(){
         return students;
     }
     
-    public void setSeats(int newValue){
-        seats = newValue;
-    }
-    
+    /**
+     * Gets the total number of seats in this section
+     * 
+     * @return Total number of seats
+     */
     public int getSeats(){
         return seats;
     }
     
-    public void setClosed(boolean newValue){
-        closed = newValue;
-    }
-    
+    /**
+     * Gets whether the course is closed or not.
+     * 
+     * @return Closed flag
+     */
     public boolean getClosed(){
         return closed;
     }
     
-    public void addPeriod(Period p) {
-    	periods.add(p);
-    }
-    
+    /**
+     * Gets a list of periods when this section meets.
+     * 
+     * @return List of periods
+     */
     public ArrayList<Period> getPeriods() {
-    	return periods;
-    }
-    
-    public void removePeriod(Period p) {
-    	periods.remove(p);
+    	return new ArrayList<Period>(periods);
     }
 }

@@ -1,25 +1,32 @@
 package edu.rpi.rocs.client.objectmodel;
 
+import java.io.Serializable;
+
 /**
  * Superclass for objects which have major and minor revisions.
  * 
  * @author ewpatton
  *
  */
-public class MajorMinorRevisionObject {
+public class MajorMinorRevisionObject implements Serializable {
+	/**
+	 * UID for Serializable interface
+	 */
+	private static final long serialVersionUID = -8119493118175868900L;
+	
 	/** The major and minor revisions for this object */
-	private Integer majRevision;
-	private Integer minRevision;
+	private Long majRevision;
+	private Long minRevision;
 	
 	/** Global current revision */
-	static private Integer currentRevision=0;
+	static private long currentRevision=0;
 	
 	/**
 	 * Get the current global revision number
 	 * 
 	 * @return Revision number
 	 */
-	static public Integer getCurrentRevision() {
+	static public Long getCurrentRevision() {
 		return currentRevision;
 	}
 	
@@ -28,8 +35,8 @@ public class MajorMinorRevisionObject {
 	 * 
 	 * @param rev The new revision number
 	 */
-	static public void setCurrentRevision(int rev) {
-		currentRevision = new Integer(rev);
+	static public void setCurrentRevision(long rev) {
+		currentRevision = new Long(rev);
 	}
 	
 	/**
@@ -37,7 +44,7 @@ public class MajorMinorRevisionObject {
 	 * 
 	 * @param rev The new revision number
 	 */
-	static public void setCurrentRevision(Integer rev) {
+	static public void setCurrentRevision(Long rev) {
 		currentRevision = rev;
 	}
 	
@@ -81,20 +88,20 @@ public class MajorMinorRevisionObject {
 	/**
 	 * Sets the major revision. ONLY use this if you need to override the update methods.
 	 * 
-	 * @see updateMajorRevision
+	 * @see #updateMajorRevision
 	 * @param rev The revision number to use as the major revision.
 	 */
-	public void setMajorRevision(Integer rev) {
+	public void setMajorRevision(Long rev) {
 		majRevision = rev;
 	}
 	
 	/**
 	 * Sets the minor revision. ONLY use this if you need to override the update methods.
 	 * 
-	 * @see updateMinorRevision
+	 * @see #updateMinorRevision
 	 * @param rev The revision number to use as the minor revision.
 	 */
-	public void setMinorRevision(Integer rev) {
+	public void setMinorRevision(Long rev) {
 		minRevision = rev;
 	}
 	
@@ -103,7 +110,7 @@ public class MajorMinorRevisionObject {
 	 * 
 	 * @return The major revision
 	 */
-	public Integer getMajorRevision() {
+	public Long getMajorRevision() {
 		return majRevision;
 	}
 	
@@ -112,7 +119,7 @@ public class MajorMinorRevisionObject {
 	 * 
 	 * @return The minor revision
 	 */
-	public Integer getMinorRevision() {
+	public Long getMinorRevision() {
 		return minRevision;
 	}
 }
