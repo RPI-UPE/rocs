@@ -1,8 +1,19 @@
 package edu.rpi.rocs.client.objectmodel;
 
-public class SemesterDescription {
+import java.io.Serializable;
+
+public class SemesterDescription implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8278743455161603450L;
 	private String description;
 	private Integer semesterId;
+	
+	public SemesterDescription() {
+		description = "";
+		semesterId = new Integer(-1);
+	}
 	
 	public SemesterDescription(Integer semesterId, String description) {
 		setSemesterId(semesterId);

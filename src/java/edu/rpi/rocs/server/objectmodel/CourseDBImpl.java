@@ -23,7 +23,12 @@ import edu.rpi.rocs.client.objectmodel.SemesterDescription;
 import edu.rpi.rocs.exceptions.InvalidCourseDatabaseException;
 
 public class CourseDBImpl extends edu.rpi.rocs.client.objectmodel.CourseDB {
-    static private CourseDB latest=null;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -6328488261276368411L;
+
+	static private CourseDB latest=null;
     
     private static final Map<Integer, CourseDB> semesters =
     	new HashMap<Integer, CourseDB>();

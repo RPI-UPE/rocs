@@ -19,7 +19,7 @@ public interface CourseDBService extends RemoteService{
 		public static CourseDBServiceAsync getInstance() {
 			if (instance == null) {
 				instance = (CourseDBServiceAsync)GWT.create(CourseDBService.class);
-				((ServiceDefTarget)instance).setServiceEntryPoint(GWT.getModuleBaseURL() + "DemoService");
+				((ServiceDefTarget)instance).setServiceEntryPoint(GWT.getModuleBaseURL() + "CourseDBService");
 			}
 			return instance;
 		}
