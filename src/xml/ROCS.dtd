@@ -4,8 +4,8 @@
 <!ELEMENT Section (Period)*>
 <!ELEMENT Period (Day)*>
 <!ELEMENT Extra ANY>
-<!ELEMENT Note CDATA>
-<!ELEMENT CRN CDATA>
+<!ELEMENT Note (#PCDATA)>
+<!ELEMENT CRN (#PCCDATA)>
 
 <!ATTLIST CourseDB
 	  timestamp CDATA #REQUIRED
