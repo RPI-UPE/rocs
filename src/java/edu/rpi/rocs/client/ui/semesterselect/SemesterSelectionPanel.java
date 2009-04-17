@@ -33,7 +33,11 @@ public class SemesterSelectionPanel extends HorizontalPanel {
 			}
 
 			public void onSuccess(SemesterDescription result) {
-				currentSemester.setText(result.getDescription());
+				if (currentSemester == null) {
+					currentSemester.setText("No semester data...");
+				} else {
+					currentSemester.setText(result.getDescription());
+				}
 			}
 		
 	};

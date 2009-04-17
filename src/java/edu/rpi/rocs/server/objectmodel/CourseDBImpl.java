@@ -92,7 +92,10 @@ public class CourseDBImpl extends edu.rpi.rocs.client.objectmodel.CourseDB {
     		if (curr > max)
     			max = curr;
     	}
-    	return semesters.get(max);
+    	if (max != -1)
+    		return semesters.get(max);
+    	else
+    		return null;
     }
     
     public void addCourse(Course course) {
