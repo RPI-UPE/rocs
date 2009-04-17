@@ -14,7 +14,7 @@
 >
 
 <!ATTLIST CrossListing
-	  seats
+	  seats CDATA #REQUIRED
 >
 
 <!ATTLIST Course
