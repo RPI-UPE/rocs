@@ -5,7 +5,7 @@
 <!ELEMENT Period (Day)*>
 <!ELEMENT Extra ANY>
 <!ELEMENT Note (#PCDATA)>
-<!ELEMENT CRN (#PCCDATA)>
+<!ELEMENT CRN (#PCDATA)>
 
 <!ATTLIST CourseDB
 	  timestamp CDATA #REQUIRED
