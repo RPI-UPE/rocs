@@ -30,4 +30,13 @@
 			<role-name>user</role-name>
 		</security-role-ref>
 	</portlet>
+	<user-attribute>
+		<name>user.login.id</name>
+	</user-attribute>
+	<user-attribute>
+		<name>user.name.family</name>
+	</user-attribute>
+	<user-attribute>
+		<name>user.name.given</name>
+	</user-attribute>
 </portlet-app>

@@ -1,7 +1,7 @@
 package edu.rpi.rocs.client.objectmodel;
 
 import java.util.ArrayList;
-import java.util.Date;
+
 
 /**
  * Stores time information about a particular section of a course.
@@ -21,8 +21,8 @@ public class Period extends MajorMinorRevisionObject {
     protected String type;
     protected String instructor;
     protected ArrayList<Integer> days;
-    protected Date start;
-    protected Date end;
+    protected Time start;
+    protected Time end;
     protected String location;
     
     /**
@@ -32,15 +32,15 @@ public class Period extends MajorMinorRevisionObject {
     	type = "";
     	instructor = "";
     	days = new ArrayList<Integer>();
-    	start = new Date();
-    	end = new Date();
+    	start = new Time();
+    	end = new Time();
     	location = "";
     }
     
     /**
      * Custom constructor to populate protected members
      */
-    public Period(String aType, String aInstructor, ArrayList<Integer> someDays, Date aStart, Date aEnd, String aLocation) {
+    public Period(String aType, String aInstructor, ArrayList<Integer> someDays, Time aStart, Time aEnd, String aLocation) {
     	type = aType;
     	instructor = aInstructor;
     	days = someDays;
@@ -83,8 +83,8 @@ public class Period extends MajorMinorRevisionObject {
      * 
      * @return The start "time" (as Date)
      */
-    public Date getStart(){
-        return (Date)start.clone();
+    public Time getStart(){
+        return (Time)start.clone();
     }
     
     /**
@@ -92,8 +92,8 @@ public class Period extends MajorMinorRevisionObject {
      * 
      * @return The end "time" (as Date)
      */
-    public Date getEnd(){
-        return (Date)end.clone();
+    public Time getEnd(){
+        return (Time)end.clone();
     }
     
     /**

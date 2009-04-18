@@ -1,6 +1,7 @@
 package edu.rpi.rocs.server.objectmodel;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -47,9 +48,8 @@ public class CourseDBImpl extends edu.rpi.rocs.client.objectmodel.CourseDB {
      * @param timeStamp Unix time when the database was generated
      * @param semesterNumber Semester identifier
      * @param semesterDesc Human-readable description for semester
-     * @deprecated Use {@link #addCourseDB(String)} instead
      */
-	public CourseDBImpl(int timeStamp, int semesterNumber, String semesterDesc) {
+	private CourseDBImpl(int timeStamp, int semesterNumber, String semesterDesc) {
 		super(timeStamp, semesterNumber, semesterDesc);
 		// TODO Auto-generated constructor stub
 	}
@@ -107,9 +107,13 @@ public class CourseDBImpl extends edu.rpi.rocs.client.objectmodel.CourseDB {
     }
     
     static public CourseDB LoadCourseDB(URL path) throws IOException, ParserConfigurationException, SAXException, InvalidCourseDatabaseException {
+    	return LoadCourseDB(path.openStream());
+    }
+    
+    static public CourseDB LoadCourseDB(InputStream stream) throws IOException, ParserConfigurationException, SAXException, InvalidCourseDatabaseException {
     	DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
     	DocumentBuilder db = dbf.newDocumentBuilder();
-    	Document doc = db.parse(path.openStream());
+    	Document doc = db.parse(stream);
     	CourseDBImpl database=null;
     	if(doc.getDocumentElement().getNodeName() == "CourseDB") {
     		int time,num;

@@ -10,6 +10,14 @@
 			edu.rpi.rocs.server.services.demo.DemoServiceImpl
 		</servlet-class>
 	</servlet>
+	<servlet>
+		<servlet-name>CourseDBServiceImpl</servlet-name>
+		<servlet-class>edu.rpi.rocs.server.services.coursedb.CourseDBServiceImpl</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>CourseDBServiceImpl</servlet-name>
+		<url-pattern>/rocs.gwt/CourseDBService</url-pattern>
+	</servlet-mapping>
 
 	<servlet-mapping>
 		<servlet-name>DemoService</servlet-name>

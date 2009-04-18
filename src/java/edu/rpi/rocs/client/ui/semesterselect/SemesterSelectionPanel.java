@@ -11,7 +11,7 @@ import edu.rpi.rocs.client.services.coursedb.CourseDBService;
 
 
 public class SemesterSelectionPanel extends HorizontalPanel {
-	private Label title = new Label("Semester:");
+	private Label title = new Label("Semester:   ");
 	private Label currentSemester;
 	private Button changeSemesterButton = new Button("Change");
 	private ListBox semesterList;
@@ -29,7 +29,7 @@ public class SemesterSelectionPanel extends HorizontalPanel {
 		new AsyncCallback<SemesterDescription>() {
 
 			public void onFailure(Throwable caught) {
-				currentSemester.setText("Error!");
+				currentSemester.setText("Error: " + caught.getMessage());
 			}
 
 			public void onSuccess(SemesterDescription result) {

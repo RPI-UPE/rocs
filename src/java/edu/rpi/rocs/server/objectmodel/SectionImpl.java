@@ -9,7 +9,8 @@ import edu.rpi.rocs.exceptions.InvalidCourseDatabaseException;
 
 /**
  * 
- * @author elsajg, ewpatton
+ * @author elsajg
+ * @author ewpatton
  *
  */
 public class SectionImpl extends Section {

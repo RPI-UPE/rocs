@@ -47,7 +47,7 @@ public class CourseImpl extends Course {
     			gradetype = val;
     		}
     		else {
-    			throw new InvalidCourseDatabaseException("Course has an invalid attribute.");
+    			throw new InvalidCourseDatabaseException("Course has an invalid attribute \"" + name + "\".");
     		}
     	}
     	NodeList children = src.getChildNodes();
@@ -57,10 +57,13 @@ public class CourseImpl extends Course {
     			SectionImpl s = new SectionImpl(n);
     			sections.add(s);
     		}
+    		else if(n.getNodeName() == "Note") {
+    			notes.add(n.getFirstChild().getNodeValue());
+    		}
     		else if(n.getNodeName()=="#text") {
     		}
     		else {
-    			throw new InvalidCourseDatabaseException("Course has an invalid child.");
+    			throw new InvalidCourseDatabaseException("Course has an invalid child <" + n.getNodeName() + ">.");
     		}
     	}
     	updateMajorRevision();

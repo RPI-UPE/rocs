@@ -30,7 +30,14 @@ public class Course extends MajorMinorRevisionObject {
      * Empty constructor needed by interface Serializable
      */
     public Course() {
-    	
+    	name = "";
+    	dept = "";
+    	num = 0;
+    	credmin = 0;
+    	credmax = 0;
+    	gradetype= "";
+    	notes = new ArrayList<String>();
+    	sections = new ArrayList<Section>();
     }
     
     /**
@@ -54,6 +61,7 @@ public class Course extends MajorMinorRevisionObject {
         notes = someNotes;
         if(someNotes == null)
         	notes = new ArrayList<String>();
+        sections = new ArrayList<Section>();
     }
     
     /**
