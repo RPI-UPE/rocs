@@ -23,6 +23,7 @@ public class Section extends MajorMinorRevisionObject {
     protected int seats;
     protected boolean closed;
     protected ArrayList<Period> periods;
+    protected Course parent;
     
     /**
      * Default constructor needed for Serializable
@@ -83,5 +84,9 @@ public class Section extends MajorMinorRevisionObject {
      */
     public ArrayList<Period> getPeriods() {
     	return new ArrayList<Period>(periods);
+    }
+    
+    public Course getParent() {
+    	return parent;
     }
 }

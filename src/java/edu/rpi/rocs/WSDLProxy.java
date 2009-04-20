@@ -3,6 +3,8 @@ package edu.rpi.rocs;
 import java.io.IOException;
 import java.net.URL;
 
+import edu.rpi.rocs.client.objectmodel.Schedule;
+
 /**
  * Hides the complexity of WSDL by providing functions which wrap the
  * functionality of WSDLQuery, WSDLFunction, and WSDLQueryEngine into a single

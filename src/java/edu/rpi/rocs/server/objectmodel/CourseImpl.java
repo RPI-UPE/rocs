@@ -55,6 +55,7 @@ public class CourseImpl extends Course {
     		Node n = children.item(i);
     		if(n.getNodeName()=="Section") {
     			SectionImpl s = new SectionImpl(n);
+    			s.setParent(this);
     			sections.add(s);
     		}
     		else if(n.getNodeName() == "Note") {

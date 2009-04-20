@@ -88,4 +88,8 @@ public class SectionImpl extends Section {
     public void removePeriod(Period p) {
     	periods.remove(p);
     }
+    
+    public void setParent(CourseImpl p) {
+    	parent = p;
+    }
 }
