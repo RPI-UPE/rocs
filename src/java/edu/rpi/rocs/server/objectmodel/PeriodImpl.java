@@ -50,7 +50,7 @@ public class PeriodImpl extends Period {
 		NodeList l = src.getChildNodes();
 		for(int i=0;i<l.getLength();i++) {
 			Node n = l.item(i);
-			if(n.getNodeName() == "Day") {
+			if(n.getNodeName().equalsIgnoreCase("Day")) {
 				this.days.add(Integer.valueOf(n.getFirstChild().getNodeValue()));
 			}
 			else if(n.getNodeName() == "#text") {

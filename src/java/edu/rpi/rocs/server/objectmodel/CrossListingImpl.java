@@ -19,7 +19,7 @@ public class CrossListingImpl extends CrossListing {
 		NodeList children = src.getChildNodes();
 		for(int i=0;i<children.getLength();i++) {
 			Node n = children.item(i);
-			if(n.getNodeName() == "CRN") {
+			if(n.getNodeName().equalsIgnoreCase("CRN")) {
 				if(n.getFirstChild().getNodeName()!="#text") {
 					throw new InvalidCourseDatabaseException("Invalid child node for CRN.");
 				}

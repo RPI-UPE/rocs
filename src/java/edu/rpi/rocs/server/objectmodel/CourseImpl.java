@@ -53,12 +53,12 @@ public class CourseImpl extends Course {
     	NodeList children = src.getChildNodes();
     	for(int i=0;i<children.getLength();i++) {
     		Node n = children.item(i);
-    		if(n.getNodeName()=="Section") {
+    		if(n.getNodeName().equalsIgnoreCase("Section")) {
     			SectionImpl s = new SectionImpl(n);
     			s.setParent(this);
     			sections.add(s);
     		}
-    		else if(n.getNodeName() == "Note") {
+    		else if(n.getNodeName().equalsIgnoreCase("Note")) {
     			notes.add(n.getFirstChild().getNodeValue());
     		}
     		else if(n.getNodeName()=="#text") {

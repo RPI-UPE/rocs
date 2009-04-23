@@ -24,7 +24,7 @@ public class Scheduler extends GenericPortlet {
 	
 	public void init() {
 		try {
-			CourseDBImpl.addCourseDB("http://pattoe.stu.rpi.edu/rocs-portlet/sample.xml");
+			CourseDBImpl.addCourseDB("http://pattoe.stu.rpi.edu/rocs-portlet/current.xml");
 		}
 		catch(Exception e) {
 			e.printStackTrace();

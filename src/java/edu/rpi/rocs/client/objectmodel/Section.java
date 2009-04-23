@@ -23,6 +23,7 @@ public class Section extends MajorMinorRevisionObject {
     protected int seats;
     protected boolean closed;
     protected ArrayList<Period> periods;
+    protected ArrayList<String> notes;
     protected Course parent;
     
     /**
@@ -30,6 +31,7 @@ public class Section extends MajorMinorRevisionObject {
      */
     public Section() {
     	periods = new ArrayList<Period>();
+    	notes = new ArrayList<String>();
     }
     
     /**
@@ -84,6 +86,10 @@ public class Section extends MajorMinorRevisionObject {
      */
     public ArrayList<Period> getPeriods() {
     	return new ArrayList<Period>(periods);
+    }
+    
+    public ArrayList<String> getNotes() {
+    	return new ArrayList<String>(notes);
     }
     
     public Course getParent() {

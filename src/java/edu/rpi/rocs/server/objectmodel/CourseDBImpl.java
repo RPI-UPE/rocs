@@ -123,11 +123,11 @@ public class CourseDBImpl extends edu.rpi.rocs.client.objectmodel.CourseDB {
     		desc = doc.getDocumentElement().getAttribute("semesterdesc");
     		database = new CourseDBImpl(time, num, desc);
     		for(Node n = doc.getDocumentElement().getFirstChild(); n.getNextSibling() != null; n = n.getNextSibling()) {
-    			if(n.getNodeName()=="CrossListing") {
+    			if(n.getNodeName().equalsIgnoreCase("CrossListing")) {
     				CrossListingImpl c = new CrossListingImpl(n);
     				database.addCrosslisting(c);
     			}
-    			else if(n.getNodeName()=="Course") {
+    			else if(n.getNodeName().equalsIgnoreCase("Course")) {
     				Course c = new CourseImpl(n);
     				database.addCourse(c);
     			}
@@ -135,7 +135,7 @@ public class CourseDBImpl extends edu.rpi.rocs.client.objectmodel.CourseDB {
     				// Do nothing
     			}
     			else
-    				throw new InvalidCourseDatabaseException("CourseDB contains node that is not a Course or CrossListing.");
+    				throw new InvalidCourseDatabaseException("CourseDB contains node <" + n.getNodeName() + "> that is not a Course or CrossListing.");
     		}
     	}
     	else {
