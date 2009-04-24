@@ -26,7 +26,7 @@ public class MinCreditFilter implements ScheduleFilter {
 	
 	public boolean doesScheduleSatisfyFilter(Schedule schedule) {
 		// TODO Auto-generated method stub
-		if(schedule.getCredits() >= mincreds) return true;
+		if(schedule.getMinCredits() >= mincreds) return true;
 		return false;
 	}
 

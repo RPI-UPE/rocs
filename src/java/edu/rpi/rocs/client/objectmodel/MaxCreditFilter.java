@@ -26,7 +26,7 @@ public class MaxCreditFilter implements ScheduleFilter {
 
 	public boolean doesScheduleSatisfyFilter(Schedule schedule) {
 		// TODO Auto-generated method stub
-		if(schedule.getCredits() <= maxcreds) return true;
+		if(schedule.getMaxCredits() <= maxcreds) return true;
 		return false;
 	}
 

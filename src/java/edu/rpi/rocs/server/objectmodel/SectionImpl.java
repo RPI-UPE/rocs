@@ -30,28 +30,7 @@ public class SectionImpl extends Section {
 				crn = Integer.parseInt(val);
 			}
 			else if(name == "num") {
-				if(val.equalsIgnoreCase("OC"))
-					number = 99;
-				else if(val.equalsIgnoreCase("DT1"))
-					number = 98;
-				else if(val.equalsIgnoreCase("CD"))
-					number = 97;
-				else if(val.equalsIgnoreCase("LD"))
-					number = 96;
-				else if(val.equalsIgnoreCase("PL"))
-					number = 95;
-				else if(val.equalsIgnoreCase("WC"))
-					number = 94;
-				else if(val.equalsIgnoreCase("MAL"))
-					number = 93;
-				else if(val.equalsIgnoreCase("DH1"))
-					number = 92;
-				else if(val.equalsIgnoreCase("SA"))
-					number = 91;
-				else if(val.equalsIgnoreCase("EX"))
-					number = 90;
-				else
-					number = Integer.parseInt(val);
+				number = val;
 			}
 			else if(name == "students") {
 				students = Integer.parseInt(val);
@@ -89,7 +68,7 @@ public class SectionImpl extends Section {
         crn = newValue;
     }
     
-    public void setNumber(int newValue){
+    public void setNumber(String newValue){
         number = newValue;
     }
     

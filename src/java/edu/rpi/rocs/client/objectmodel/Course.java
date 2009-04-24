@@ -135,4 +135,9 @@ public class Course extends MajorMinorRevisionObject {
     public ArrayList<Section> getSections() {
     	return new ArrayList<Section>(sections);
     }
+
+	public int getLevel() {
+		// TODO Auto-generated method stub
+		return num / 1000;
+	}
 }

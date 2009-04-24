@@ -18,7 +18,7 @@ public class Section extends MajorMinorRevisionObject {
 	
 	/** Protected members populated by @see edu.rpi.rocs.server.objectmodel.SectionImpl */
     protected int crn;
-    protected int number;
+    protected String number;
     protected int students;
     protected int seats;
     protected boolean closed;
@@ -48,7 +48,7 @@ public class Section extends MajorMinorRevisionObject {
      * 
      * @return Section number
      */
-    public int getNumber(){
+    public String getNumber(){
         return number;
     }
     
