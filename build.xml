@@ -27,7 +27,9 @@
 		<pathelement path="${war.lib}/portlet.jar"/>
 		<pathelement path="${war.lib}/hsqldb.jar"/>
 		<pathelement path="${war.lib}/gwt-log-2.6.0.jar"/>
-		
+		<pathelement path="${war.lib}/hibernate3.jar"/>
+		<pathelement path="${war.lib}/hibernate-commons-annotations.jar"/>
+		<pathelement path="${war.lib}/ejb3-persistence.jar"/>
 
 		<pathelement path="${lib.dir}/servlet-api.jar"/>
 		<pathelement path="${lib.dir}/gwt-user.jar"/>

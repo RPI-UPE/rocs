@@ -14,5 +14,8 @@
 	<classpathentry kind="lib" path="war/WEB-INF/lib/hsqldb.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/gwt-log-2.6.0.jar"/>
 	<classpathentry kind="lib" path="lib/servlet-api.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/ejb3-persistence.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/hibernate-commons-annotations.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/hibernate3.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
