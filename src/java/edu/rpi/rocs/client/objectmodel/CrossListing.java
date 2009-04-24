@@ -45,6 +45,19 @@ public class CrossListing extends MajorMinorRevisionObject {
 		return numberOfSeats;
 	}
 	
+	public ArrayList<Integer> getCrns() {
+		return crns;
+	}
+
+	public void addCrn(Integer crn) {
+		crns.add(crn);
+		updateMajorRevision();
+	}
+
+	public void setNumberOfSeats(int numberOfSeats) {
+		this.numberOfSeats = numberOfSeats;
+	}
+
 	/**
 	 * Gets the unique identifier of this cross listing
 	 * 
@@ -52,5 +65,33 @@ public class CrossListing extends MajorMinorRevisionObject {
 	 */
 	public int getUID() {
 		return uid;
+	}
+	
+	/**
+	 * Adds a CRN to a cross listing.
+	 * 
+	 * @param crn The CRN to be added.
+	 */
+	public void addCrn(int crn) {
+		addCrn(new Integer(crn));
+	}
+	
+	/**
+	 * Remove a CRN from a cross listing.
+	 * 
+	 * @param crn The CRN to be removed.
+	 */
+	public void removeCRNFromCrossListing(int crn) {
+		crns.remove(new Integer(crn));
+		updateMajorRevision();
+	}
+	
+	/**
+	 * Sets the unique identifier of this cross listing.
+	 * 
+	 * @param id New Unique Identifier
+	 */
+	public void setUID(int id) {
+		uid = id;
 	}
 }

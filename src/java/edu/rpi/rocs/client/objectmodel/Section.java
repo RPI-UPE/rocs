@@ -95,4 +95,41 @@ public class Section extends MajorMinorRevisionObject {
     public Course getParent() {
     	return parent;
     }
+    
+	
+    public void setCRN(int newValue){
+        crn = newValue;
+    }
+    
+    public void setNumber(String newValue){
+        number = newValue;
+    }
+    
+    public void setStudents(int newValue){
+        students = newValue;
+    }
+    
+    public void setSeats(int newValue){
+        seats = newValue;
+    }
+    
+    public void setClosed(boolean newValue){
+        closed = newValue;
+    }
+    
+    public void addPeriod(Period p) {
+    	periods.add(p);
+    }
+    
+    public void removePeriod(Period p) {
+    	periods.remove(p);
+    }
+    
+    public void setParent(Course p) {
+    	parent = p;
+    }
+    
+    public void addNote(String s) {
+    	notes.add(s);
+    }
 }

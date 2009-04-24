@@ -12,7 +12,7 @@ import javax.portlet.PortletRequest;
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
 
-import edu.rpi.rocs.server.objectmodel.SemesterImpl;
+import edu.rpi.rocs.server.objectmodel.SemsterParser;
 
 /**
  * The main Scheduler interface, an instance of JSR-168 Porlet.
@@ -24,7 +24,7 @@ public class Scheduler extends GenericPortlet {
 	
 	public void init() {
 		try {
-			SemesterImpl.addCourseDB("http://pattoe.stu.rpi.edu/rocs-portlet/current.xml");
+			SemsterParser.parse("http://pattoe.stu.rpi.edu/rocs-portlet/current.xml");
 		}
 		catch(Exception e) {
 			e.printStackTrace();

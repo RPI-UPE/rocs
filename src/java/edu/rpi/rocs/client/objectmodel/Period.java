@@ -104,4 +104,41 @@ public class Period extends MajorMinorRevisionObject {
     public String getLocation(){
         return location;
     }
+    
+	
+	public void setType(String newValue){
+        type = newValue;
+    }
+    
+    public void setInstructor(String newValue){
+        instructor = newValue;
+    }
+    
+    public void addDay(int day) {
+    	days.add(new Integer(day));
+    }
+    
+    public void addDay(Integer day) {
+    	days.add(day);
+    }
+    
+    public void removeDay(int day) {
+    	days.remove(new Integer(day));
+    }
+    
+    public void removeDay(Integer day) {
+    	days.remove(day);
+    }
+    
+    public void setStart(Time newValue){
+        start = newValue;
+    }
+    
+    public void setEnd(Time newValue){
+        end = newValue;
+    }
+    
+    public void setLocation(String newValue){
+        location = newValue;
+    }
 }

@@ -2,6 +2,7 @@ package edu.rpi.rocs.client.ui.coursesearch;
 
 import java.util.List;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Button;
@@ -14,7 +15,6 @@ import edu.rpi.rocs.client.filters.course.reason.InvalidReason;
 import edu.rpi.rocs.client.filters.course.reason.ReasonSeverity;
 import edu.rpi.rocs.client.objectmodel.Course;
 import edu.rpi.rocs.client.objectmodel.Semester;
-import edu.rpi.rocs.client.ui.semesterselect.SemesterSelectionPanel;
 
 public class CourseSearchPanel extends VerticalPanel implements ClickHandler {
 
@@ -50,6 +50,7 @@ public class CourseSearchPanel extends VerticalPanel implements ClickHandler {
 		Semester semester = SemesterManager.getInstance().getCurrentSemester();
 		List<Course> courses = semester.getCourses();
 		CourseResultList.getInstance().clear();
+		Log.debug("There are " + courses.size() + " courses");
 		for(int i = 0; i < courses.size(); i++) {
 			Course course = courses.get(i);
 			InvalidReason reason = CourseFilterEnum.filterCourseLevel(course);

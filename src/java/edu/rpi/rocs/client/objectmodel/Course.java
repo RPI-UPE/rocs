@@ -140,4 +140,45 @@ public class Course extends MajorMinorRevisionObject {
 		// TODO Auto-generated method stub
 		return num / 1000;
 	}
+	
+	   //accesssor functions
+    public void setName(String newValue){
+        name = newValue;
+    }
+    
+    public void setDept(String newValue){
+        dept = newValue;
+    }
+    
+    public void setNum(int newValue){
+        num = newValue;
+    }
+    
+    public void setCredmin(int newValue){
+        credmin = newValue;
+    }
+    
+    public void setCredmax(int newValue){
+        credmax = newValue;
+    }
+    
+    public void setGradetype(String newValue){
+        gradetype = newValue;
+    }
+    
+    public void addNote(String newValue) {
+    	notes.add(newValue);
+    }
+    
+    public void removeNote(String note) {
+    	notes.remove(note);
+    }
+    
+    public void addSection(Section s) {
+    	sections.add(s);
+    }
+    
+    public void removeSection(Section s) {
+    	sections.remove(s);
+    }
 }

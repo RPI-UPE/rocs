@@ -5,9 +5,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import edu.rpi.rocs.client.objectmodel.Semester;
-import edu.rpi.rocs.client.objectmodel.CrossListing;
-
 /**
  * Stores all information about courses across multiple semesters.
  * 
@@ -100,5 +97,36 @@ public class Semester implements Serializable {
      */
     public List<CrossListing> getCrossListings() {
     	return new ArrayList<CrossListing>(crosslistings.values());
+    }
+    
+    public void setTimeStamp(int newValue){
+        timestamp = newValue;
+    }
+    
+    public void setSemesterId(int newValue){
+        semesterId = newValue;
+    }
+    
+    public void setSemesterDesc(String newValue){
+        semesterdesc = newValue;
+    }
+    
+    public void removeCourse(Course course) {
+    	courses.remove(course.getDept() + Integer.toString(course.getNum()));
+    }
+    
+    public Integer addCrosslisting(CrossListing c) {
+    	c.setUID(counter);
+    	crosslistings.put(new Integer(counter), c);
+    	counter++;
+    	return new Integer(c.getUID());
+    }
+    
+    public void removeCrosslisting(Integer id) {
+    	crosslistings.remove(id);
+    }
+    
+    public void addCourse(Course course) {
+    	courses.put(course.getDept() + Integer.toString(course.getNum()), course);
     }
 }

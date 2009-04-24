@@ -1,5 +1,6 @@
 package edu.rpi.rocs.client.ui.coursesearch;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 

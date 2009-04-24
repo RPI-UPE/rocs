@@ -13,33 +13,33 @@ import edu.rpi.rocs.exceptions.InvalidCourseDatabaseException;
  * @author ewpatton
  *
  */
-public class SectionImpl extends Section {
+public class SectionParser{
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 7946967848665436746L;
 
-	public SectionImpl(Node src) throws InvalidCourseDatabaseException {
-		super();
+	public static Section parse(Node src) throws InvalidCourseDatabaseException {
+		Section section = new Section();
 		for(int i=0;i<src.getAttributes().getLength();i++) {
 			Node n = src.getAttributes().item(i);
 			String name = n.getNodeName();
 			String val = n.getNodeValue();
 			if(name == "crn") {
-				crn = Integer.parseInt(val);
+				section.setCRN(Integer.parseInt(val));
 			}
 			else if(name == "num") {
-				number = val;
+				section.setNumber(val);
 			}
 			else if(name == "students") {
-				students = Integer.parseInt(val);
+				section.setStudents(Integer.parseInt(val));
 			}
 			else if(name == "seats") {
-				seats = Integer.parseInt(val);
+				section.setSeats(Integer.parseInt(val));
 			}
 			else if(name == "closed") {
-				closed = Boolean.parseBoolean(val);
+				section.setClosed(Boolean.parseBoolean(val));
 			}
 			else {
 				throw new InvalidCourseDatabaseException("Section node has invalid attribute.");
@@ -49,11 +49,11 @@ public class SectionImpl extends Section {
 		for(int i=0;i<children.getLength();i++) {
 			Node n = children.item(i);
 			if(n.getNodeName().equalsIgnoreCase("Period")) {
-				PeriodImpl p = new PeriodImpl(n);
-				periods.add(p);
+				Period p = PeriodParser.parse(n);
+				section.addPeriod(p);
 			}
 			else if(n.getNodeName().equalsIgnoreCase("Note")) {
-				notes.add(n.getFirstChild().getNodeValue());
+				section.addNote(n.getFirstChild().getNodeValue());
 			}
 			else if(n.getNodeName() == "#text") {
 				
@@ -62,37 +62,7 @@ public class SectionImpl extends Section {
 				throw new InvalidCourseDatabaseException("Section node has invalid child.");
 			}
 		}
+		return section;
 	}
-	
-    public void setCRN(int newValue){
-        crn = newValue;
-    }
-    
-    public void setNumber(String newValue){
-        number = newValue;
-    }
-    
-    public void setStudents(int newValue){
-        students = newValue;
-    }
-    
-    public void setSeats(int newValue){
-        seats = newValue;
-    }
-    
-    public void setClosed(boolean newValue){
-        closed = newValue;
-    }
-    
-    public void addPeriod(Period p) {
-    	periods.add(p);
-    }
-    
-    public void removePeriod(Period p) {
-    	periods.remove(p);
-    }
-    
-    public void setParent(CourseImpl p) {
-    	parent = p;
-    }
+
 }
