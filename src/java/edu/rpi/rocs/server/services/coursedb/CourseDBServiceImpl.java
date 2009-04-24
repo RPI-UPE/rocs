@@ -17,7 +17,7 @@ public class CourseDBServiceImpl extends RemoteServiceServlet implements
 	private static final long serialVersionUID = -1198710711253036931L;
 
 	public CourseDB getSemesterData(Integer semesterId) {
-		return CourseDBImpl.getInstance(semesterId);
+		return (CourseDB)CourseDBImpl.getInstance(semesterId);
 	}
 
 	public List<SemesterDescription> getSemesterList() {

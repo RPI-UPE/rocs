@@ -1,6 +1,9 @@
-package edu.rpi.rocs.client.objectmodel;
+package edu.rpi.rocs.client.filters.schedule;
 
 import java.util.Iterator;
+
+import edu.rpi.rocs.client.objectmodel.Schedule;
+import edu.rpi.rocs.client.objectmodel.Section;
 
 public class NoMoreThanNumAtLevelFilter implements ScheduleFilter {
 

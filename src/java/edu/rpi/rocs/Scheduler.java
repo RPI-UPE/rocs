@@ -77,8 +77,11 @@ public class Scheduler extends GenericPortlet {
 		
 		out.println("<br><br><p>");
 		out.println("<script language='javascript' src='" + aRequest.getContextPath() + "/rocs.gwt/rocs.gwt.nocache.js'></script>");
-		out.println("GWT test:");
+		out.println("Scheduler Test:");
 		out.println("<div id='uid'></div>");
+		out.println("<div id='semesterSelect'></div>");
+		out.println("<div id='searchFilterPanel'></div>");
+		out.println("<div id='searchResultPanel'></div>");
 		out.print("</p>");
 	}
 	

@@ -2,9 +2,6 @@
 <classpath>
 	<classpathentry kind="src" path="src/java"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="lib/gwt-dev-linux.jar"/>
-	<classpathentry kind="lib" path="lib/gwt-dev-mac.jar"/>
-	<classpathentry kind="lib" path="lib/gwt-dev-windows.jar"/>
 	<classpathentry kind="lib" path="lib/gwt-user.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/commons-fileupload.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/commons-io.jar"/>
@@ -13,8 +10,9 @@
 	<classpathentry kind="lib" path="war/WEB-INF/lib/log4j-1.2.15.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/portal-service.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/portlet.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/servlet-api.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/standard.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/hsqldb.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/gwt-log-2.6.0.jar"/>
+	<classpathentry kind="lib" path="lib/servlet-api.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

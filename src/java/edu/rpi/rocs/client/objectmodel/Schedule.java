@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 
+import edu.rpi.rocs.client.filters.schedule.ScheduleFilter;
 import edu.rpi.rocs.client.objectmodel.exceptions.InvalidScheduleException;
 
 /**

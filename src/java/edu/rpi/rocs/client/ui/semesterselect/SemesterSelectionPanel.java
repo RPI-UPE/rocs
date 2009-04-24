@@ -6,6 +6,8 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 
+import edu.rpi.rocs.client.SemesterManager;
+import edu.rpi.rocs.client.objectmodel.CourseDB;
 import edu.rpi.rocs.client.objectmodel.SemesterDescription;
 import edu.rpi.rocs.client.services.coursedb.CourseDBService;
 
@@ -16,7 +18,17 @@ public class SemesterSelectionPanel extends HorizontalPanel {
 	private Button changeSemesterButton = new Button("Change");
 	private ListBox semesterList;
 	
-	public SemesterSelectionPanel() {
+	private SemesterDescription selectedSemester = null;
+	
+	private static SemesterSelectionPanel instance = null;
+	public static SemesterSelectionPanel getInstance() {
+		if (instance == null) {
+			instance = new SemesterSelectionPanel();
+		}
+		return instance;
+	}
+	
+	private SemesterSelectionPanel() {
 		add(title);
 		currentSemester = new Label("Loading...");
 		add(currentSemester);
@@ -36,9 +48,19 @@ public class SemesterSelectionPanel extends HorizontalPanel {
 				if (currentSemester == null) {
 					currentSemester.setText("No semester data...");
 				} else {
-					currentSemester.setText(result.getDescription());
+					selectSemester(result);
 				}
 			}
 		
 	};
+	
+	private void selectSemester(SemesterDescription semester) {
+		currentSemester.setText(semester.getDescription());
+		selectedSemester = semester;
+		SemesterManager.getInstance().retrieveCourseDB(semester.getSemesterId());
+	}
+	
+	public SemesterDescription getSelectedSemester() {
+		return selectedSemester;
+	}
 }

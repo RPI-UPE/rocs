@@ -12,7 +12,7 @@
 	<property name="src.dir" value="src"/>
 	<property name="src.java.dir" value="${src.dir}/java"/>
 	<property name="src.resources.dir" value="${src.dir}/resources"/>
-	<property name="docs.dir" value="${war.dir}/docs"/>
+	<property name="docs.dir" value="docs"/>
 	<property name="lib.dir" value="lib"/>
 
 	<property name="liferay.root" value="/Frameworks/liferay/current/"/>
@@ -25,8 +25,11 @@
 		<pathelement path="${war.lib}/standard.jar"/>
 		<pathelement path="${war.lib}/portal-service.jar"/>
 		<pathelement path="${war.lib}/portlet.jar"/>
-		<pathelement path="${war.lib}/servlet-api.jar"/>
 		<pathelement path="${war.lib}/hsqldb.jar"/>
+		<pathelement path="${war.lib}/gwt-log-2.6.0.jar"/>
+		
+
+		<pathelement path="${lib.dir}/servlet-api.jar"/>
 		<pathelement path="${lib.dir}/gwt-user.jar"/>
 		<!-- Select the correct element for your platform, this will 
 			hopefully be automatic in the future -->

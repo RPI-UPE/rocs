@@ -1,4 +1,6 @@
-package edu.rpi.rocs.client.objectmodel;
+package edu.rpi.rocs.client.filters.schedule;
+
+import edu.rpi.rocs.client.objectmodel.Schedule;
 
 public class MinCreditFilter implements ScheduleFilter {
 
