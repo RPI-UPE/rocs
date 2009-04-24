@@ -7,7 +7,7 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 
 import edu.rpi.rocs.client.SemesterManager;
-import edu.rpi.rocs.client.objectmodel.CourseDB;
+import edu.rpi.rocs.client.objectmodel.Semester;
 import edu.rpi.rocs.client.objectmodel.SemesterDescription;
 import edu.rpi.rocs.client.services.coursedb.CourseDBService;
 

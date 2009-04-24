@@ -2,7 +2,7 @@ package edu.rpi.rocs.client;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
-import edu.rpi.rocs.client.objectmodel.CourseDB;
+import edu.rpi.rocs.client.objectmodel.Semester;
 import edu.rpi.rocs.client.services.coursedb.CourseDBService;
 
 
@@ -16,7 +16,7 @@ public class SemesterManager {
 	
 	private static SemesterManager instance = null;
 	
-	private CourseDB currentSemester = null;
+	private Semester currentSemester = null;
 	
 	public static SemesterManager getInstance() {
 		if (instance == null) {
@@ -29,13 +29,13 @@ public class SemesterManager {
 	
 	}
 	
-	private AsyncCallback<CourseDB> retrieveCallback = new AsyncCallback<CourseDB>(){
+	private AsyncCallback<Semester> retrieveCallback = new AsyncCallback<Semester>(){
 
 		public void onFailure(Throwable caught) {
 			
 		}
 
-		public void onSuccess(CourseDB result) {
+		public void onSuccess(Semester result) {
 			currentSemester = result;
 		}
 		
@@ -45,7 +45,7 @@ public class SemesterManager {
 		CourseDBService.Singleton.getInstance().getSemesterData(semesterId, retrieveCallback);
 	}
 	
-	public CourseDB getCurrentSemester() {
+	public Semester getCurrentSemester() {
 		return currentSemester;
 	}
 

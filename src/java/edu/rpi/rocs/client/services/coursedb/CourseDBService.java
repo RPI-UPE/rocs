@@ -6,12 +6,12 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
 
-import edu.rpi.rocs.client.objectmodel.CourseDB;
+import edu.rpi.rocs.client.objectmodel.Semester;
 import edu.rpi.rocs.client.objectmodel.SemesterDescription;
 
 public interface CourseDBService extends RemoteService{
 	public List<SemesterDescription> getSemesterList();
-	public CourseDB getSemesterData(Integer semesterId);
+	public Semester getSemesterData(Integer semesterId);
 	public SemesterDescription getCurrentSemester();
 	
 	public static class Singleton {

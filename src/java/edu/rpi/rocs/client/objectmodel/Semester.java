@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import edu.rpi.rocs.client.objectmodel.CourseDB;
+import edu.rpi.rocs.client.objectmodel.Semester;
 import edu.rpi.rocs.client.objectmodel.CrossListing;
 
 /**
@@ -15,7 +15,7 @@ import edu.rpi.rocs.client.objectmodel.CrossListing;
  * @author ewpatton
  *
  */
-public class CourseDB implements Serializable {
+public class Semester implements Serializable {
 	/**
 	 * UID for Serializable interface
 	 */
@@ -32,7 +32,7 @@ public class CourseDB implements Serializable {
     /**
      * Empty constructor to satisfy Serializable interface
      */
-    public CourseDB() {
+    public Semester() {
     	counter = 0;
     	timestamp = -1;
     	semesterId = -1;
@@ -48,7 +48,7 @@ public class CourseDB implements Serializable {
      * @param aSemesterNumber Semester number in YYYYMM format
      * @param aSemesterDesc Written description for this semester
      */
-    public CourseDB(int aTimeStamp, int aSemesterNumber, String aSemesterDesc){
+    public Semester(int aTimeStamp, int aSemesterNumber, String aSemesterDesc){
     	counter = 0;
         timestamp = aTimeStamp;
         semesterId = aSemesterNumber;

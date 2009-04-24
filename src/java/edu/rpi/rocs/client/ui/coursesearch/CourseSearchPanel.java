@@ -13,7 +13,7 @@ import edu.rpi.rocs.client.filters.course.CourseFilterEnum;
 import edu.rpi.rocs.client.filters.course.reason.InvalidReason;
 import edu.rpi.rocs.client.filters.course.reason.ReasonSeverity;
 import edu.rpi.rocs.client.objectmodel.Course;
-import edu.rpi.rocs.client.objectmodel.CourseDB;
+import edu.rpi.rocs.client.objectmodel.Semester;
 import edu.rpi.rocs.client.ui.semesterselect.SemesterSelectionPanel;
 
 public class CourseSearchPanel extends VerticalPanel implements ClickHandler {
@@ -47,7 +47,7 @@ public class CourseSearchPanel extends VerticalPanel implements ClickHandler {
 	}
 	
 	public void search() {
-		CourseDB semester = SemesterManager.getInstance().getCurrentSemester();
+		Semester semester = SemesterManager.getInstance().getCurrentSemester();
 		List<Course> courses = semester.getCourses();
 		CourseResultList.getInstance().clear();
 		for(int i = 0; i < courses.size(); i++) {

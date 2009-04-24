@@ -18,7 +18,7 @@ import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
 import edu.rpi.rocs.client.objectmodel.Course;
-import edu.rpi.rocs.client.objectmodel.CourseDB;
+import edu.rpi.rocs.client.objectmodel.Semester;
 import edu.rpi.rocs.client.objectmodel.MajorMinorRevisionObject;
 import edu.rpi.rocs.client.objectmodel.SemesterDescription;
 import edu.rpi.rocs.exceptions.InvalidCourseDatabaseException;
@@ -29,18 +29,18 @@ import edu.rpi.rocs.exceptions.InvalidCourseDatabaseException;
  * @author ewpatton
  *
  */
-public class CourseDBImpl extends edu.rpi.rocs.client.objectmodel.CourseDB {
+public class SemesterImpl extends edu.rpi.rocs.client.objectmodel.Semester {
     /**
 	 * UID for Serializable interface
 	 */
 	private static final long serialVersionUID = -6328488261276368411L;
 
 	/** The latest course database by semester */
-	static private CourseDB latest=null;
+	static private Semester latest=null;
     
 	/** All loaded semesters */
-    private static final Map<Integer, CourseDB> semesters =
-    	new HashMap<Integer, CourseDB>();
+    private static final Map<Integer, Semester> semesters =
+    	new HashMap<Integer, Semester>();
 
     /**
      * Constructor
@@ -49,7 +49,7 @@ public class CourseDBImpl extends edu.rpi.rocs.client.objectmodel.CourseDB {
      * @param semesterNumber Semester identifier
      * @param semesterDesc Human-readable description for semester
      */
-	private CourseDBImpl(int timeStamp, int semesterNumber, String semesterDesc) {
+	private SemesterImpl(int timeStamp, int semesterNumber, String semesterDesc) {
 		super(timeStamp, semesterNumber, semesterDesc);
 		// TODO Auto-generated constructor stub
 	}
@@ -59,9 +59,9 @@ public class CourseDBImpl extends edu.rpi.rocs.client.objectmodel.CourseDB {
     	//be the semesterID from the XML file
     	Long oldrev = MajorMinorRevisionObject.getCurrentRevision();
     	MajorMinorRevisionObject.setCurrentRevision(System.currentTimeMillis()/1000);
-    	CourseDB newdb;
+    	Semester newdb;
     	try {
-    		newdb = CourseDBImpl.LoadCourseDB(xmlFile);
+    		newdb = SemesterImpl.LoadCourseDB(xmlFile);
     	}
     	catch(Exception e) {
     		MajorMinorRevisionObject.setCurrentRevision(oldrev);
@@ -72,13 +72,13 @@ public class CourseDBImpl extends edu.rpi.rocs.client.objectmodel.CourseDB {
    		semesters.put(new Integer(newdb.getSemesterId()), newdb);
     }
     
-    public static CourseDB getInstance(Integer semesterId) {
+    public static Semester getInstance(Integer semesterId) {
     	return semesters.get(semesterId);
     }
     
     public static List<SemesterDescription> getSemesterList() {
     	List<SemesterDescription> semesterList = new ArrayList<SemesterDescription>();
-    	for(CourseDB current : semesters.values()) {
+    	for(Semester current : semesters.values()) {
     		semesterList.add(
     				new SemesterDescription(current.getSemesterId(),
     						current.getSemesterDesc()));
@@ -86,7 +86,7 @@ public class CourseDBImpl extends edu.rpi.rocs.client.objectmodel.CourseDB {
     	return semesterList;
     }
     
-    public static CourseDB getCurrentSemester() {
+    public static Semester getCurrentSemester() {
     	Integer max = -1;
     	for( Integer curr : semesters.keySet()) {
     		if (curr > max)
@@ -102,26 +102,26 @@ public class CourseDBImpl extends edu.rpi.rocs.client.objectmodel.CourseDB {
     	courses.put(course.getDept() + Integer.toString(course.getNum()), course);
     }
 
-    static public CourseDB LoadCourseDB(String path) throws MalformedURLException, IOException, ParserConfigurationException, SAXException, InvalidCourseDatabaseException {
+    static public Semester LoadCourseDB(String path) throws MalformedURLException, IOException, ParserConfigurationException, SAXException, InvalidCourseDatabaseException {
     	return LoadCourseDB(new URL(path));
     }
     
-    static public CourseDB LoadCourseDB(URL path) throws IOException, ParserConfigurationException, SAXException, InvalidCourseDatabaseException {
+    static public Semester LoadCourseDB(URL path) throws IOException, ParserConfigurationException, SAXException, InvalidCourseDatabaseException {
     	return LoadCourseDB(path.openStream());
     }
     
-    static public CourseDB LoadCourseDB(InputStream stream) throws IOException, ParserConfigurationException, SAXException, InvalidCourseDatabaseException {
+    static public Semester LoadCourseDB(InputStream stream) throws IOException, ParserConfigurationException, SAXException, InvalidCourseDatabaseException {
     	DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
     	DocumentBuilder db = dbf.newDocumentBuilder();
     	Document doc = db.parse(stream);
-    	CourseDBImpl database=null;
+    	SemesterImpl database=null;
     	if(doc.getDocumentElement().getNodeName() == "CourseDB") {
     		int time,num;
     		String desc;
     		time = Integer.parseInt(doc.getDocumentElement().getAttribute("timestamp"));
     		num = Integer.parseInt(doc.getDocumentElement().getAttribute("semesternumber"));
     		desc = doc.getDocumentElement().getAttribute("semesterdesc");
-    		database = new CourseDBImpl(time, num, desc);
+    		database = new SemesterImpl(time, num, desc);
     		for(Node n = doc.getDocumentElement().getFirstChild(); n.getNextSibling() != null; n = n.getNextSibling()) {
     			if(n.getNodeName().equalsIgnoreCase("CrossListing")) {
     				CrossListingImpl c = new CrossListingImpl(n);
