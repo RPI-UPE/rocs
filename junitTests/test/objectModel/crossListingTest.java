@@ -3,7 +3,8 @@
 package test.objectModel;
 
 
-import edu.rpi.rocs.server.objectmodel.CrossListingImpl;
+import edu.rpi.rocs.server.objectmodel.*;
+import edu.rpi.rocs.client.objectmodel.CrossListing;
 
 import java.io.InputStream;
 import java.net.URL;
@@ -22,8 +23,8 @@ import junit.framework.TestCase;
 public class crossListingTest extends TestCase{
 	
 	String xmlLoc = "http://pattoe.stu.rpi.edu/rocs-portlet/sample.xml";
-	ArrayList<CrossListingImpl> crossListings = new ArrayList<CrossListingImpl>();
-	CrossListingImpl testObject;
+	ArrayList<CrossListing> crossListings = new ArrayList<CrossListing>();
+	CrossListing testObject;
 	
 	@Before
 	public void setUp(){
@@ -37,7 +38,7 @@ public class crossListingTest extends TestCase{
 	    	if(doc.getDocumentElement().getNodeName() == "CourseDB") {
 				for(Node n = doc.getDocumentElement().getFirstChild(); n.getNextSibling() != null; n = n.getNextSibling()) {
 					if(n.getNodeName()=="CrossListing") {
-						CrossListingImpl c = new CrossListingImpl(n);
+						CrossListing c = CrossListingParser.parse(n);
 						crossListings.add(c);
 					}//end if crosslisting
 				}//end for

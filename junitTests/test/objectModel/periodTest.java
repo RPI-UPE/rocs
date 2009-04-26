@@ -2,7 +2,8 @@
 
 package test.objectModel;
 
-import edu.rpi.rocs.server.objectmodel.PeriodImpl;
+import edu.rpi.rocs.server.objectmodel.PeriodParser;
+import edu.rpi.rocs.client.objectmodel.Period;
 import edu.rpi.rocs.client.objectmodel.Time;
 
 import java.io.InputStream;
@@ -22,7 +23,7 @@ import junit.framework.TestCase;
 public class periodTest extends TestCase{
 	
 	Time start, end;
-	ArrayList<PeriodImpl> testObject = new ArrayList<PeriodImpl>();
+	ArrayList<Period> testObject = new ArrayList<Period>();
 	
 	String xmlLoc = "http://pattoe.stu.rpi.edu/rocs-portlet/sample.xml";
 	
@@ -45,7 +46,7 @@ public class periodTest extends TestCase{
 							if(s.getNodeName() == "Section" && s.hasChildNodes()) {
 								for(Node n = s.getFirstChild(); n.getNextSibling() != null; n = n.getNextSibling()) {
 									if(n.getNodeName() == "Period") {
-										PeriodImpl p = new PeriodImpl(n);
+										Period p = PeriodParser.parse(n);
 										testObject.add(p);
 									}//end if
 								}//end for period nodes

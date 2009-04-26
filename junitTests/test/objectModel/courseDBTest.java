@@ -11,14 +11,16 @@ import edu.rpi.rocs.server.objectmodel.*;
 
 public class courseDBTest extends TestCase{
 	
-	CourseDB	testObject;
+	//CourseDB	testObject;
+	Semester testObject;
 	String xmlLoc = "http://pattoe.stu.rpi.edu/rocs-portlet/sample.xml";
 	
 	@Before
 	public void setUp(){
 		try {
-			testObject = CourseDBImpl.LoadCourseDB(xmlLoc);
-			CourseDBImpl.addCourseDB(xmlLoc);
+			SemsterParser.parse(xmlLoc);
+			testObject = SemesterDB.getCurrentSemester();
+			//CourseDBImpl.addCourseDB(xmlLoc);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

@@ -14,14 +14,19 @@ import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
-import edu.rpi.rocs.server.objectmodel.SectionImpl;
+import edu.rpi.rocs.client.objectmodel.Period;
+import edu.rpi.rocs.client.objectmodel.Section;
+import edu.rpi.rocs.server.objectmodel.PeriodParser;
+import edu.rpi.rocs.server.objectmodel.SectionParser;
 import junit.framework.TestCase;
 
 public class sectionTest extends TestCase{
 
-	ArrayList<SectionImpl> testObject = new ArrayList<SectionImpl>();
+	ArrayList<Section> testObject = new ArrayList<Section>();
 	
 	String xmlLoc = "http://pattoe.stu.rpi.edu/rocs-portlet/sample.xml";
+	
+	Period testPeriod;
 	
 	@Before
 	public void setUp(){
@@ -38,8 +43,14 @@ public class sectionTest extends TestCase{
 	    			if(c.getNodeName() == "Course" && c.hasChildNodes()){
 						for(Node s = c.getFirstChild(); s.getNextSibling() != null; s = s.getNextSibling()) {
 							if(s.getNodeName() == "Section") {
-								SectionImpl n = new SectionImpl(s);
+								Section n = SectionParser.parse(s);
 								testObject.add(n);
+								
+								if(s.getFirstChild() != null){
+										if(s.getFirstChild().getNodeName() == "Period"){
+											testPeriod = PeriodParser.parse(s.getFirstChild());
+										}}
+								
 							}//end if crosslisting
 						}//end for section children nodes
 	    			}//end if course
@@ -68,11 +79,11 @@ public class sectionTest extends TestCase{
 
 	@Test
 	public void testNum(){
-		assertTrue(testObject.get(0).getNumber() == 0);
-		assertTrue(testObject.get(1).getNumber() == 1);
+		assertTrue(testObject.get(0).getNumber().equals("0"));
+		assertTrue(testObject.get(1).getNumber().equals("1"));
 		
-		testObject.get(0).setNumber(123);
-		assertTrue((testObject.get(0).getNumber()) == 123);
+		testObject.get(0).setNumber("123");
+		assertTrue((testObject.get(0).getNumber()).equals("123"));
 	}//end num tests
 	
 
@@ -103,6 +114,18 @@ public class sectionTest extends TestCase{
 		
 		testObject.get(0).setClosed(true);
 		assertTrue(testObject.get(0).getClosed() == true);
+	}
+	
+	@Test
+	public void testPeriod(){
+		ArrayList<Period> temp = testObject.get(0).getPeriods();
+		
+		temp.add(testPeriod);
+		testObject.get(0).addPeriod(testPeriod);
+		
+		assertTrue(temp.equals(testObject.get(0).getPeriods()));
+		
+		
 	}
 
 	
