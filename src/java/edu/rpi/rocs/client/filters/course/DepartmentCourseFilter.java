@@ -22,7 +22,7 @@ public class DepartmentCourseFilter extends CourseFilter {
 
 	@Override
 	protected boolean filter(Course course) {
-		if ((course== null) || (departmentBox.getText().isEmpty()))
+		if ((course== null) || ("".equals(departmentBox.getText())))
 				return true;
 		String dept = course.getDept();
 		return departmentBox.getText().equalsIgnoreCase(dept);
