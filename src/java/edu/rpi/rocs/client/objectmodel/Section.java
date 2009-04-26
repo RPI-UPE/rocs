@@ -132,4 +132,8 @@ public class Section extends MajorMinorRevisionObject {
     public void addNote(String s) {
     	notes.add(s);
     }
+    
+    public void clearNotes(){
+    	notes.clear();
+    }
 }
