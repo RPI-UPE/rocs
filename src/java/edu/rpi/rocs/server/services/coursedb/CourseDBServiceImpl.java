@@ -2,14 +2,32 @@ package edu.rpi.rocs.server.services.coursedb;
 
 import java.util.List;
 
+import javax.servlet.ServletException;
+
+import org.apache.log4j.Logger;
+
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 import edu.rpi.rocs.client.objectmodel.Semester;
 import edu.rpi.rocs.client.objectmodel.SemesterDescription;
 import edu.rpi.rocs.server.objectmodel.SemesterDB;
+import edu.rpi.rocs.server.objectmodel.SemsterParser;
 
 public class CourseDBServiceImpl extends RemoteServiceServlet implements
 		edu.rpi.rocs.client.services.coursedb.CourseDBService {
+	
+	private static Logger LOG = Logger.getLogger(CourseDBServiceImpl.class);
+	
+	public void init() throws ServletException {
+			super.init();
+			LOG.debug("Creating courseDB service");
+			try {
+				SemsterParser.parse("http://pattoe.stu.rpi.edu/rocs-portlet/current.xml");
+			} catch (Exception e) {
+				e.printStackTrace();
+				throw new ServletException();
+			}
+	}
 
 	/**
 	 * 

@@ -109,7 +109,7 @@
 
 	<target name="war" depends="gwtc,javac,docs"
 		description="Build the web application archive">
-		<zip destfile="${ant.project.name}.war" basedir="war"/>
+		<zip destfile="${ant.project.name}.war" excludes="*.html" basedir="war"/>
 	</target>
 
 	<target name="all" depends="clean,docs,war"
