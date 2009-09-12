@@ -8,6 +8,6 @@
 
 	<entry-point class='edu.rpi.rocs.client.ui.entry.MainEntryPoint'/>
 	
-	<servlet path="/rocs.gwt/DemoService" class="edu.rpi.rocs.server.services.demo.DemoServiceImpl"/>
-	<servlet path="/rocs.gwt/CourseDBService" class="edu.rpi.rocs.server.services.coursedb.CourseDBServiceImpl"/>
+	<servlet path="/rocs/rocs.gwt/DemoService" class="edu.rpi.rocs.server.services.demo.DemoServiceImpl"/>
+	<servlet path="/rocs/rocs.gwt/CourseDBService" class="edu.rpi.rocs.server.services.coursedb.CourseDBServiceImpl"/>
 </module>

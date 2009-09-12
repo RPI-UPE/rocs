@@ -21,7 +21,7 @@
 		<portlet-info>
 			<title>Rensselaer Open Course Scheduler</title>
 			<short-title>RPI Scheduler</short-title>
-			<keywords>rensselaer rpi course scheduler</keywords>
+			<keywords>rensselaer rpi course scheduler rocs</keywords>
 		</portlet-info>
 		<security-role-ref>
 			<role-name>administrator</role-name>
