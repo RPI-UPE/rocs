@@ -15,7 +15,7 @@
 	<property name="docs.dir" value="docs"/>
 	<property name="lib.dir" value="lib"/>
 
-	<property name="liferay.root" value="/Frameworks/liferay/current/"/>
+	<property name="liferay.root" value="/Liferay/current/"/>
 
 	<path id="build-classpath">
 		<pathelement path="${war.lib}/commons-fileupload.jar"/>
@@ -23,8 +23,6 @@
 		<pathelement path="${war.lib}/commons-logging.jar"/>
 		<pathelement path="${war.lib}/log4j-1.2.15.jar"/>
 		<pathelement path="${war.lib}/standard.jar"/>
-		<pathelement path="${war.lib}/portal-service.jar"/>
-		<pathelement path="${war.lib}/portlet.jar"/>
 		<pathelement path="${war.lib}/hsqldb.jar"/>
 		<pathelement path="${war.lib}/gwt-log-2.6.0.jar"/>
 		<pathelement path="${war.lib}/hibernate3.jar"/>
@@ -33,6 +31,7 @@
 
 		<pathelement path="${lib.dir}/servlet-api.jar"/>
 		<pathelement path="${lib.dir}/gwt-user.jar"/>
+		<pathelement path="${lib.dir}/portlet.jar"/>
 		<!-- Select the correct element for your platform, this will 
 			hopefully be automatic in the future -->
 		<pathelement path="${lib.dir}/gwt-dev-linux.jar"/>
@@ -120,7 +119,7 @@
 		<exec executable="curl">
 			<arg value="-F"/>
 			<arg value="portlet=@${ant.project.name}.war"/>
-			<arg value="http://pattoe.stu.rpi.edu/rocs-portlet/send.php"/>
+			<arg value="http://wineagent.tw.rpi.edu/rocs.php"/>
 		</exec>
 	</target>
 	

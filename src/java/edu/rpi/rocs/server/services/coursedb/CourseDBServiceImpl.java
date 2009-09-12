@@ -22,7 +22,7 @@ public class CourseDBServiceImpl extends RemoteServiceServlet implements
 			super.init();
 			LOG.debug("Creating courseDB service");
 			try {
-				SemsterParser.parse("http://pattoe.stu.rpi.edu/rocs-portlet/current.xml");
+				SemsterParser.parse("http://wineagent.tw.rpi.edu/rocs-portlet/current.xml");
 			} catch (Exception e) {
 				e.printStackTrace();
 				throw new ServletException();
