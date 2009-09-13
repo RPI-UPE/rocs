@@ -1,0 +1,108 @@
+
+
+#portlet_rocs_WAR_rocs_frame {
+  position: relative;
+  width: 1000px;
+  height: 600px;
+  top: 16px;
+  margin-bottom: 0px;
+}
+
+#portlet_rocs_WAR_rocs_frame * {
+  padding: 0;
+  margin: 0;
+  font-size: 10pt;
+}
+
+#portlet_rocs_WAR_rocs_frame table {
+  padding: 0;
+  margin: 0;
+}
+
+#portlet_rocs_WAR_rocs_semester_pane {
+  position:absolute;
+  top:0px;
+  left:0px;
+  width:200px;
+  height:70px;
+  background-color: #f00;
+  overflow:hidden;
+}
+
+#portlet_rocs_WAR_rocs_semester_pane p {
+  font-size: 10pt;
+  padding: 0.2em;
+  font-family: Arial;
+}
+
+#portlet_rocs_WAR_rocs_current_courses_pane {
+  position:absolute;
+  top:0px;
+  left:200px;
+  width:800px;
+  height:150px;
+  background-color: #ff0;
+  overflow:hidden;
+}
+
+#portlet_rocs_WAR_rocs_current_courses_pane p {
+  font-size: 10pt;
+  padding: 0.2em;
+  font-family: Arial;
+}
+
+#portlet_rocs_WAR_rocs_current_courses_pane table {
+  margin-left: 1em;
+  margin-top: 0.5em;
+}
+
+#portlet_rocs_WAR_rocs_current_courses_pane select {
+  width: 660px;
+  font-family: Courier New;
+}
+
+a.greybutton {
+  color: #000;
+  background-color: #cccccc;
+  border: 3px outset #ccc;
+}
+
+a.redbutton {
+  color: #000;
+  background-color: #f00;
+  border: 3px outset #f00;
+}
+
+#portlet_rocs_WAR_rocs_semester_pane p.centered a {
+  text-decoration: none;
+  color: #000;
+  background-color: #cccccc;
+  border: 3px outset #ccc;
+  padding: 0.1em;
+  margin: 0.2em;
+}
+
+#portlet_rocs_WAR_rocs_search_pane {
+  position:absolute;
+  top:70px;
+  left:0px;
+  width:200px;
+  height:530px;
+  background-color: #0f0;
+  overflow:hidden;
+}
+
+p.centered {
+  width: 100%;
+  text-align: center;
+}
+
+#portlet_rocs_WAR_rocs_scheduler_pane {
+  position:absolute;
+  top:150px;
+  left:200px;
+  width:800px;
+  height:450px;
+  background-color: #00f;
+  overflow:hidden;
+}

@@ -1,0 +1,54 @@
+
+
+#portlet_rocs_WAR_rocs {
+  background-color: #aaddff;
+  margin: 0;
+  padding: 4px;
+  padding-top: 4px;
+  padding-bottom: 20px;
+}
+
+#portlet_rocs_WAR_rocs_frame {
+  background-color: #fff;
+  width: 60em;
+  margin-top: -1em;
+  margin-bottom: -1em;
+  padding: 0px;
+}
+
+#portlet_rocs_WAR_rocs_frame h1 {
+  padding-top: 10px;
+  padding-bottom: 0px;
+  margin-top: 0.5em;
+  margin-bottom: 0px;
+}
+
+#portlet_rocs_WAR_rocs_frame h4 {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+#portlet_rocs_WAR_rocs_frame p {
+  font-family: Times;
+  padding: 1em;
+  padding-bottom: 0em;
+}
+
+#portlet_rocs_WAR_rocs_frame table {
+  padding-bottom: 0px;
+  margin-bottom: 1em;
+}
+
+a.bluebutton {
+  background-color: #aaddff;
+  border: 3px outset #aaddff;
+  color: #000;
+}
+
+#portlet_rocs_WAR_rocs_frame a.linkbutton {
+  margin: 0.2em;
+  padding: 0.2em;
+  text-decoration: none;
+  display: block;
+  text-align:center;
+}
