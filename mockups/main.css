@@ -11,6 +11,17 @@
 #portlet_rocs_WAR_rocs_frame * {
   padding: 0;
   margin: 0;
+}
+
+#portlet_rocs_WAR_rocs_frame p {
+  font-size: 10pt;
+}
+
+#portlet_rocs_WAR_rocs_frame a {
+  font-size: 10pt;
+}
+
+#portlet_rocs_WAR_rocs_frame td {
   font-size: 10pt;
 }
 
@@ -56,6 +67,22 @@
   margin-top: 0.5em;
 }
 
+#portlet_rocs_WAR_rocs_search_pane table {
+  padding: 0px;
+}
+
+#portlet_rocs_WAR_rocs_search_pane table td {
+  padding: 4px;
+}
+
+#portlet_rocs_WAR_rocs_search_pane table td select {
+  width: 100px;
+}
+
+#portlet_rocs_WAR_rocs_search_pane table td input[type="text"] {
+  width: 100px;
+}
+
 #portlet_rocs_WAR_rocs_current_courses_pane select {
   width: 660px;
   font-family: Courier New;
@@ -71,6 +98,12 @@ a.redbutton {
   color: #000;
   background-color: #f00;
   border: 3px outset #f00;
+}
+
+a.greenbutton {
+  color: #000;
+  background-color: #0d0;
+  border: 3px outset #0d0;
 }
 
 #portlet_rocs_WAR_rocs_semester_pane p.centered a {
@@ -105,4 +138,33 @@ p.centered {
   height:450px;
   background-color: #00f;
   overflow:hidden;
+}
+
+#portlet_rocs_WAR_rocs_frame div.search_results {
+  width: 190px;
+  height: 317px;
+  margin: 5px;
+  position:relative;
+  overflow-x: scroll;
+}
+
+#portlet_rocs_WAR_rocs_frame select.search_results {
+  min-width: 190px;
+  min-height: 300px;
+  font-family: Courier New;
+}
+
+#portlet_rocs_WAR_rocs_frame select.search_results option {
+  font-size: 8pt;
+}
+
+#portlet_rocs_WAR_rocs_scheduler_pane table#schedule_start td {
+  vertical-align: center;
+  text-align: center;
+}
+
+#portlet_rocs_WAR_rocs_scheduler_pane table#schedule_start .start {
+  width: 200px;
+  margin-left: auto;
+  margin-right: auto;
 }
