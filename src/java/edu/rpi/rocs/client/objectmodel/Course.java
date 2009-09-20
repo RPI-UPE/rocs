@@ -181,4 +181,23 @@ public class Course extends MajorMinorRevisionObject {
     public void removeSection(Section s) {
     	sections.remove(s);
     }
+    
+    public String getListDescription() {
+    	boolean closed=true;
+    	for(Section s : sections) {
+    		if(!s.isClosed()) {
+    			closed = false;
+    			break;
+    		}
+    	}
+    	String result="";
+    	if(closed) result += "C&nbsp;&nbsp;";
+    	else result += "&nbsp;&nbsp;&nbsp;";
+    	result += dept;
+    	result += "&nbsp;&nbsp;";
+    	result += num;
+    	result += "&nbsp;&nbsp;";
+    	result += name;
+    	return result;
+    }
 }

@@ -38,9 +38,6 @@ public class SectionParser{
 			else if(name == "seats") {
 				section.setSeats(Integer.parseInt(val));
 			}
-			else if(name == "closed") {
-				section.setClosed(Boolean.parseBoolean(val));
-			}
 			else {
 				throw new InvalidCourseDatabaseException("Section node has invalid attribute.");
 			}

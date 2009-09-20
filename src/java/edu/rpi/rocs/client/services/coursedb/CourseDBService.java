@@ -13,6 +13,7 @@ public interface CourseDBService extends RemoteService{
 	public List<SemesterDescription> getSemesterList();
 	public Semester getSemesterData(Integer semesterId);
 	public SemesterDescription getCurrentSemester();
+	public String getUserName(String userid);
 	
 	public static class Singleton {
 		private static CourseDBServiceAsync instance = null;

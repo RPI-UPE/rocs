@@ -4,18 +4,20 @@
 	
 	<property name="gwt.module" value="rocs.gwt"/>
 	
-	<property name="war.dir" value="war"/>
-	<property name="war.webinf" value="${war.dir}/WEB-INF"/>
-	<property name="war.classes" value="${war.webinf}/classes"/>
-	<property name="war.lib"	value="${war.webinf}/lib"/>
-	<property name="gwt.dir"	value="${war.dir}/${gwt.module}"/>
-	<property name="src.dir" value="src"/>
-	<property name="src.java.dir" value="${src.dir}/java"/>
+	<property name="war.dir"           value="war"/>
+	<property name="war.webinf"        value="${war.dir}/WEB-INF"/>
+	<property name="war.classes"       value="${war.webinf}/classes"/>
+	<property name="war.lib"           value="${war.webinf}/lib"/>
+	<property name="war.css"           value="${war.dir}/css"/>
+	<property name="gwt.dir"           value="${war.dir}/${gwt.module}"/>
+	<property name="src.dir"           value="src"/>
+	<property name="src.java.dir"      value="${src.dir}/java"/>
 	<property name="src.resources.dir" value="${src.dir}/resources"/>
-	<property name="docs.dir" value="docs"/>
-	<property name="lib.dir" value="lib"/>
+	<property name="src.css.dir"       value="${src.dir}/css"/>
+	<property name="docs.dir"          value="docs"/>
+	<property name="lib.dir"           value="lib"/>
 
-	<property name="liferay.root" value="/Liferay/current/"/>
+	<property name="liferay.root"      value="/Liferay/current/"/>
 
 	<path id="build-classpath">
 		<pathelement path="${war.lib}/commons-fileupload.jar"/>
@@ -108,6 +110,10 @@
 
 	<target name="war" depends="gwtc,javac,docs"
 		description="Build the web application archive">
+	  <mkdir dir="${war.css}"/>
+	  <copy todir="${war.css}">
+	    <fileset dir="${src.css.dir}"/>
+	  </copy>
 		<zip destfile="${ant.project.name}.war" excludes="*.html" basedir="war"/>
 	</target>
 

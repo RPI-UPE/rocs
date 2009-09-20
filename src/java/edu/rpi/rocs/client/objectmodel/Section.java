@@ -21,10 +21,10 @@ public class Section extends MajorMinorRevisionObject {
     protected String number;
     protected int students;
     protected int seats;
-    protected boolean closed;
     protected ArrayList<Period> periods;
     protected ArrayList<String> notes;
     protected Course parent;
+    protected CrossListing cross;
     
     /**
      * Default constructor needed for Serializable
@@ -32,6 +32,7 @@ public class Section extends MajorMinorRevisionObject {
     public Section() {
     	periods = new ArrayList<Period>();
     	notes = new ArrayList<String>();
+    	cross = null;
     }
     
     /**
@@ -75,8 +76,11 @@ public class Section extends MajorMinorRevisionObject {
      * 
      * @return Closed flag
      */
-    public boolean getClosed(){
-        return closed;
+    public boolean isClosed(){
+    	if(cross!=null) {
+    		if(cross.isClosed()) return true;
+    	}
+        return (students >= seats);
     }
     
     /**
@@ -113,10 +117,6 @@ public class Section extends MajorMinorRevisionObject {
         seats = newValue;
     }
     
-    public void setClosed(boolean newValue){
-        closed = newValue;
-    }
-    
     public void addPeriod(Period p) {
     	periods.add(p);
     }
@@ -135,5 +135,34 @@ public class Section extends MajorMinorRevisionObject {
     
     public void clearNotes(){
     	notes.clear();
+    }
+    
+    public void setCrossListing(CrossListing c) {
+    	cross = c;
+    }
+    
+    public void removeCrossListing() {
+    	cross = null;
+    }
+    
+    public CrossListing getCrossListing() {
+    	return cross;
+    }
+    
+    public String getCourseDescription() {
+    	String result="";
+    	if(isClosed()) {
+    		result += "C";
+    	}
+    	else {
+    		result += " ";
+    	}
+    	result += "  ";
+    	result += parent.getDept();
+    	result += "  ";
+    	result += parent.getNum();
+    	result += "  ";
+    	result += parent.getName();
+    	return result;
     }
 }

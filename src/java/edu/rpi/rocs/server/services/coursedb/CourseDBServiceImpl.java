@@ -1,32 +1,33 @@
 package edu.rpi.rocs.server.services.coursedb;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 
-import org.apache.log4j.Logger;
-
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
+import edu.rpi.rocs.Scheduler;
 import edu.rpi.rocs.client.objectmodel.Semester;
 import edu.rpi.rocs.client.objectmodel.SemesterDescription;
 import edu.rpi.rocs.server.objectmodel.SemesterDB;
-import edu.rpi.rocs.server.objectmodel.SemsterParser;
 
 public class CourseDBServiceImpl extends RemoteServiceServlet implements
 		edu.rpi.rocs.client.services.coursedb.CourseDBService {
 	
-	private static Logger LOG = Logger.getLogger(CourseDBServiceImpl.class);
+	//private static Logger LOG = Logger.getLogger(CourseDBServiceImpl.class);
 	
 	public void init() throws ServletException {
 			super.init();
+			/*
 			LOG.debug("Creating courseDB service");
 			try {
-				SemsterParser.parse("http://wineagent.tw.rpi.edu/rocs-portlet/current.xml");
+				SemesterParser.parse("http://wineagent.tw.rpi.edu/rocs-portlet/current.xml");
 			} catch (Exception e) {
 				e.printStackTrace();
 				throw new ServletException();
 			}
+			*/
 	}
 
 	/**
@@ -49,6 +50,13 @@ public class CourseDBServiceImpl extends RemoteServiceServlet implements
 		}
 		return new SemesterDescription(semester.getSemesterId(),
 				semester.getSemesterDesc());
+	}
+	
+	public String getUserName(String userid) {
+		Map<?, ?> info = Scheduler.getInstance().getUserInfo(userid);
+		String first = (String)info.get("user.name.given");
+		String last = (String)info.get("user.name.family");
+		return first + " " + last;
 	}
 
 }

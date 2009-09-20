@@ -17,14 +17,18 @@ public class CrossListing extends MajorMinorRevisionObject {
 	
 	/** Protected members set by @see edu.rpi.rocs.server.objectmodel.CrossListing */
 	protected ArrayList<Integer> crns;
+	protected ArrayList<Section> sections;
+	protected boolean processed=false;
 	protected int numberOfSeats;
 	protected int uid;
+	protected Semester semester;
 	
 	/**
 	 * Default constructor
 	 */
 	public CrossListing() {
 		crns = new ArrayList<Integer>();
+		sections = new ArrayList<Section>();
 	}
 	
 	/**
@@ -52,6 +56,7 @@ public class CrossListing extends MajorMinorRevisionObject {
 	public void addCrn(Integer crn) {
 		crns.add(crn);
 		updateMajorRevision();
+		processed=false;
 	}
 
 	public void setNumberOfSeats(int numberOfSeats) {
@@ -74,6 +79,7 @@ public class CrossListing extends MajorMinorRevisionObject {
 	 */
 	public void addCrn(int crn) {
 		addCrn(new Integer(crn));
+		processed=false;
 	}
 	
 	/**
@@ -84,6 +90,7 @@ public class CrossListing extends MajorMinorRevisionObject {
 	public void removeCRNFromCrossListing(int crn) {
 		crns.remove(new Integer(crn));
 		updateMajorRevision();
+		processed=false;
 	}
 	
 	/**
@@ -93,5 +100,36 @@ public class CrossListing extends MajorMinorRevisionObject {
 	 */
 	public void setUID(int id) {
 		uid = id;
+	}
+	
+	public void processCRNs() {
+		for(Section s : sections)
+			s.removeCrossListing();
+		sections.clear();
+		for(int i : crns) {
+			Section s = semester.getSectionByCRN(i);
+			if(s != null) {
+				s.setCrossListing(this);
+				sections.add(s);
+			}
+		}
+		processed = true;
+	}
+	
+	public void setSemester(Semester s) {
+		semester = s;
+	}
+	
+	public Semester getSemester() {
+		return semester;
+	}
+	
+	public boolean isClosed() {
+		if(!processed) processCRNs();
+		int filledSeats = 0;
+		for(Section s : sections) {
+			filledSeats += s.getStudents();
+		}
+		return (filledSeats >= numberOfSeats);
 	}
 }

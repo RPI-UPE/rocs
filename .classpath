@@ -2,20 +2,18 @@
 <classpath>
 	<classpathentry kind="src" path="src/java"/>
 	<classpathentry kind="lib" path="lib/gwt-user.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/commons-fileupload.jar"/>
+	<classpathentry kind="lib" path="/Users/ewpatton/Documents/workspace.rocs/rocs/lib/servlet-api.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/commons-io.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/commons-logging.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/gwt-servlet.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/log4j-1.2.15.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/portal-service.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/portlet.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/standard.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/hsqldb.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/gwt-log-2.6.0.jar"/>
-	<classpathentry kind="lib" path="lib/servlet-api.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/ejb3-persistence.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/hibernate-commons-annotations.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/hibernate3.jar"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/Java 1.5"/>
+	<classpathentry kind="lib" path="/Users/ewpatton/Documents/workspace.rocs/rocs/lib/portlet.jar"/>
+	<classpathentry kind="lib" path="/Users/ewpatton/Documents/workspace.rocs/rocs/war/WEB-INF/lib/standard.jar"/>
+	<classpathentry kind="lib" path="/Users/ewpatton/Documents/workspace.rocs/rocs/war/WEB-INF/lib/hsqldb.jar"/>
+	<classpathentry kind="lib" path="/Users/ewpatton/Documents/workspace.rocs/rocs/war/WEB-INF/lib/ejb3-persistence.jar"/>
+	<classpathentry kind="lib" path="/Users/ewpatton/Documents/workspace.rocs/rocs/war/WEB-INF/lib/hibernate-commons-annotations.jar"/>
+	<classpathentry kind="lib" path="/Users/ewpatton/Documents/workspace.rocs/rocs/war/WEB-INF/lib/hibernate3.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.launching.macosx.MacOSXType/Java 1.5"/>
+	<classpathentry kind="lib" path="/Users/ewpatton/Documents/workspace.rocs/rocs/war/WEB-INF/lib/gwt-log-2.6.2.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

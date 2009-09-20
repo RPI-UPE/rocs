@@ -159,7 +159,7 @@ p.centered {
 }
 
 #portlet_rocs_WAR_rocs_scheduler_pane table#schedule_start td {
-  vertical-align: center;
+  vertical-align: middle;
   text-align: center;
 }
 
@@ -167,4 +167,18 @@ p.centered {
   width: 200px;
   margin-left: auto;
   margin-right: auto;
+}
+
+#portlet_rocs_WAR_rocs_scheduler_pane table#scheduler_options td {
+  vertical-align: middle;
+  text-align: center;
+}
+
+#portlet_rocs_WAR_rocs_scheduler_pane table#scheduler_options table {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+#portlet_rocs_WAR_rocs_scheduler_pane table#scheduler_options table td {
+  text-align: left;
 }

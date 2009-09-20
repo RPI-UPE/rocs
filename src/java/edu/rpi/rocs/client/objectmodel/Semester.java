@@ -24,6 +24,7 @@ public class Semester implements Serializable {
     protected String semesterdesc;
     protected HashMap<String, Course> courses;
     protected HashMap<Integer, CrossListing> crosslistings;
+    protected HashMap<Integer, Section> crnmap = new HashMap<Integer, Section>();
     protected int counter;
     
     /**
@@ -99,6 +100,14 @@ public class Semester implements Serializable {
     	return new ArrayList<CrossListing>(crosslistings.values());
     }
     
+    public Section getSectionByCRN(int crn) {
+    	return getSectionByCRN(new Integer(crn));
+    }
+    
+    public Section getSectionByCRN(Integer crn) {
+    	return crnmap.get(crn);
+    }
+    
     public void setTimeStamp(int newValue){
         timestamp = newValue;
     }
@@ -113,6 +122,10 @@ public class Semester implements Serializable {
     
     public void removeCourse(Course course) {
     	courses.remove(course.getDept() + Integer.toString(course.getNum()));
+    	ArrayList<Section> sections = course.getSections();
+    	for(Section s : sections) {
+    		crnmap.remove(new Integer(s.getCRN()));
+    	}
     }
     
     public Integer addCrosslisting(CrossListing c) {
@@ -128,5 +141,9 @@ public class Semester implements Serializable {
     
     public void addCourse(Course course) {
     	courses.put(course.getDept() + Integer.toString(course.getNum()), course);
+    	ArrayList<Section> sections = course.getSections();
+    	for(Section s : sections) {
+    		crnmap.put(new Integer(s.getCRN()), s);
+    	}
     }
 }

@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -25,7 +26,7 @@ import edu.rpi.rocs.exceptions.InvalidCourseDatabaseException;
  * @author ewpatton
  *
  */
-public class SemsterParser {
+public class SemesterParser {
     /**
 	 * UID for Serializable interface
 	 */
@@ -39,7 +40,7 @@ public class SemsterParser {
     	MajorMinorRevisionObject.setCurrentRevision(System.currentTimeMillis()/1000);
     	Semester parsedSemester;
     	try {
-    		parsedSemester = SemsterParser.LoadCourseDB(xmlFile);
+    		parsedSemester = SemesterParser.LoadCourseDB(xmlFile);
     		SemesterDB.putInstance(parsedSemester.getSemesterId(), parsedSemester);
     	}
     	catch(Exception e) {
@@ -72,6 +73,7 @@ public class SemsterParser {
     			if(n.getNodeName().equalsIgnoreCase("CrossListing")) {
     				CrossListing c = CrossListingParser.parse(n);
     				semester.addCrosslisting(c);
+    				c.setSemester(semester);
     			}
     			else if(n.getNodeName().equalsIgnoreCase("Course")) {
     				Course c = CourseParser.parse(n);
@@ -86,6 +88,12 @@ public class SemsterParser {
     	}
     	else {
     		throw new InvalidCourseDatabaseException("Document does not contain a course database.");
+    	}
+    	if(semester!=null) {
+    		List<CrossListing> cls = semester.getCrossListings();
+    		for(CrossListing cl : cls) {
+    			cl.processCRNs();
+    		}
     	}
     	return semester;
     }
