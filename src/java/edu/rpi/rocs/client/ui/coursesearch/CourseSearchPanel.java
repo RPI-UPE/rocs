@@ -112,10 +112,97 @@ public class CourseSearchPanel extends VerticalPanel {
 		Log.debug("There are " + courses.size() + " courses");
 		String dept = deptList.getValue(deptList.getSelectedIndex());
 		if(dept == "Any") dept = null;
+		
+		String level = getSearchLevel();
+		
+		String name = nameTextbox.getValue();
+		if(name == null) name = null;
+		else if(name.equals("")) name = null;
+		
+		String num = numberTextbox.getValue();
+		if(num == null) num = null;
+		else if(num.equals("")) num = null;
+		
+		int userCourseNum = -1;
+		if(num != null){
+			userCourseNum = Integer.parseInt(num);
+		}
+		//resultsListBox.addHTML(num, "");
+		//resultsListBox.addHTML("1111", "2222");
 		for(Course course : courses) {
 			if(dept==null || course.getDept()==dept) {
-				resultsListBox.addHTML(course.getListDescription(), course.getDept()+course.getNum());
+				if(getCorrectCourseLevel(level, course.getNum()) == true){
+					if(userCourseNum == -1 || userCourseNum == course.getNum()){
+					//if(course.getNum() == 2400){
+						if(name == null || course.getName().toLowerCase().indexOf(name.toLowerCase()) != -1){
+							resultsListBox.addHTML(course.getListDescription(), course.getDept()+course.getNum());
+							//resultsListBox.addHTML("This is a test" + numberTextbox.getValue(), course.getDept() + userCourseNum);
+						}
+					}
+				}
 			}
 		}
+	}
+	
+	private String getSearchLevel() {
+		String level = levelList.getValue(levelList.getSelectedIndex());
+		if(level.indexOf("Any") != -1) {
+			return "0";
+		}
+		else if(level.indexOf("1000") != -1){
+			return "1";
+		}
+		else if(level.indexOf(">=") != -1 && level.indexOf("2000") != -1){
+			return "2?";
+		}
+		else if(level.indexOf("2000") != -1){
+			return "2";
+		}
+		else if(level.indexOf(">=") != -1 && level.indexOf("4000") != -1){
+			return "4?";
+		}
+		else if(level.indexOf("4000") != -1){
+			return "4";
+		}
+		else{
+			return "6";
+		}
+	}
+	
+	private boolean getCorrectCourseLevel(String level, int courseNum){
+		if(level.equals("0")){
+				return true;
+		}
+		else if(level.equals("1")){
+			if(courseNum >= 1000 && courseNum < 2000){
+				return true;
+			}
+		}
+		else if(level.equals("2")){
+			if(courseNum >= 2000 && courseNum < 4000){
+				return true;
+			}
+		}
+		else if(level.equals("2?")){
+			if(courseNum >= 2000){
+				return true;
+			}
+		}
+		else if(level.equals("4")){
+			if(courseNum >= 4000 && courseNum < 6000){
+				return true;
+			}
+		}
+		else if(level.equals("4?")){
+			if(courseNum >= 4000){
+				return true;
+			}
+		}
+		else if(level.equals("6")){
+			if(courseNum >= 6000){
+				return true;
+			}
+		}
+		return false;
 	}
 }

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src/java"/>
+	<classpathentry excluding="src/java/" kind="src" path=""/>
 	<classpathentry kind="lib" path="lib/gwt-user.jar"/>
 	<classpathentry kind="lib" path="/Users/ewpatton/Documents/workspace.rocs/rocs/lib/servlet-api.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/commons-io.jar"/>
