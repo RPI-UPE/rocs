@@ -1,9 +1,14 @@
 package edu.rpi.rocs.client.ui.coursesearch;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.TreeSet;
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.InlineHyperlink;
 import com.google.gwt.user.client.ui.Label;
@@ -29,7 +34,7 @@ public class CourseSearchPanel extends VerticalPanel {
 	TextBox numberTextbox = new TextBox();
 	Label nameLabel = new Label("Name:");
 	TextBox nameTextbox = new TextBox();
-	InlineHyperlink searchButton = new InlineHyperlink("Search", "rocs-search");
+	Anchor searchButton = new Anchor("Search");
 	ListBoxHTML resultsListBox = new ListBoxHTML(true);
 	InlineHyperlink resultAdd = new InlineHyperlink("Add", "rocs-add");
 	SimplePanel resultsWrapper = new SimplePanel();
@@ -86,6 +91,14 @@ public class CourseSearchPanel extends VerticalPanel {
 		
 		searchButton.addStyleName("greybutton");
 		searchButton.addStyleName("linkbutton");
+		searchButton.addClickHandler(new ClickHandler() {
+
+			public void onClick(ClickEvent event) {
+				// TODO Auto-generated method stub
+				CourseSearchPanel.getInstance().search();
+			}
+			
+		});
 		
 		resultsListBox.addStyleName("search_results");
 		
@@ -127,20 +140,24 @@ public class CourseSearchPanel extends VerticalPanel {
 		if(num != null){
 			userCourseNum = Integer.parseInt(num);
 		}
-		//resultsListBox.addHTML(num, "");
-		//resultsListBox.addHTML("1111", "2222");
+		
+		ArrayList<Course> theResults = new ArrayList<Course>();
 		for(Course course : courses) {
 			if(dept==null || course.getDept()==dept) {
 				if(getCorrectCourseLevel(level, course.getNum()) == true){
 					if(userCourseNum == -1 || userCourseNum == course.getNum()){
-					//if(course.getNum() == 2400){
 						if(name == null || course.getName().toLowerCase().indexOf(name.toLowerCase()) != -1){
-							resultsListBox.addHTML(course.getListDescription(), course.getDept()+course.getNum());
-							//resultsListBox.addHTML("This is a test" + numberTextbox.getValue(), course.getDept() + userCourseNum);
+							theResults.add(course);
 						}
 					}
 				}
 			}
+		}
+		Collections.sort(theResults, (new Course()).new CourseComparator());
+		
+		resultsListBox.clear();
+		for(Course course : theResults) {
+			resultsListBox.addHTML(course.getListDescription(), course.getDept()+course.getNum());
 		}
 	}
 	

@@ -19,8 +19,17 @@ public class WSDLComplexType {
 	 *
 	 */
 	protected class WSDLComplexTypeComponent {
+		/**
+		 * The name given to a complex WSDL type component.
+		 */
 		protected String name;
+		/**
+		 * Is this component a built-in type or another complex type?
+		 */
 		protected int type;
+		/**
+		 * If this complex type component is itself a complex type, its description is stored here. 
+		 */
 		protected WSDLComplexType complexType;
 
 		/**
@@ -70,8 +79,10 @@ public class WSDLComplexType {
 		}
 	}
 	
-	@SuppressWarnings("unchecked")
-	protected ArrayList components=new ArrayList();
+	/**
+	 * The list of components in a WSDL complex type.
+	 */
+	protected ArrayList<Object> components=new ArrayList<Object>();
 	
 	/**
 	 * Creates a new complex type.

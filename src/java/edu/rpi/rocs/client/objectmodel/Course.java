@@ -1,6 +1,7 @@
 package edu.rpi.rocs.client.objectmodel;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 
 /**
  * Describes a course object to the GWT client.
@@ -10,6 +11,15 @@ import java.util.ArrayList;
  *
  */
 public class Course extends MajorMinorRevisionObject {
+	
+	public class CourseComparator implements Comparator<Course> {
+		public final int compare(Course a, Course b) {
+			int result;
+			result = a.getDept().compareTo(b.getDept());
+			if(result!=0) return result;
+			return a.getNum()-b.getNum();
+		}
+	}
 	  
     /**
 	 * UID for Serializable interface
