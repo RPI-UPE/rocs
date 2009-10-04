@@ -21,6 +21,7 @@ import edu.rpi.rocs.client.SemesterManager;
 import edu.rpi.rocs.client.SemesterManager.SemesterManagerCallback;
 import edu.rpi.rocs.client.objectmodel.Course;
 import edu.rpi.rocs.client.objectmodel.Semester;
+import edu.rpi.rocs.client.objectmodel.Course.CourseComparator;
 import edu.rpi.rocs.client.ui.ListBoxHTML;
 
 public class CourseSearchPanel extends VerticalPanel {
@@ -153,7 +154,7 @@ public class CourseSearchPanel extends VerticalPanel {
 				}
 			}
 		}
-		Collections.sort(theResults, (new Course()).new CourseComparator());
+		Collections.sort(theResults, new CourseComparator());
 		
 		resultsListBox.clear();
 		for(Course course : theResults) {

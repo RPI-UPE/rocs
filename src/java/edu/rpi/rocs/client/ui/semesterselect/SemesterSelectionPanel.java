@@ -2,16 +2,20 @@ package edu.rpi.rocs.client.ui.semesterselect;
 
 import java.util.List;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.InlineHyperlink;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 import edu.rpi.rocs.client.SemesterManager;
+import edu.rpi.rocs.client.objectmodel.SchedulerManager;
 import edu.rpi.rocs.client.objectmodel.SemesterDescription;
 import edu.rpi.rocs.client.services.coursedb.CourseDBService;
 
@@ -23,9 +27,9 @@ public class SemesterSelectionPanel extends VerticalPanel {
 	private List<SemesterDescription> allSemesters = null;
 	private Label file = new Label("File: Untitled");
 	private FlexTable buttons = new FlexTable();
-	private InlineHyperlink newFile = new InlineHyperlink("New","rocs-new-file");
-	private InlineHyperlink loadFile = new InlineHyperlink("Load", "rocs-load-file");
-	private InlineHyperlink saveFile = new InlineHyperlink("Save", "rocs-save-file");
+	private Anchor newFile = new Anchor("New");
+	private Anchor loadFile = new Anchor("Load");
+	private Anchor saveFile = new Anchor("Save");
 	
 	private SemesterDescription selectedSemester = null;
 	
@@ -48,6 +52,15 @@ public class SemesterSelectionPanel extends VerticalPanel {
 		newFile.addStyleName("linkbutton");
 		loadFile.addStyleName("greybutton");
 		loadFile.addStyleName("linkbutton");
+		loadFile.addClickHandler(new ClickHandler() {
+
+			public void onClick(ClickEvent event) {
+				// TODO Auto-generated method stub
+				SchedulerManager.get().getScheduleList(getScheduleListCallback);
+			}
+			
+		});
+		
 		saveFile.addStyleName("greybutton");
 		saveFile.addStyleName("linkbutton");
 		
@@ -107,6 +120,22 @@ public class SemesterSelectionPanel extends VerticalPanel {
 					}
 				}
 				selectedSemesterDidChange();
+			}
+		
+	};
+	
+	private AsyncCallback<List<String>> getScheduleListCallback =
+		new AsyncCallback<List<String>>() {
+
+			public void onFailure(Throwable caught) {
+				// TODO Auto-generated method stub
+				Log.error("Failed to retrieve schedule list.", caught);
+			}
+
+			public void onSuccess(List<String> result) {
+				// TODO Auto-generated method stub
+				LoadScheduleDialogBox.get().setScheduleList(result);
+				LoadScheduleDialogBox.get().center();
 			}
 		
 	};

@@ -14,9 +14,17 @@
 		<servlet-name>CourseDBServiceImpl</servlet-name>
 		<servlet-class>edu.rpi.rocs.server.services.coursedb.CourseDBServiceImpl</servlet-class>
 	</servlet>
+	<servlet>
+		<servlet-name>ScheduleManagerServiceImpl</servlet-name>
+		<servlet-class>edu.rpi.rocs.server.services.schedulemanager.ScheduleManagerServiceImpl</servlet-class>
+	</servlet>
 	<servlet-mapping>
 		<servlet-name>CourseDBServiceImpl</servlet-name>
 		<url-pattern>/rocs.gwt/CourseDBService</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>ScheduleManagerServiceImpl</servlet-name>
+		<url-pattern>/rocs.gwt/ScheduleManagerService</url-pattern>
 	</servlet-mapping>
 
 	<servlet-mapping>

@@ -12,7 +12,7 @@ import java.util.Comparator;
  */
 public class Course extends MajorMinorRevisionObject {
 	
-	public class CourseComparator implements Comparator<Course> {
+	public static class CourseComparator implements Comparator<Course> {
 		public final int compare(Course a, Course b) {
 			int result;
 			result = a.getDept().compareTo(b.getDept());

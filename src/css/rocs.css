@@ -24,7 +24,7 @@ div#rocs_PORTLET_rocs_root_view h4 {
     padding-top: 0;
 }
 
-div#rocs_PORTLET_rocs_root_view a.linkbutton {
+.rocs-style a.linkbutton {
     margin: 0.2em;
     padding: 0.2em;
     text-decoration: none;
@@ -32,25 +32,25 @@ div#rocs_PORTLET_rocs_root_view a.linkbutton {
     text-align: center;
 }
 
-div#rocs_PORTLET_rocs_root_view a.greybutton {
+.rocs-style a.greybutton {
     color: #000;
     background-color: #ccc;
     border: 3px outset #ccc;
 }
 
-div#rocs_PORTLET_rocs_root_view a.redbutton {
+.rocs-style a.redbutton {
     color: #000;
     background-color: #f00;
     border: 3px outset #f00;
 }
 
-div#rocs_PORTLET_rocs_root_view a.greenbutton {
+.rocs-style a.greenbutton {
     color: #000;
     background-color: #0d0;
     border: 3px outset #0d0;
 }
 
-div#rocs_PORTLET_rocs_root_view a.bluebutton {
+.rocs-style a.bluebutton {
     color: #000;
     background-color: #adf;
     border: 3px outset #adf;
@@ -129,4 +129,8 @@ div#rocs_PORTLET_rocs_scheduler_pane {
     height:450px;
     background-color: #00f;
     overflow:hidden;
+}
+
+div.rocs-dialog {
+    background-color: #fff;
 }
