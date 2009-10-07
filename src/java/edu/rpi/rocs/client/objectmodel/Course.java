@@ -10,7 +10,7 @@ import java.util.Comparator;
  * @author ewpatton
  *
  */
-public class Course extends MajorMinorRevisionObject {
+public class Course extends MajorMinorRevisionObject implements Comparable<Course> {
 	
 	public static class CourseComparator implements Comparator<Course> {
 		public final int compare(Course a, Course b) {
@@ -210,4 +210,9 @@ public class Course extends MajorMinorRevisionObject {
     	result += name;
     	return result;
     }
+
+	public int compareTo(Course o) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 }

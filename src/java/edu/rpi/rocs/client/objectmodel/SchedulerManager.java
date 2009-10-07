@@ -3,8 +3,10 @@ package edu.rpi.rocs.client.objectmodel;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
+import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 import edu.rpi.rocs.client.services.schedulemanager.ScheduleManagerService;
@@ -96,10 +98,23 @@ public class SchedulerManager implements Serializable {
 	private static SchedulerManager theInstance;
 	
 	/**
+	 * Listeners for when a course is added
+	 */
+	private HashSet<CourseAddedHandler> handlers=new HashSet<CourseAddedHandler>();
+	
+	/**
 	 * Hidden for singleton management
 	 */
 	private SchedulerManager() {
 	
+	}
+	
+	public void addCourseAddedEventHandler(CourseAddedHandler e) {
+		handlers.add(e);
+	}
+	
+	public void removeCourseAddedEventHandler(CourseAddedHandler e) {
+		handlers.remove(e);
 	}
 	
 	/**
@@ -119,12 +134,19 @@ public class SchedulerManager implements Serializable {
 		ScheduleManagerService.Singleton.getInstance().getScheduleList(callback);
 	}
 	
+	public interface CourseAddedHandler extends EventHandler {
+		public void handleEvent();
+	}
+	
 	/**
 	 * Adds a course to the current course listing
 	 * @param c The course to add
 	 */
 	public void addCourse(Course c) {
 		currentCourses.put(c, new CourseStatusObject(c, true));
+		for(CourseAddedHandler e : handlers) {
+			e.handleEvent();
+		}
 	}
 	
 	/**
