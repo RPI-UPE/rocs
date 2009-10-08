@@ -75,6 +75,14 @@ div#rocs_PORTLET_rocs_courses_pane {
     overflow:hidden;
 }
 
+div#rocs_PORTLET_rocs_courses_pane select.class_view {
+    width: 300px;
+    height: 100px;
+    margin: 5px;
+    position: relative;
+    overflow-x: scroll;
+}
+
 div#rocs_PORTLET_rocs_search_pane {
     position:absolute;
     top:70px;
