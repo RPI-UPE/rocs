@@ -10,7 +10,6 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.InlineHyperlink;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -20,6 +19,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import edu.rpi.rocs.client.SemesterManager;
 import edu.rpi.rocs.client.SemesterManager.SemesterManagerCallback;
 import edu.rpi.rocs.client.objectmodel.Course;
+import edu.rpi.rocs.client.objectmodel.SchedulerManager;
 import edu.rpi.rocs.client.objectmodel.Semester;
 import edu.rpi.rocs.client.objectmodel.Course.CourseComparator;
 import edu.rpi.rocs.client.ui.ListBoxHTML;
@@ -37,7 +37,7 @@ public class CourseSearchPanel extends VerticalPanel {
 	TextBox nameTextbox = new TextBox();
 	Anchor searchButton = new Anchor("Search");
 	ListBoxHTML resultsListBox = new ListBoxHTML(true);
-	InlineHyperlink resultAdd = new InlineHyperlink("Add", "rocs-add");
+	Anchor resultAdd = new Anchor("Add");
 	SimplePanel resultsWrapper = new SimplePanel();
 	private SemesterManagerCallback semesterChangeCallback =
 		new SemesterManagerCallback() {
@@ -105,6 +105,19 @@ public class CourseSearchPanel extends VerticalPanel {
 		
 		resultAdd.addStyleName("greenbutton");
 		resultAdd.addStyleName("linkbutton");
+		resultAdd.addClickHandler(new ClickHandler() {
+
+			public void onClick(ClickEvent event) {
+				// TODO Auto-generated method stub
+				for(int i=0;i<resultsListBox.getItemCount();i++) {
+					if(resultsListBox.isItemSelected(i)) {
+						Course c = theResults.get(i);
+						SchedulerManager.get().addCourse(c);
+					}
+				}
+			}
+			
+		});
 		
 		resultsWrapper.addStyleName("search_results");
 		resultsWrapper.add(resultsListBox);
@@ -119,6 +132,8 @@ public class CourseSearchPanel extends VerticalPanel {
 		}
 		*/
 	}
+	
+	private ArrayList<Course> theResults=null;
 
 	public void search() {
 		Semester semester = SemesterManager.getInstance().getCurrentSemester();
@@ -142,7 +157,7 @@ public class CourseSearchPanel extends VerticalPanel {
 			userCourseNum = Integer.parseInt(num);
 		}
 		
-		ArrayList<Course> theResults = new ArrayList<Course>();
+		theResults = new ArrayList<Course>();
 		for(Course course : courses) {
 			if(dept==null || course.getDept()==dept) {
 				if(getCorrectCourseLevel(level, course.getNum()) == true){

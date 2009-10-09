@@ -3,10 +3,14 @@ package edu.rpi.rocs.client.objectmodel;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
 import edu.rpi.rocs.client.filters.schedule.ScheduleFilter;
+import edu.rpi.rocs.client.filters.schedule.TimeSchedulerFilter;
 import edu.rpi.rocs.client.objectmodel.exceptions.InvalidScheduleException;
 
 /**
@@ -138,7 +142,25 @@ public class Schedule implements Serializable {
 		return finalList;
 	}
 	
-	public static ArrayList<Schedule> buildAllSchedulesGivenCourses(ArrayList<Time> blocked, ArrayList<Map<Course, Section>> required, ArrayList<Map<Course, Section>> optional, ArrayList<ScheduleFilter> filters) {
+	public static ArrayList<Schedule> buildAllSchedulesGivenCoursesAndFilters(Collection<Course> requiredCourses, Collection<Course> optionalCourses, Collection<ScheduleFilter> filters) {
+		Map<Course, Set<Section>> requiredCourseMap = new HashMap<Course, Set<Section>>();
+		for(Course c : requiredCourses) {
+			Set<Section> set = new HashSet<Section>(c.getSections());
+			requiredCourseMap.put(c, set);
+		}
+		Map<Course, Set<Section>> optionalCourseMap = new HashMap<Course, Set<Section>>();
+		for(Course c : optionalCourses) {
+			Set<Section> set = new HashSet<Section>(c.getSections());
+			optionalCourseMap.put(c, set);
+		}
+		TimeSchedulerFilter timeFilter=null;
+		for(ScheduleFilter filter : filters) {
+			if(filter.getClass().equals(TimeSchedulerFilter.class)) {
+				timeFilter = (TimeSchedulerFilter)filter;
+				break;
+			}
+		}
+		HashMap<Integer, ArrayList<Time>> times = timeFilter.getTimes();
 		return null;
 	}
 	

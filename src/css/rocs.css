@@ -60,9 +60,10 @@ div#rocs_PORTLET_rocs_semester_pane {
     position:absolute;
     top:0px;
     left:0px;
-    width:200px;
-    height:70px;
+    width:188px;
+    height:76px;
     background-color: #f00;
+    padding:6px;
 }
 
 div#rocs_PORTLET_rocs_courses_pane {
@@ -85,12 +86,13 @@ div#rocs_PORTLET_rocs_courses_pane select.class_view {
 
 div#rocs_PORTLET_rocs_search_pane {
     position:absolute;
-    top:70px;
+    top:88px;
     left:0px;
-    width:200px;
-    height:530px;
+    width:188px;
+    height:500px;
     background-color: #0f0;
     overflow:hidden;
+    padding:6px;
 }
 
 div#rocs_PORTLET_rocs_search_pane table {
@@ -102,16 +104,16 @@ div#rocs_PORTLET_rocs_search_pane table td {
 }
 
 div#rocs_PORTLET_rocs_search_pane table td select {
-    width: 100px;
+    width: 88px;
 }
 
 div#rocs_PORTLET_rocs_search_pane table td input[type="text"] {
-    width: 100px;
+    width: 88px;
 }
 
 div#rocs_PORTLET_rocs_search_pane div.search_results {
-    width: 190px;
-    height: 284px;
+    width: 178px;
+    height: 260px;
     margin: 5px;
     position: relative;
     left: -5px;
@@ -119,8 +121,8 @@ div#rocs_PORTLET_rocs_search_pane div.search_results {
 }
 
 div#rocs_PORTLET_rocs_search_pane select.search_results {
-    min-width: 190px;
-    min-height: 265px;
+    min-width: 178px;
+    min-height: 241px;
     font-family: Courier New;
     width: auto;
 }
@@ -133,12 +135,35 @@ div#rocs_PORTLET_rocs_scheduler_pane {
     position:absolute;
     top:150px;
     left:200px;
-    width:800px;
-    height:450px;
+    width:776px;
+    height:426px;
     background-color: #00f;
     overflow:hidden;
+    padding: 12px;
+}
+
+div#rocs_PORTLET_rocs_scheduler_pane div.filter-wrapper {
+    overflow: scroll;
+    padding-left: 4px;
+    padding-right: 4px;
+    width: 98%;
+    height: 426px;
 }
 
 div.rocs-dialog {
     background-color: #fff;
+}
+
+.rocs-style td.timeAvailable {
+    border: 1px solid black;
+    background-color: #acf;
+    width: 100px;
+    height: 20px;
+}
+
+.rocs-style td.timeBlocked {
+    border: 1px solid black;
+    background-color: #f00;
+    width: 100px;
+    height: 20px;
 }

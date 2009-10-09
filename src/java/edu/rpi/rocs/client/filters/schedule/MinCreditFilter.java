@@ -1,5 +1,7 @@
 package edu.rpi.rocs.client.filters.schedule;
 
+import com.google.gwt.user.client.ui.Widget;
+
 import edu.rpi.rocs.client.objectmodel.Schedule;
 
 public class MinCreditFilter implements ScheduleFilter {
@@ -60,5 +62,15 @@ public class MinCreditFilter implements ScheduleFilter {
 	 */
 	public boolean shouldPruneTreeOnFailure() {
 		return false;
+	}
+
+	public Widget getWidget() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public String getDisplayTitle() {
+		// TODO Auto-generated method stub
+		return "Minimum Credit Filter";
 	}
 }

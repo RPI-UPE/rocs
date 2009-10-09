@@ -2,6 +2,8 @@ package edu.rpi.rocs.client.filters.schedule;
 
 import java.util.Iterator;
 
+import com.google.gwt.user.client.ui.Widget;
+
 import edu.rpi.rocs.client.objectmodel.Schedule;
 import edu.rpi.rocs.client.objectmodel.Section;
 
@@ -30,6 +32,10 @@ public class NoMoreThanNumAtLevelFilter implements ScheduleFilter {
 		this.max = max;
 	}
 	
+	public NoMoreThanNumAtLevelFilter() {
+	
+	}
+	
 	/**
 	 * Checks a schedule against this filter.
 	 * @return true if the schedule has max or less courses at level
@@ -54,6 +60,16 @@ public class NoMoreThanNumAtLevelFilter implements ScheduleFilter {
 	public boolean shouldPruneTreeOnFailure() {
 		// TODO Auto-generated method stub
 		return true;
+	}
+
+	public Widget getWidget() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public String getDisplayTitle() {
+		// TODO Auto-generated method stub
+		return "Maximum Course Count at Level Filter";
 	}
 
 }

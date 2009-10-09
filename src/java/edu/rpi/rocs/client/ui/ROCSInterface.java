@@ -3,14 +3,16 @@ package edu.rpi.rocs.client.ui;
 import com.google.gwt.user.client.ui.HTMLPanel;
 
 import edu.rpi.rocs.client.ui.coursesearch.CourseSearchPanel;
+import edu.rpi.rocs.client.ui.scheduler.SchedulerPanel;
 import edu.rpi.rocs.client.ui.semesterselect.SemesterSelectionPanel;
 import edu.rpi.rocs.client.ui.classview.ClassViewPanel;
-import edu.rpi.rocs.client.ui.ListBoxHTML;
 
 public class ROCSInterface extends HTMLPanel {
 	SemesterSelectionPanel semesterPanel;
 	CourseSearchPanel searchPanel;
+	SchedulerPanel schedulerPanel;
 	ClassViewPanel viewPanel;
+
 	static ROCSInterface theInstance;
 	
 	public static ROCSInterface getInstance() {
@@ -28,10 +30,12 @@ public class ROCSInterface extends HTMLPanel {
 		
 		semesterPanel = SemesterSelectionPanel.getInstance();
 		searchPanel = CourseSearchPanel.getInstance();
+		schedulerPanel = SchedulerPanel.get();
 		viewPanel = ClassViewPanel.getInstance();
 		
 		this.add(semesterPanel, "rocs_PORTLET_rocs_semester_pane");
 		this.add(searchPanel, "rocs_PORTLET_rocs_search_pane");
+		this.add(schedulerPanel, "rocs_PORTLET_rocs_scheduler_pane");
 		this.add(viewPanel, "rocs_PORTLET_rocs_courses_pane");
 	}
 }

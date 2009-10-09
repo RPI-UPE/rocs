@@ -16,9 +16,9 @@ public class Time implements Serializable, Cloneable {
 		minute = 0;
 	}
 	
-	private Time(int h, int m) {
-		hour = h;
-		minute = m;
+	public Time(int h, int m) {
+		setHour(h);
+		setMinute(m);
 	}
 	
 	public Object clone() {

@@ -1,5 +1,7 @@
 package edu.rpi.rocs.client.filters.schedule;
 
+import com.google.gwt.user.client.ui.Widget;
+
 import edu.rpi.rocs.client.objectmodel.Schedule;
 
 /**
@@ -69,6 +71,16 @@ public class MaxCreditFilter implements ScheduleFilter {
 	 */
 	public boolean shouldPruneTreeOnFailure() {
 		return true;
+	}
+
+	public Widget getWidget() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public String getDisplayTitle() {
+		// TODO Auto-generated method stub
+		return "Maximum Credit Filter";
 	}
 
 }
