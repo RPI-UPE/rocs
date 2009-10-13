@@ -76,12 +76,26 @@ div#rocs_PORTLET_rocs_courses_pane {
     overflow:hidden;
 }
 
-div#rocs_PORTLET_rocs_courses_pane select.class_view {
-    width: 300px;
-    height: 100px;
-    margin: 5px;
-    position: relative;
+div#rocs_PORTLET_rocs_courses_pane select.class_view {    
+    width: 650px;
+    height: 120px;
     overflow-x: scroll;
+}
+
+div#rocs_PORTLET_rocs_courses_pane table {
+    padding: 0;
+}
+
+div#rocs_PORTLET_rocs_courses_pane table td {
+    padding: 4px;
+}
+
+div#rocs_PORTLET_rocs_courses_pane table td select {
+    width: 100px;
+}
+
+div#rocs_PORTLET_rocs_courses_pane table td input[type="text"] {
+    width: 100px;
 }
 
 div#rocs_PORTLET_rocs_search_pane {
