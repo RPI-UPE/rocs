@@ -14,7 +14,7 @@
 		</init-param>
 		<init-param>
 			<name>edu.rpi.rocs.Scheduler.xmlPath</name>
-			<value>http://wineagent.tw.rpi.edu/rocs-portlet/</value>
+			<value>http://sis.rpi.edu/reg/rocs/</value>
 		</init-param>
 		<init-param>
 			<name>edu.rpi.rocs.Scheduler.refreshInterval</name>

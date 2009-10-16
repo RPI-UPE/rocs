@@ -1,6 +1,7 @@
 package edu.rpi.rocs.server.objectmodel;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,6 +34,7 @@ public class SemesterDB {
     				new SemesterDescription(current.getSemesterId(),
     						current.getSemesterDesc()));
     	}
+    	Collections.sort(semesterList);
     	return semesterList;
     }
     

@@ -9,7 +9,7 @@ import java.io.Serializable;
  * @author ewpatton
  *
  */
-public class SemesterDescription implements Serializable {
+public class SemesterDescription implements Serializable, Comparable<SemesterDescription> {
 	/**
 	 * UID needed for Serializable interface
 	 */
@@ -72,6 +72,11 @@ public class SemesterDescription implements Serializable {
 	 */
 	public void setSemesterId(Integer semesterId) {
 		this.semesterId = semesterId;
+	}
+
+	public int compareTo(SemesterDescription o) {
+		// TODO Auto-generated method stub
+		return o.getSemesterId().intValue() - semesterId.intValue();
 	}
 	
 }

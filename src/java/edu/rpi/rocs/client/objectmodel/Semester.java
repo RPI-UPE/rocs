@@ -12,7 +12,7 @@ import java.util.List;
  * @author ewpatton
  *
  */
-public class Semester implements Serializable {
+public class Semester implements Serializable, Comparable<Semester> {
 	/**
 	 * UID for Serializable interface
 	 */
@@ -146,4 +146,9 @@ public class Semester implements Serializable {
     		crnmap.put(new Integer(s.getCRN()), s);
     	}
     }
+
+	public int compareTo(Semester o) {
+		// This will sort semesters in reverse order, i.e., newest semester first.
+		return o.getSemesterId() - semesterId.intValue();
+	}
 }

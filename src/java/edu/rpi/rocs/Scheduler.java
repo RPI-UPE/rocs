@@ -75,6 +75,7 @@ public class Scheduler extends GenericPortlet {
 				if(path!=null) {
 					path = path.replaceAll("\"", "");
 					path = path.replace("href=", "");
+					path = path.replace("HREF=", "");
 					if(path.endsWith(".xml")) {
 						results.add(path);
 					}
