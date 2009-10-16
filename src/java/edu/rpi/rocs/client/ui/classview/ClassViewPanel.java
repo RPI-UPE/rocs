@@ -91,7 +91,7 @@ public class ClassViewPanel extends HorizontalPanel implements CourseAddedHandle
 		this.add(layout);
 	}
 	
-	public void handleEvent()
+	public void handleEvent(CourseStatusObject status)
 	{
 		classList.addHTML("HEY THEY ADDED SOMETHING!", "Input");
 	}

@@ -41,7 +41,7 @@ public class SchedulerManager implements Serializable {
 	 * @author ewpatton
 	 *
 	 */
-	private class CourseStatusObject {
+	public class CourseStatusObject {
 		/**
 		 * The course to store status about
 		 */
@@ -100,7 +100,10 @@ public class SchedulerManager implements Serializable {
 	/**
 	 * Listeners for when a course is added
 	 */
-	private HashSet<CourseAddedHandler> handlers=new HashSet<CourseAddedHandler>();
+	private HashSet<CourseAddedHandler> courseAddHandlers=new HashSet<CourseAddedHandler>();
+	private HashSet<CourseRemovedHandler> courseRemoveHandlers=new HashSet<CourseRemovedHandler>();
+	private HashSet<CourseRequiredHandler> courseRequiredHandlers=new HashSet<CourseRequiredHandler>();
+	private HashSet<CourseOptionalHandler> courseOptionalHandlers=new HashSet<CourseOptionalHandler>();
 	
 	/**
 	 * Hidden for singleton management
@@ -109,12 +112,40 @@ public class SchedulerManager implements Serializable {
 	
 	}
 	
+	public List<CourseStatusObject> getSelectedCourses() {
+		return new ArrayList<CourseStatusObject>(currentCourses.values());
+	}
+	
 	public void addCourseAddedEventHandler(CourseAddedHandler e) {
-		handlers.add(e);
+		courseAddHandlers.add(e);
 	}
 	
 	public void removeCourseAddedEventHandler(CourseAddedHandler e) {
-		handlers.remove(e);
+		courseAddHandlers.remove(e);
+	}
+	
+	public void addCourseRemovedEventHandler(CourseRemovedHandler e) {
+		courseRemoveHandlers.add(e);
+	}
+	
+	public void removeCourseRemovedEventHandler(CourseRemovedHandler e) {
+		courseRemoveHandlers.remove(e);
+	}
+	
+	public void addCourseRequiredEventHandler(CourseRequiredHandler e) {
+		courseRequiredHandlers.add(e);
+	}
+	
+	public void removeCourseRequiredEventHandler(CourseRequiredHandler e) {
+		courseRequiredHandlers.remove(e);
+	}
+	
+	public void addCourseOptionalEventHandler(CourseOptionalHandler e) {
+		courseOptionalHandlers.add(e);
+	}
+	
+	public void removeCourseOptionalEventHandler(CourseOptionalHandler e) {
+		courseOptionalHandlers.remove(e);
 	}
 	
 	/**
@@ -134,8 +165,20 @@ public class SchedulerManager implements Serializable {
 		ScheduleManagerService.Singleton.getInstance().getScheduleList(callback);
 	}
 	
-	public interface CourseAddedHandler extends EventHandler {
-		public void handleEvent();
+	public interface CourseModificationHandler extends EventHandler {
+		public void handleEvent(CourseStatusObject status);
+	}
+	
+	public interface CourseAddedHandler extends CourseModificationHandler {
+	}
+	
+	public interface CourseRemovedHandler extends CourseModificationHandler {
+	}
+	
+	public interface CourseRequiredHandler extends CourseModificationHandler {
+	}
+	
+	public interface CourseOptionalHandler extends CourseModificationHandler {
 	}
 	
 	/**
@@ -143,9 +186,10 @@ public class SchedulerManager implements Serializable {
 	 * @param c The course to add
 	 */
 	public void addCourse(Course c) {
-		currentCourses.put(c, new CourseStatusObject(c, true));
-		for(CourseAddedHandler e : handlers) {
-			e.handleEvent();
+		CourseStatusObject status =new CourseStatusObject(c, true); 
+		currentCourses.put(c, status);
+		for(CourseAddedHandler e : courseAddHandlers) {
+			e.handleEvent(status);
 		}
 	}
 	
@@ -157,6 +201,9 @@ public class SchedulerManager implements Serializable {
 		CourseStatusObject obj = currentCourses.get(c);
 		if(obj!=null) {
 			obj.setRequired(true);
+			for(CourseRequiredHandler e : courseRequiredHandlers) {
+				e.handleEvent(obj);
+			}
 		}
 	}
 	
@@ -168,6 +215,9 @@ public class SchedulerManager implements Serializable {
 		CourseStatusObject obj = currentCourses.get(c);
 		if(obj!=null) {
 			obj.setRequired(false);
+			for(CourseOptionalHandler e : courseOptionalHandlers) {
+				e.handleEvent(obj);
+			}
 		}
 	}
 	
@@ -189,7 +239,11 @@ public class SchedulerManager implements Serializable {
 	 * @param c The course to remove
 	 */
 	public void removeCourse(Course c) {
+		CourseStatusObject status = currentCourses.get(c);
 		currentCourses.remove(c);
+		for(CourseRemovedHandler e : courseRemoveHandlers) {
+			e.handleEvent(status);
+		}
 	}
 	
 	/**
