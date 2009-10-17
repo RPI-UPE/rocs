@@ -6,11 +6,20 @@ import java.util.HashMap;
 import com.google.gwt.user.client.ui.Widget;
 
 import edu.rpi.rocs.client.objectmodel.Schedule;
+import edu.rpi.rocs.client.objectmodel.ScheduleFilterManager;
 import edu.rpi.rocs.client.objectmodel.Time;
 import edu.rpi.rocs.client.ui.filters.ScheduleTimeBlockFilterWidget;
 
 public class TimeSchedulerFilter implements ScheduleFilter {
 
+	private static String DISPLAY_NAME="Disallowed Times Filter";
+	private static String QUALIFIED_NAME="edu.rpi.rocs.client.filters.schedule.TimeSchedulerFilter";
+	
+	public static boolean register() {
+		ScheduleFilterManager.get().registerFilter(DISPLAY_NAME, QUALIFIED_NAME);
+		return true;
+	}
+	
 	/**
 	 * 
 	 */
@@ -39,7 +48,7 @@ public class TimeSchedulerFilter implements ScheduleFilter {
 
 	public String getDisplayTitle() {
 		// TODO Auto-generated method stub
-		return "Disallowed Times Filter";
+		return DISPLAY_NAME;
 	}
 
 }

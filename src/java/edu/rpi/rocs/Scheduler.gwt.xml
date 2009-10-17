@@ -9,5 +9,9 @@
 	<entry-point class='edu.rpi.rocs.client.ui.entry.MainEntryPoint'/>
 	
 	<servlet path="/rocs/rocs.gwt/DemoService" class="edu.rpi.rocs.server.services.demo.DemoServiceImpl"/>
-	<servlet path="/rocs/rocs.gwt/CourseDBService" class="edu.rpi.rocs.server.services.coursedb.CourseDBServiceImpl"/>
+	<servlet path="/rocs/rocs.gwt/CourseDBService" class="edu.rpi.rocs.server.services.coursedb.CourseDBServiceImpl"/><servlet
+		path="/rocs/rocs.gwt/ScheduleManagerService" class="edu.rpi.rocs.server.services.schedulemanager.ScheduleManagerServiceImpl">
+</servlet>
+	<generate-with class="edu.rpi.rocs.gwt.generator.FactoryGenerator">
+		<when-type-assignable class="edu.rpi.rocs.client.FactoryWrapper"></when-type-assignable></generate-with>
 </module>

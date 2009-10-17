@@ -18,13 +18,13 @@ public class ScheduleFilterManager {
 	private HashSet<ScheduleFilter> filters = new HashSet<ScheduleFilter>();
 	private HashSet<FilterAddedHandler> addedHandlers = new HashSet<FilterAddedHandler>();
 	private HashSet<FilterRemovedHandler> removedHandlers = new HashSet<FilterRemovedHandler>();
-	private TreeMap<String, Class<? extends ScheduleFilter>> registeredFilters = new TreeMap<String, Class<? extends ScheduleFilter>>();
+	private TreeMap<String, String> registeredFilters = new TreeMap<String, String>();
 	
 	public ArrayList<String> getRegisteredFilterNames() {
 		return new ArrayList<String>(registeredFilters.keySet());
 	}
 	
-	public Class<? extends ScheduleFilter> getFilterByName(String filterName) {
+	public String getFilterByName(String filterName) {
 		return registeredFilters.get(filterName);
 	}
 	
@@ -53,6 +53,7 @@ public class ScheduleFilterManager {
 	}
 	
 	private ScheduleFilterManager() {
+		/*
 		ScheduleFilter temp;
 		temp = new MaxCreditFilter();
 		registerFilter(temp.getDisplayTitle(), temp.getClass());
@@ -62,16 +63,22 @@ public class ScheduleFilterManager {
 		registerFilter(temp.getDisplayTitle(), temp.getClass());
 		temp = new TimeSchedulerFilter();
 		registerFilter(temp.getDisplayTitle(), temp.getClass());
+		*/
 	}
 	
-	public void registerFilter(String displayTitle,
-			Class<? extends ScheduleFilter> class1) {
+	public void registerFilter(String displayTitle, String qName) {
 		// TODO Auto-generated method stub
-		registeredFilters.put(displayTitle, class1);
+		registeredFilters.put(displayTitle, qName);
 	}
 
 	public static ScheduleFilterManager get() {
-		if(theInstance==null) theInstance = new ScheduleFilterManager();
+		if(theInstance==null) {
+			theInstance = new ScheduleFilterManager();
+			TimeSchedulerFilter.register();
+			MaxCreditFilter.register();
+			MinCreditFilter.register();
+			NoMoreThanNumAtLevelFilter.register();
+		}
 		return theInstance;
 	}
 	

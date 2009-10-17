@@ -3,8 +3,17 @@ package edu.rpi.rocs.client.filters.schedule;
 import com.google.gwt.user.client.ui.Widget;
 
 import edu.rpi.rocs.client.objectmodel.Schedule;
+import edu.rpi.rocs.client.objectmodel.ScheduleFilterManager;
 
 public class MinCreditFilter implements ScheduleFilter {
+
+	private static String DISPLAY_NAME="Minimum Credit Filter";
+	private static String QUALIFIED_NAME="edu.rpi.rocs.client.filters.schedule.MinCreditFilter";
+	
+	public static boolean register() {
+		ScheduleFilterManager.get().registerFilter(DISPLAY_NAME, QUALIFIED_NAME);
+		return true;
+	}
 
 	/**
 	 * The unique identifier for serialization
@@ -71,6 +80,6 @@ public class MinCreditFilter implements ScheduleFilter {
 
 	public String getDisplayTitle() {
 		// TODO Auto-generated method stub
-		return "Minimum Credit Filter";
+		return DISPLAY_NAME;
 	}
 }

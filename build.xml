@@ -39,6 +39,8 @@
 		<pathelement path="${lib.dir}/gwt-dev-linux.jar"/>
 		<!-- <pathelement path="${lib.dir}/gwt-dev-windows.jar"/> -->
 		<!-- <pathelement path="${lib.dir}/gwt-dev-mac.jar"/> -->
+		<!-- Element for generating Factories -->
+		<pathelement path="${lib.dir}/rocs-helper.jar"/>
 	</path>
 
 	<target name="usage">

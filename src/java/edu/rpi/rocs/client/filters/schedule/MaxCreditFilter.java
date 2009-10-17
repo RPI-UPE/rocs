@@ -3,6 +3,8 @@ package edu.rpi.rocs.client.filters.schedule;
 import com.google.gwt.user.client.ui.Widget;
 
 import edu.rpi.rocs.client.objectmodel.Schedule;
+import edu.rpi.rocs.client.objectmodel.ScheduleFilterManager;
+import edu.rpi.rocs.client.ui.filters.MaxCreditFilterWidget;
 
 /**
  * A schedule filter which removes any schedule which is over
@@ -13,10 +15,20 @@ import edu.rpi.rocs.client.objectmodel.Schedule;
  */
 public class MaxCreditFilter implements ScheduleFilter {
 	
+	private static String DISPLAY_NAME="Maximum Credit Filter";
+	private static String QUALIFIED_NAME="edu.rpi.rocs.client.filters.schedule.MaxCreditFilter";
+	
+	public static boolean register() {
+		ScheduleFilterManager.get().registerFilter(DISPLAY_NAME, QUALIFIED_NAME);
+		return true;
+	}
+	
 	/**
 	 * The unique identifier for serialization
 	 */
 	private static final long serialVersionUID = 2097081252969945097L;
+	private MaxCreditFilterWidget widget = null;
+	
 	/**
 	 * The credit limit imposed by this filter
 	 */
@@ -75,12 +87,13 @@ public class MaxCreditFilter implements ScheduleFilter {
 
 	public Widget getWidget() {
 		// TODO Auto-generated method stub
-		return null;
+		if(widget==null) widget = new MaxCreditFilterWidget(maxcreds);
+		return widget;
 	}
 
 	public String getDisplayTitle() {
 		// TODO Auto-generated method stub
-		return "Maximum Credit Filter";
+		return DISPLAY_NAME;
 	}
 
 }

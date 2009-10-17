@@ -5,9 +5,18 @@ import java.util.Iterator;
 import com.google.gwt.user.client.ui.Widget;
 
 import edu.rpi.rocs.client.objectmodel.Schedule;
+import edu.rpi.rocs.client.objectmodel.ScheduleFilterManager;
 import edu.rpi.rocs.client.objectmodel.Section;
 
 public class NoMoreThanNumAtLevelFilter implements ScheduleFilter {
+
+	private static String DISPLAY_NAME="Maximum Course Count at Level Filter";
+	private static String QUALIFIED_NAME="edu.rpi.rocs.client.filters.schedule.NoMoreThanNumAtLevelFilter";
+	
+	public static boolean register() {
+		ScheduleFilterManager.get().registerFilter(DISPLAY_NAME, QUALIFIED_NAME);
+		return true;
+	}
 
 	/**
 	 * The unique identifier for serialization
@@ -69,7 +78,7 @@ public class NoMoreThanNumAtLevelFilter implements ScheduleFilter {
 
 	public String getDisplayTitle() {
 		// TODO Auto-generated method stub
-		return "Maximum Course Count at Level Filter";
+		return DISPLAY_NAME;
 	}
 
 }
