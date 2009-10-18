@@ -1,14 +1,18 @@
 package edu.rpi.rocs.client.filters.schedule;
 
+import java.util.HashSet;
 import java.util.Iterator;
 
+import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.user.client.ui.Widget;
 
 import edu.rpi.rocs.client.objectmodel.Schedule;
 import edu.rpi.rocs.client.objectmodel.ScheduleFilterManager;
 import edu.rpi.rocs.client.objectmodel.Section;
+import edu.rpi.rocs.client.ui.filters.NoMoreThanNumAtLevelFilterWidget;
+import edu.rpi.rocs.client.ui.filters.NoMoreThanNumAtLevelFilterWidget.NoMoreThanNumAtLevelChangeHandler;
 
-public class NoMoreThanNumAtLevelFilter implements ScheduleFilter {
+public class NoMoreThanNumAtLevelFilter implements ScheduleFilter, NoMoreThanNumAtLevelChangeHandler {
 
 	private static String DISPLAY_NAME="Maximum Course Count at Level Filter";
 	private static String QUALIFIED_NAME="edu.rpi.rocs.client.filters.schedule.NoMoreThanNumAtLevelFilter";
@@ -22,6 +26,8 @@ public class NoMoreThanNumAtLevelFilter implements ScheduleFilter {
 	 * The unique identifier for serialization
 	 */
 	private static final long serialVersionUID = -8071519178249185461L;
+	private static NoMoreThanNumAtLevelFilterWidget widget = null;
+	
 	/**
 	 * The level to check against
 	 */
@@ -73,12 +79,52 @@ public class NoMoreThanNumAtLevelFilter implements ScheduleFilter {
 
 	public Widget getWidget() {
 		// TODO Auto-generated method stub
-		return null;
+		if(widget == null) {
+			widget = new NoMoreThanNumAtLevelFilterWidget();
+			widget.addChangeHandler(this);
+		}
+		return widget;
 	}
 
 	public String getDisplayTitle() {
 		// TODO Auto-generated method stub
 		return DISPLAY_NAME;
+	}
+
+	private HashSet<ChangeHandler> changeHandlers = new HashSet<ChangeHandler>();
+	
+	public void addChangeHandler(ChangeHandler e) {
+		// TODO Auto-generated method stub
+		changeHandlers.add(e);
+	}
+
+	public void removeChangeHandler(ChangeHandler e) {
+		// TODO Auto-generated method stub
+		changeHandlers.remove(e);
+	}
+
+	public void setLevel(int level) {
+		// TODO Auto-generated method stub
+		this.level = level;
+		for(ChangeHandler handler : changeHandlers) {
+			handler.onChange(null);
+		}
+	}
+
+	public void setNumber(int num) {
+		// TODO Auto-generated method stub
+		this.max = num;
+		for(ChangeHandler handler : changeHandlers) {
+			handler.onChange(null);
+		}
+	}
+	
+	public int getLevel() {
+		return level;
+	}
+	
+	public int getNumber() {
+		return max;
 	}
 
 }

@@ -101,4 +101,9 @@ public class ScheduleTimeBlockFilterWidget extends SimplePanel {
 		}
 		return result;
 	}
+
+	public void setTimeStatus(Integer iDay, Time time, boolean status) {
+		// TODO Auto-generated method stub
+		disabled[iDay.intValue()][time.getHour()] = status;
+	}
 }

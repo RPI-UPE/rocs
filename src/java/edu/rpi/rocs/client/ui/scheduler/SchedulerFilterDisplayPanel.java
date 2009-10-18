@@ -6,6 +6,7 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
@@ -17,7 +18,9 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import edu.rpi.rocs.client.ReflectiveFactory;
 import edu.rpi.rocs.client.filters.schedule.ScheduleFilter;
 import edu.rpi.rocs.client.filters.schedule.TimeSchedulerFilter;
+import edu.rpi.rocs.client.objectmodel.ScheduleFilterManager;
 import edu.rpi.rocs.client.ui.scheduler.SchedulerFilterDialogBox.SchedulerFilterDialogBoxCompleted;
+import edu.rpi.rocs.client.ui.scheduler.SchedulerPanel.SchedulerPage;
 
 public class SchedulerFilterDisplayPanel extends VerticalPanel implements SchedulerFilterDialogBoxCompleted, ChangeHandler {
 	private FlexTable layout = new FlexTable();
@@ -42,7 +45,9 @@ public class SchedulerFilterDisplayPanel extends VerticalPanel implements Schedu
 	}
 	
 	private SchedulerFilterDisplayPanel() {
-		currentFilters.add(new TimeSchedulerFilter());
+		TimeSchedulerFilter filter = new TimeSchedulerFilter();
+		currentFilters.add(filter);
+		ScheduleFilterManager.get().addFilter(filter);
 		filterList.addItem(currentFilters.get(0).getDisplayTitle(), "0");
 		
 		addButton.addStyleName("linkbutton");
@@ -98,6 +103,23 @@ public class SchedulerFilterDisplayPanel extends VerticalPanel implements Schedu
 			db.addCompletionHandler(this);
 			db.center();
 		}
+		else if(button == removeButton) {
+			if(filterList.getSelectedIndex()==0) {
+				Window.alert("You cannot remove the "+currentFilters.get(0).getDisplayTitle());
+			}
+			else {
+				ScheduleFilter theFilter = currentFilters.get(filterList.getSelectedIndex());
+				currentFilters.remove(theFilter);
+				filterList.removeItem(filterList.getSelectedIndex());
+				ScheduleFilterManager.get().removeFilter(theFilter);
+				filterList.setSelectedIndex(0);
+				wrapperPanel.remove(theFilter.getWidget());
+				wrapperPanel.add(currentFilters.get(0).getWidget());
+			}
+		}
+		else if(button == generateButton) {
+			SchedulerPanel.get().switchTo(SchedulerPage.SchedulePage);
+		}
 	}
 	
 	private class ButtonClickHandler implements ClickHandler {
@@ -126,6 +148,7 @@ public class SchedulerFilterDisplayPanel extends VerticalPanel implements Schedu
 		if(newFilter!=null) {
 			currentFilters.add(newFilter);
 			filterList.addItem(newFilter.getDisplayTitle(), Integer.toString(currentFilters.size()-1));
+			ScheduleFilterManager.get().addFilter(newFilter);
 		}
 	}
 

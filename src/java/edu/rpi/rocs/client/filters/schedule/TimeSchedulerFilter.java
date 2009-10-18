@@ -2,7 +2,9 @@ package edu.rpi.rocs.client.filters.schedule;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 
+import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.user.client.ui.Widget;
 
 import edu.rpi.rocs.client.objectmodel.Schedule;
@@ -30,6 +32,20 @@ public class TimeSchedulerFilter implements ScheduleFilter {
 		return widget.getBlockedTimes();
 	}
 	
+	public void setTimeStatus(int day, int hour, int minute, boolean status) {
+		Integer iDay = new Integer(day);
+		widget.setTimeStatus(iDay, new Time(hour, minute), status);
+		for(ChangeHandler handler : changeHandlers) {
+			handler.onChange(null);
+		}
+	}
+	
+	public boolean getTimeStatus(int day, int hour, int minute) {
+		HashMap<Integer, ArrayList<Time>> vals = widget.getBlockedTimes();
+		ArrayList<Time> times = vals.get(new Integer(day));
+		return times.contains(new Time(hour, minute));
+	}
+	
 	public boolean doesScheduleSatisfyFilter(Schedule schedule) {
 		// TODO Auto-generated method stub
 		return false;
@@ -49,6 +65,18 @@ public class TimeSchedulerFilter implements ScheduleFilter {
 	public String getDisplayTitle() {
 		// TODO Auto-generated method stub
 		return DISPLAY_NAME;
+	}
+	
+	private HashSet<ChangeHandler> changeHandlers = new HashSet<ChangeHandler>();
+
+	public void addChangeHandler(ChangeHandler e) {
+		// TODO Auto-generated method stub
+		changeHandlers.add(e);
+	}
+
+	public void removeChangeHandler(ChangeHandler e) {
+		// TODO Auto-generated method stub
+		changeHandlers.remove(e);
 	}
 
 }

@@ -6,9 +6,11 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
+import edu.rpi.rocs.client.filters.schedule.ScheduleFilter;
 import edu.rpi.rocs.client.services.schedulemanager.ScheduleManagerService;
 
 /**
@@ -289,5 +291,25 @@ public class SchedulerManager implements Serializable {
 			}
 			
 		});
+	}
+
+	public void generateSchedules() {
+		// TODO Auto-generated method stub
+		ArrayList<Course> requiredCourses = new ArrayList<Course>();
+		ArrayList<Course> optionalCourses = new ArrayList<Course>();
+		for(CourseStatusObject status : currentCourses.values()) {
+			if(status.getRequired()) {
+				requiredCourses.add(status.getCourse());
+			}
+			else {
+				optionalCourses.add(status.getCourse());
+			}
+		}
+		HashSet<ScheduleFilter> filters = ScheduleFilterManager.get().getFilters();
+		generatedSchedules = Schedule.buildAllSchedulesGivenCoursesAndFilters(requiredCourses, optionalCourses, filters);
+		if(generatedSchedules != null)
+			Log.trace("Generated " + generatedSchedules.size() + " schedules");
+		if(generatedSchedules != null && generatedSchedules.size()>0)
+			currentSchedule = generatedSchedules.get(0);
 	}
 }

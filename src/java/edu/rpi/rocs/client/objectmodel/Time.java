@@ -57,4 +57,10 @@ public class Time implements Serializable, Cloneable {
 	public void setMinute(int m) {
 		minute = m % 60;
 	}
+	
+	public boolean equals(Time t) {
+		if(t==null) return false;
+		if(t.hour == this.hour && t.minute == this.minute) return true;
+		return false;
+	}
 }

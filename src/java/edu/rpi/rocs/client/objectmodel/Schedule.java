@@ -8,6 +8,10 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.Map.Entry;
+
+import com.allen_sauer.gwt.log.client.Log;
+import com.google.gwt.user.client.Window;
 
 import edu.rpi.rocs.client.filters.schedule.ScheduleFilter;
 import edu.rpi.rocs.client.filters.schedule.TimeSchedulerFilter;
@@ -45,6 +49,7 @@ public class Schedule implements Serializable {
 			ArrayList<TimeBlockType> temp = new ArrayList<TimeBlockType>();
 			for(int i=0;i<24*6;i++)
 				temp.add(TimeBlockType.Available);
+			times.add(temp);
 		}
 	}
 	
@@ -143,16 +148,20 @@ public class Schedule implements Serializable {
 	}
 	
 	public static ArrayList<Schedule> buildAllSchedulesGivenCoursesAndFilters(Collection<Course> requiredCourses, Collection<Course> optionalCourses, Collection<ScheduleFilter> filters) {
+		Log.debug("Inside buildAllSchedulesGivenCoursesAndFilters");
+		Log.debug("Building required courses hashmap");
 		Map<Course, Set<Section>> requiredCourseMap = new HashMap<Course, Set<Section>>();
 		for(Course c : requiredCourses) {
 			Set<Section> set = new HashSet<Section>(c.getSections());
 			requiredCourseMap.put(c, set);
 		}
+		Log.debug("Building optional courses hashmap");
 		Map<Course, Set<Section>> optionalCourseMap = new HashMap<Course, Set<Section>>();
 		for(Course c : optionalCourses) {
 			Set<Section> set = new HashSet<Section>(c.getSections());
 			optionalCourseMap.put(c, set);
 		}
+		Log.debug("Finding TimeSchedulerFilter");
 		TimeSchedulerFilter timeFilter=null;
 		for(ScheduleFilter filter : filters) {
 			if(filter.getClass().equals(TimeSchedulerFilter.class)) {
@@ -160,10 +169,118 @@ public class Schedule implements Serializable {
 				break;
 			}
 		}
+		Log.debug("Blocking out times specified in filter");
 		HashMap<Integer, ArrayList<Time>> times = timeFilter.getTimes();
-		return null;
+		Schedule start = new Schedule();
+		for(int i=0;i<7;i++) {
+			Integer day = new Integer(i);
+			ArrayList<Time> blocked = times.get(day);
+			ArrayList<TimeBlockType> temp = start.times.get(i);
+			for(Time t : blocked) {
+				temp.set(t.getAbsMinute()/10, TimeBlockType.Blocked);
+			}
+		}
+		Log.debug("Removing the TimeSchedulerFilter");
+		ArrayList<ScheduleFilter> newFilters = new ArrayList<ScheduleFilter>(filters);
+		newFilters.remove(timeFilter);
+		return buildSchedulesGivenStartingPoint(start, requiredCourseMap, optionalCourseMap, newFilters);
 	}
 	
+	private static ArrayList<Schedule> buildSchedulesGivenStartingPoint(
+			Schedule start, Map<Course, Set<Section>> requiredCourseMap,
+			Map<Course, Set<Section>> optionalCourseMap,
+			ArrayList<ScheduleFilter> filters) {
+		// TODO Auto-generated method stub
+		ArrayList<Schedule> temp = new ArrayList<Schedule>();
+		if(requiredCourseMap.size()>0) {
+			Entry<Course, Set<Section>> entry = requiredCourseMap.entrySet().iterator().next();
+			Course course = entry.getKey();
+			Set<Section> sections = entry.getValue();
+			boolean couldNotPlaceCourse = true;
+			for(Section s : sections) {
+				if(start.willConflict(s)) continue;
+				couldNotPlaceCourse = false;
+				Schedule newStart = new Schedule(start);
+				newStart.add(s);
+				
+				boolean prune=false;
+				for(ScheduleFilter filter : filters) {
+					if(!filter.doesScheduleSatisfyFilter(newStart) && filter.shouldPruneTreeOnFailure()) {
+						prune = true;
+						break;
+					}
+				}
+				if(!prune) {
+					if(requiredCourseMap.size()==1) // Only add a schedule if it has all required courses
+						temp.add(newStart);
+					
+					Map<Course, Set<Section>> copy = new HashMap<Course, Set<Section>>();
+					copy.putAll(requiredCourseMap);
+					copy.remove(course);
+					
+					ArrayList<Schedule> recurse = buildSchedulesGivenStartingPoint(start, copy, optionalCourseMap, filters);
+					if(recurse != null)
+						temp.addAll(recurse);
+				}
+			}
+			ArrayList<Schedule> result = new ArrayList<Schedule>();
+			if(couldNotPlaceCourse) {
+				Window.alert("Unable to fit the course " + course.getName() + " into the schedule. You may want to mark it optional.");
+				return result;
+			}
+			for(Schedule s : temp) {
+				for(ScheduleFilter filter : filters) {
+					if(filter.doesScheduleSatisfyFilter(s)) {
+						result.add(s);
+					}
+				}
+			}
+			return result;
+		}
+		else if(optionalCourseMap.size()>0) {
+			for(Entry<Course, Set<Section>> entry : optionalCourseMap.entrySet()) {
+				Course course = entry.getKey();
+				Set<Section> sections = entry.getValue();
+				for(Section s : sections) {
+					if(start.willConflict(s)) continue;
+					Schedule newStart = new Schedule(start);
+					newStart.add(s);
+					
+					boolean prune=false;
+					for(ScheduleFilter filter : filters) {
+						if(!filter.doesScheduleSatisfyFilter(newStart) && filter.shouldPruneTreeOnFailure()) {
+							prune = true;
+							break;
+						}
+					}
+					if(!prune) {
+						temp.add(newStart);
+						
+						Map<Course, Set<Section>> copy = new HashMap<Course, Set<Section>>();
+						copy.putAll(optionalCourseMap);
+						copy.remove(course);
+						
+						ArrayList<Schedule> recurse = buildSchedulesGivenStartingPoint(start, requiredCourseMap, copy, filters);
+						if(recurse != null)
+							temp.addAll(recurse);
+					}
+				}
+			}
+			ArrayList<Schedule> result = new ArrayList<Schedule>();
+			for(Schedule s : temp) {
+				for(ScheduleFilter filter : filters) {
+					if(filter.doesScheduleSatisfyFilter(s)) {
+						result.add(s);
+					}
+				}
+			}
+			return result;
+		}
+		else {
+			return null;
+		}
+	}
+
 	public ArrayList<Section> getSections() {
 		return new ArrayList<Section>(sections);
 	}
@@ -248,9 +365,11 @@ public class Schedule implements Serializable {
 				while(dayItr.hasNext()) {
 					int day = dayItr.next().intValue();
 					for(int time=starttime;time<endtime;time++) {
-						times.get(day).set(time, TimeBlockType.Available);					}
+						times.get(day).set(time, TimeBlockType.Available);
+					}
 				}
 			}
 		}
 	}
+
 }

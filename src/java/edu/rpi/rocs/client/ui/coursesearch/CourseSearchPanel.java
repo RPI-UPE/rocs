@@ -119,6 +119,8 @@ public class CourseSearchPanel extends VerticalPanel {
 			
 		});
 		
+		resultAdd.addStyleName("right-padded");
+		
 		resultsWrapper.addStyleName("search_results");
 		resultsWrapper.add(resultsListBox);
 		

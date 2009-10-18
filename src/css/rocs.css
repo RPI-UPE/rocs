@@ -181,3 +181,7 @@ div.rocs-dialog {
     width: 100px;
     height: 20px;
 }
+
+.rocs-style .right-padded {
+    margin-right: 30px;
+}

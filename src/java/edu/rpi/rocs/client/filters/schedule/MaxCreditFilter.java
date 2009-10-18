@@ -1,5 +1,8 @@
 package edu.rpi.rocs.client.filters.schedule;
 
+import java.util.HashSet;
+
+import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.user.client.ui.Widget;
 
 import edu.rpi.rocs.client.objectmodel.Schedule;
@@ -39,7 +42,7 @@ public class MaxCreditFilter implements ScheduleFilter {
 	 * Integer.MAX_VALUE, effectively making it unlimited.
 	 */
 	public MaxCreditFilter() {
-		maxcreds = Integer.MAX_VALUE;
+		maxcreds = 21;
 	}
 	
 	/**
@@ -48,6 +51,9 @@ public class MaxCreditFilter implements ScheduleFilter {
 	 */
 	public MaxCreditFilter(int max) {
 		maxcreds = max;
+		for(ChangeHandler handler : changeHandlers) {
+			handler.onChange(null);
+		}
 	}
 	
 	/**
@@ -94,6 +100,18 @@ public class MaxCreditFilter implements ScheduleFilter {
 	public String getDisplayTitle() {
 		// TODO Auto-generated method stub
 		return DISPLAY_NAME;
+	}
+	
+	private HashSet<ChangeHandler> changeHandlers = new HashSet<ChangeHandler>();
+
+	public void addChangeHandler(ChangeHandler e) {
+		// TODO Auto-generated method stub
+		changeHandlers.add(e);
+	}
+
+	public void removeChangeHandler(ChangeHandler e) {
+		// TODO Auto-generated method stub
+		changeHandlers.remove(e);
 	}
 
 }

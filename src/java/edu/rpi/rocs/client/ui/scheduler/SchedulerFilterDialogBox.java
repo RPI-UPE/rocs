@@ -28,7 +28,7 @@ public class SchedulerFilterDialogBox extends DialogBox {
 	private ArrayList<String> filterNames = ScheduleFilterManager.get().getRegisteredFilterNames();
 	
 	public SchedulerFilterDialogBox() {
-		this.setTitle("ROCS Filter List");
+		this.setText("ROCS Filter List");
 		this.addStyleName("rocs-dialog");
 		this.addStyleName("rocs-style");
 		

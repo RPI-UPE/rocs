@@ -4,6 +4,7 @@ import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.SimplePanel;
 
 import edu.rpi.rocs.client.objectmodel.ScheduleFilterManager;
+import edu.rpi.rocs.client.objectmodel.SchedulerManager;
 
 public class SchedulerPanel extends SimplePanel {
 	private static SchedulerPanel theInstance=null;
@@ -34,7 +35,7 @@ public class SchedulerPanel extends SimplePanel {
 			break;
 		case SchedulePage:
 			if(ScheduleFilterManager.get().filtersChanged()) {
-				
+				SchedulerManager.get().generateSchedules();
 			}
 		}
 	}

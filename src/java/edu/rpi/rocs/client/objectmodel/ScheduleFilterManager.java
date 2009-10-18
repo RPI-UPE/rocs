@@ -84,6 +84,7 @@ public class ScheduleFilterManager {
 	
 	public void addFilter(ScheduleFilter filter) {
 		filters.add(filter);
+		
 		changed=true;
 	}
 	

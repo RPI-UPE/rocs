@@ -5,6 +5,12 @@
 	<inherits name="com.allen_sauer.gwt.log.gwt-log-TRACE" />
 	<!-- Turn off the `DivLogger` -->
 	<set-property name="log_DivLogger" value="DISABLED" />
+	<!-- Turn these off for production purposes -->
+	<!--
+	<set-property name="compiler.emulatedStack" value="true" />
+	<set-configuration-property name="compiler.emulatedStack.recordLineNumbers" value="true"/>
+	<set-configuration-property name="compiler.emulatedStack.recordFileNames" value="true"/>
+	-->
 
 	<entry-point class='edu.rpi.rocs.client.ui.entry.MainEntryPoint'/>
 	
