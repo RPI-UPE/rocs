@@ -78,7 +78,7 @@ div#rocs_PORTLET_rocs_courses_pane {
 
 div#rocs_PORTLET_rocs_courses_pane select.class_view {    
     width: 650px;
-    height: 120px;
+    height: 90px;
     overflow-x: scroll;
 }
 
@@ -88,14 +88,6 @@ div#rocs_PORTLET_rocs_courses_pane table {
 
 div#rocs_PORTLET_rocs_courses_pane table td {
     padding: 4px;
-}
-
-div#rocs_PORTLET_rocs_courses_pane table td select {
-    width: 100px;
-}
-
-div#rocs_PORTLET_rocs_courses_pane table td input[type="text"] {
-    width: 100px;
 }
 
 div#rocs_PORTLET_rocs_search_pane {

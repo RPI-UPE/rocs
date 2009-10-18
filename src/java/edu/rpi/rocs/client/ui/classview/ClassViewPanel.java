@@ -1,10 +1,13 @@
 package edu.rpi.rocs.client.ui.classview;
 
+import java.util.ArrayList;
+
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import edu.rpi.rocs.client.ui.ListBoxHTML;
 import edu.rpi.rocs.client.objectmodel.SchedulerManager;
@@ -12,13 +15,17 @@ import edu.rpi.rocs.client.objectmodel.SchedulerManager.*;
 
 public class ClassViewPanel extends HorizontalPanel implements CourseAddedHandler 
 {
-	private ListBoxHTML classList;
-	private FlexTable layout;
-	private Label selectedTitle;
+	//UI Elements:
+	private FlexTable layout; //Table: One row, Two columns
+	private VerticalPanel listHolder; //Holds the classList
+	private VerticalPanel buttonHolder; //Holds the three buttons
+	private ListBoxHTML classList; //List of selected classes
+	private Label selectedTitle; //Label for the list of classes
+	private Anchor requiredButton; //Required Button
+	private Anchor optionalButton; //Optional Button
+	private Anchor removeButton; //Remove Button
 	
-	private Anchor requiredButton;
-	private Anchor optionalButton;
-	private Anchor removeButton;
+	//Data Members:
 
 	private static ClassViewPanel instance = null;
 	public static ClassViewPanel getInstance() {
@@ -33,30 +40,28 @@ public class ClassViewPanel extends HorizontalPanel implements CourseAddedHandle
 		
 		layout = new FlexTable();
 		
-		selectedTitle = new Label("Selected Courses:");
+		listHolder = new VerticalPanel();
+		buttonHolder = new VerticalPanel();
 		
-		layout.setWidget(0, 0, selectedTitle);
+		layout.setWidget(0, 0, listHolder);
+		layout.setWidget(0, 1, buttonHolder);
+		
+		selectedTitle = new Label("Selected Courses:");
 		
 		classList = new ListBoxHTML(true);
 		classList.addStyleName("class_view");
 		classList.addStyleName("search_results");
-		classList.addHTML("Awesome Course", "Awesome-101");
-		classList.addHTML("Cool Course", "Awesome-201");
-		classList.addHTML("Terrible Course", "Awesome-301");
-		classList.addHTML("Who-Takes-This Course", "Awesome-401");
-		classList.addHTML("Meh Course", "Awesome-501");
 		
-		layout.setWidget(1, 0, classList);
-		layout.getFlexCellFormatter().setColSpan(1, 0, 2);
-		layout.getFlexCellFormatter().setRowSpan(1, 0, 3);
+		listHolder.add( selectedTitle );
+		listHolder.add( classList );
 		
 		requiredButton = new Anchor("Mark Required");
 		optionalButton = new Anchor("Mark Optional");
 		removeButton = new Anchor("Remove");
 		
-		layout.setWidget(1, 2, requiredButton);
-		layout.setWidget(2, 2, optionalButton);
-		layout.setWidget(3, 2, removeButton);
+		buttonHolder.add(requiredButton);
+		buttonHolder.add(optionalButton);
+		buttonHolder.add(removeButton);
 		
 		requiredButton.addStyleName("greybutton");
 		requiredButton.addStyleName("linkbutton");
