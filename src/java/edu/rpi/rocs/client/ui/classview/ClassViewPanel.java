@@ -1,6 +1,7 @@
 package edu.rpi.rocs.client.ui.classview;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.Anchor;
@@ -12,8 +13,9 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import edu.rpi.rocs.client.ui.ListBoxHTML;
 import edu.rpi.rocs.client.objectmodel.SchedulerManager;
 import edu.rpi.rocs.client.objectmodel.SchedulerManager.*;
+import edu.rpi.rocs.client.objectmodel.Course;
 
-public class ClassViewPanel extends HorizontalPanel implements CourseAddedHandler 
+public class ClassViewPanel extends HorizontalPanel implements CourseAddedHandler, CourseRemovedHandler, CourseRequiredHandler, CourseOptionalHandler 
 {
 	//UI Elements:
 	private FlexTable layout; //Table: One row, Two columns
@@ -26,6 +28,7 @@ public class ClassViewPanel extends HorizontalPanel implements CourseAddedHandle
 	private Anchor removeButton; //Remove Button
 	
 	//Data Members:
+	private List<CourseStatusObject> curCourses;
 
 	private static ClassViewPanel instance = null;
 	public static ClassViewPanel getInstance() {
@@ -96,23 +99,55 @@ public class ClassViewPanel extends HorizontalPanel implements CourseAddedHandle
 		this.add(layout);
 	}
 	
+	private void updateList()
+	{
+		curCourses = SchedulerManager.get().getSelectedCourses();
+		classList.clear();
+		for(int x = 0; x < curCourses.size(); x++)
+		{
+			Course course = curCourses.get(x).getCourse();
+			classList.addHTML(course.getListDescription(), course.getDept()+course.getNum());
+		}
+	}
+	
 	public void handleEvent(CourseStatusObject status)
 	{
-		classList.addHTML("HEY THEY ADDED SOMETHING!", "Input");
+		this.updateList();
 	}
 	
 	public void markRequired()
 	{
-		classList.addHTML("REQUIRED", "Input");
+		for(int i=0; i<classList.getItemCount(); i++) 
+		{
+			if( classList.isItemSelected(i) )
+			{
+				Course c = curCourses.get(i).getCourse();
+				SchedulerManager.get().setCourseRequired(c);
+			}
+		}
 	}
 	
 	public void markOptional()
 	{
-		classList.addHTML("OPTIONAL", "Input");
+		for(int i=0; i<classList.getItemCount(); i++) 
+		{
+			if( classList.isItemSelected(i) )
+			{
+				Course c = curCourses.get(i).getCourse();
+				SchedulerManager.get().setCourseOptional(c);
+			}
+		}
 	}
 	
 	public void remove()
 	{
-		classList.addHTML("REMOVE", "Input");
+		for(int i=0; i<classList.getItemCount(); i++) 
+		{
+			if( classList.isItemSelected(i) )
+			{
+				Course c = curCourses.get(i).getCourse();
+				SchedulerManager.get().removeCourse(c);
+			}
+		}
 	}
 }
