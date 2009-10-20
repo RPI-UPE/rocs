@@ -1,8 +1,8 @@
 package edu.rpi.rocs.client.ui.classview;
 
-import java.util.ArrayList;
 import java.util.List;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -40,6 +40,9 @@ public class ClassViewPanel extends HorizontalPanel implements CourseAddedHandle
 	
 	private ClassViewPanel() {
 		SchedulerManager.get().addCourseAddedEventHandler( this );
+		SchedulerManager.get().addCourseOptionalEventHandler(this);
+		SchedulerManager.get().addCourseRequiredEventHandler(this);
+		SchedulerManager.get().addCourseRemovedEventHandler(this);
 		
 		layout = new FlexTable();
 		
@@ -127,6 +130,7 @@ public class ClassViewPanel extends HorizontalPanel implements CourseAddedHandle
 	
 	public void handleEvent(CourseStatusObject status)
 	{
+		Log.debug("Class " + status.getCourse().getName() + " has status " + (status.getRequired() ? "required" : "optional"));
 		this.updateList();
 	}
 	

@@ -141,4 +141,8 @@ public class Period extends MajorMinorRevisionObject {
     public void setLocation(String newValue){
         location = newValue;
     }
+    
+    public String toString() {
+    	return "{days:"+days.toString()+",start:"+start.getHour()+""+start.getMinute()+",end:"+end.getHour()+""+end.getMinute()+"}";
+    }
 }

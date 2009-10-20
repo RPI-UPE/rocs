@@ -193,14 +193,19 @@ public class Schedule implements Serializable {
 		// TODO Auto-generated method stub
 		ArrayList<Schedule> temp = new ArrayList<Schedule>();
 		if(requiredCourseMap.size()>0) {
+			Log.debug("Getting entry in required course map");
 			Entry<Course, Set<Section>> entry = requiredCourseMap.entrySet().iterator().next();
 			Course course = entry.getKey();
 			Set<Section> sections = entry.getValue();
+			Log.debug("Have course and section set");
 			boolean couldNotPlaceCourse = true;
 			for(Section s : sections) {
+				Log.debug("Processing section " + course.getDept()+"-"+course.getNum()+"-"+s.getNumber());
 				if(start.willConflict(s)) continue;
 				couldNotPlaceCourse = false;
+				Log.debug("Copying current schedule");
 				Schedule newStart = new Schedule(start);
+				Log.debug("Placing section " + course.getDept()+"-"+course.getNum()+"-"+s.getNumber() + " in new schedule");
 				newStart.add(s);
 				
 				boolean prune=false;
@@ -302,14 +307,27 @@ public class Schedule implements Serializable {
 	}
 	
 	public boolean willConflict(Section s) {
+		Log.debug("In Schedule.willConflict(Section)");
 		Iterator<Period> i = s.getPeriods().iterator();
 		while(i.hasNext()) {
+			Log.debug("Getting next time period...");
 			Period p = i.next();
+			Log.debug("Period: " + p.toString());
 			int starttime = p.getStart().getAbsMinute();
 			int endtime = p.getEnd().getAbsMinute();
+			starttime /= 30;
+			if(endtime % 30 != 0) {
+				endtime /= 30;
+				endtime++;
+			}
+			else
+				endtime /= 30;
+			Log.debug("Start: " + starttime + " End: " + endtime);
 			Iterator<Integer> dayItr = p.getDays().iterator();
 			while(dayItr.hasNext()) {
 				int day = dayItr.next().intValue();
+				Log.debug("Checking day " + day);
+				Log.debug("Length of day: " + times.get(day).size());
 				for(int time=starttime;time<endtime;time++) {
 					if(times.get(day).get(time) == TimeBlockType.Blocked || 
 							times.get(day).get(time) == TimeBlockType.Filled)

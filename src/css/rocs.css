@@ -62,7 +62,6 @@ div#rocs_PORTLET_rocs_semester_pane {
     left:0px;
     width:188px;
     height:76px;
-    background-color: #f00;
     padding:6px;
 }
 
@@ -72,7 +71,6 @@ div#rocs_PORTLET_rocs_courses_pane {
     left:200px;
     width:800px;
     height:150px;
-    background-color: #ff0;
     overflow:hidden;
 }
 
@@ -80,6 +78,14 @@ div#rocs_PORTLET_rocs_courses_pane select.class_view {
     width: 650px;
     height: 90px;
     overflow-x: scroll;
+}
+
+div#rocs_PORTLET_rocs_courses_pane select.class_view {
+    font-family: Courier New;
+}
+
+div#rocs_PORTLET_rocs_courses_pane select.class_view option {
+    font-size: 8pt;
 }
 
 div#rocs_PORTLET_rocs_courses_pane table {
@@ -96,7 +102,6 @@ div#rocs_PORTLET_rocs_search_pane {
     left:0px;
     width:188px;
     height:500px;
-    background-color: #0f0;
     overflow:hidden;
     padding:6px;
 }
@@ -128,7 +133,7 @@ div#rocs_PORTLET_rocs_search_pane div.search_results {
 
 div#rocs_PORTLET_rocs_search_pane select.search_results {
     min-width: 178px;
-    min-height: 241px;
+    height: 245px;
     font-family: Courier New;
     width: auto;
 }
@@ -143,7 +148,6 @@ div#rocs_PORTLET_rocs_scheduler_pane {
     left:200px;
     width:776px;
     height:426px;
-    background-color: #00f;
     overflow:hidden;
     padding: 12px;
 }
@@ -176,4 +180,5 @@ div.rocs-dialog {
 
 .rocs-style .right-padded {
     margin-right: 30px;
+    padding-right: -30px;
 }
