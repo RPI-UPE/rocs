@@ -99,6 +99,11 @@ public class ClassViewPanel extends HorizontalPanel implements CourseAddedHandle
 		this.add(layout);
 	}
 	
+	public void printMsg( String str )
+	{
+		classList.addHTML( str, "MESSAGE" );
+	}
+	
 	private void updateList()
 	{
 		curCourses = SchedulerManager.get().getSelectedCourses();
@@ -106,7 +111,17 @@ public class ClassViewPanel extends HorizontalPanel implements CourseAddedHandle
 		for(int x = 0; x < curCourses.size(); x++)
 		{
 			Course course = curCourses.get(x).getCourse();
-			classList.addHTML(course.getListDescription(), course.getDept()+course.getNum());
+			String data = "";
+			if( SchedulerManager.get().isCourseRequired( course ) )
+			{
+				data += "R&nbsp;&nbsp;";
+			}
+			else
+			{
+				data += "&nbsp;&nbsp;&nbsp;";
+			}
+			data += course.getListDescription();
+			classList.addHTML(data, course.getDept()+course.getNum());
 		}
 	}
 	
