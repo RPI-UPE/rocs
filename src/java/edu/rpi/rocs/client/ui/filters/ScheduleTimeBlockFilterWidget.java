@@ -5,6 +5,8 @@ import java.util.HashMap;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.MouseOverEvent;
+import com.google.gwt.event.dom.client.MouseOverHandler;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -86,6 +88,32 @@ public class ScheduleTimeBlockFilterWidget extends SimplePanel {
 		}
 		
 	};
+	
+	private class CellMouseOverHandler implements MouseOverHandler {
+		int row,col;
+		
+		public CellMouseOverHandler(int cx, int cy) {
+			row = cx;
+			col = cy;
+		}
+		
+		public void onMouseOver(MouseOverEvent arg0) {
+			// TODO Auto-generated method stub
+			String oldstyle, newstyle;
+			if(disabled[col][row]) {
+				oldstyle = "timeBlocked";
+				newstyle = "timeAvailable";
+			}
+			else {
+				oldstyle = "timeAvailable";
+				newstyle = "timeBlocked";
+			}
+			disabled[col][row] = !disabled[col][row];
+			table.getFlexCellFormatter().removeStyleName(row+1, col+1, oldstyle);
+			table.getFlexCellFormatter().addStyleName(row+1, col+1, newstyle);
+		}
+		
+	}
 	
 	public HashMap<Integer, ArrayList<Time>> getBlockedTimes() {
 		HashMap<Integer, ArrayList<Time>> result = new HashMap<Integer, ArrayList<Time>>();
