@@ -3,6 +3,7 @@ package edu.rpi.rocs.client.ui.filters;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.MouseOverEvent;
@@ -13,34 +14,48 @@ import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.HTMLTable.Cell;
 
 import edu.rpi.rocs.client.objectmodel.Time;
+import edu.rpi.rocs.client.ui.filters.helpers.SelectableTableWidget;
 
 public class ScheduleTimeBlockFilterWidget extends SimplePanel {
+	private SelectableTableWidget theTable = new SelectableTableWidget(2*(22-8), 7);
 	private FlexTable table = new FlexTable();
 	private final int start=8*2; // 8 am with 30 min blocks
 	private final int end=22*2; // 10 pm with 30 min blocks
 	private boolean[][] disabled=new boolean[7][end-start];
 	
+	private native void registerMouseEvents()/*-{
+		window.mouseDown = 0;
+		document.body.onmousedown = function() {
+			++window.mouseDown;
+		}
+		document.body.onmouseup = function() {
+			--window.mouseDown;
+		}
+	}-*/;
+	
 	private String dayOfWeek(int i) {
 		switch(i) {
 		case 0:
-			return "Monday";
+			return "Mon";
 		case 1:
-			return "Tuesday";
+			return "Tues";
 		case 2:
-			return "Wednesday";
+			return "Wed";
 		case 3:
-			return "Thursday";
+			return "Thurs";
 		case 4:
-			return "Friday";
+			return "Fri";
 		case 5:
-			return "Saturday";
+			return "Sat";
 		case 6:
-			return "Sunday";
+			return "Sun";
 		}
 		return "Unknown";
 	}
 	
 	public ScheduleTimeBlockFilterWidget() {
+		/*
+		registerMouseEvents();
 		table.setWidth("100%");
 		table.setHeight("100%");
 		table.setHTML(0, 0, "Time");
@@ -56,10 +71,26 @@ public class ScheduleTimeBlockFilterWidget extends SimplePanel {
 			for(int j=start;j<end;j++) {
 				table.setHTML(j-start+1, i, "");
 				table.getFlexCellFormatter().setStyleName(j-start+1, i, "timeAvailable");
+				Element e = table.getFlexCellFormatter().getElement(j-start+1, i);
+				CellMouseOverHandler h = new CellMouseOverHandler(j-start, i);
+				h.registerHandler(e);
 			}
 		}
 		table.addClickHandler(tableClickHandler);
 		this.add(table);
+		*/
+		for(int i=0;i<7;i++) {
+			theTable.setColumnHeader(i, dayOfWeek(i));
+		}
+		for(int i=0;i<2*(22-8);i++) {
+			if(i%2==0) {
+				theTable.setRowHeader(i, Integer.toString(8+i/2)+":00");
+			}
+			else {
+				theTable.setRowHeader(i, "&nbsp;");
+			}
+		}
+		this.add(theTable);
 	}
 	
 	private ClickHandler tableClickHandler = new ClickHandler() {
@@ -95,6 +126,23 @@ public class ScheduleTimeBlockFilterWidget extends SimplePanel {
 		public CellMouseOverHandler(int cx, int cy) {
 			row = cx;
 			col = cy;
+		}
+		
+		private native void registerHandler(Element e, CellMouseOverHandler x)/*-{
+			e.addEventListener('mouseover', function (evt) {
+				if(window.mouseDown>0) {
+					x.@edu.rpi.rocs.client.ui.filters.ScheduleTimeBlockFilterWidget.CellMouseOverHandler::onMouseOver()();
+				}
+			},true);
+		}-*/;
+		
+		public void registerHandler(Element e) {
+			registerHandler(e, this);
+		}
+		
+		@SuppressWarnings("unused")
+		public void onMouseOver() {
+			onMouseOver(null);
 		}
 		
 		public void onMouseOver(MouseOverEvent arg0) {

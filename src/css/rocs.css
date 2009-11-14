@@ -35,25 +35,41 @@ div#rocs_PORTLET_rocs_root_view h4 {
 .rocs-style a.greybutton {
     color: #000;
     background-color: #ccc;
-    border: 3px outset #ccc;
+    border: 1px solid #444;
+}
+
+.rocs-style a.greybutton:hover {
+    background-color: #eee;
 }
 
 .rocs-style a.redbutton {
     color: #000;
     background-color: #f00;
-    border: 3px outset #f00;
+    border: 1px solid #400;
+}
+
+.rocs-style a.redbutton:hover {
+    background-color: #f88;
 }
 
 .rocs-style a.greenbutton {
     color: #000;
     background-color: #0d0;
-    border: 3px outset #0d0;
+    border: 1px solid #040;
+}
+
+.rocs-style a.greenbutton:hover {
+    background-color: #0f0;
 }
 
 .rocs-style a.bluebutton {
     color: #000;
     background-color: #adf;
-    border: 3px outset #adf;
+    border: 1px solid #6ad;
+}
+
+.rocs-style a.bluebutton:hover {
+    background-color: #cff;
 }
 
 div#rocs_PORTLET_rocs_semester_pane {
@@ -181,4 +197,26 @@ div.rocs-dialog {
 .rocs-style .right-padded {
     margin-right: 30px;
     padding-right: -30px;
+}
+
+.rocs-table-cursor {
+    cursor: crosshair;
+}
+
+.rocs-table-unselected {
+    border: 1px solid #000000;
+    width: 70px;
+    background-color: #4488ff;
+}
+
+.rocs-table-possible {
+    border: 1px solid #000000;
+    width: 70px;
+    background-color: #66bbff;
+}
+
+.rocs-table-selected {
+    border: 1px solid #000000;
+    width: 70px;
+    background-color: #ff0000;
 }
