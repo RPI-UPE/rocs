@@ -43,16 +43,8 @@ public class SelectableTableWidget extends Widget {
 					widget = theTable.widget;
 					for(row=rocs_sr;row<=rocs_er;row++) {
 						for(col=rocs_sc;col<=rocs_ec;col++) {
-							theCell = theTable.rows[row].cells[col];
 							test = widget.@edu.rpi.rocs.client.ui.filters.helpers.SelectableTableWidget::isSelected(II)(row-1,col-1);
-							if(test) {
-								theCell.className = "rocs-table-cursor rocs-table-unselected";
-								widget.@edu.rpi.rocs.client.ui.filters.helpers.SelectableTableWidget::setSelected(IIZ)(row-1,col-1,false);
-							}
-							else {
-								theCell.className = "rocs-table-cursor rocs-table-selected";
-								widget.@edu.rpi.rocs.client.ui.filters.helpers.SelectableTableWidget::setSelected(IIZ)(row-1,col-1,true);
-							}
+							widget.@edu.rpi.rocs.client.ui.filters.helpers.SelectableTableWidget::setSelected(IIZ)(row-1,col-1,!test);
 						}
 					}
 					rocs_end_row = rocs_start_row = 0;
@@ -159,9 +151,18 @@ public class SelectableTableWidget extends Widget {
 		}
 	}
 	
-	@SuppressWarnings("unused")
-	private void setSelected(int row, int col, boolean value) {
+	private native void setInternalSelected(int row, int col, boolean value)/*-{
+		if(value) {
+			window.theTable.rows[row].cells[col].className = "rocs-table-cursor rocs-table-selected";
+		}
+		else {
+			window.theTable.rows[row].cells[col].className = "rocs-table-cursor rocs-table-unselected";
+		}
+	}-*/;
+	
+	public void setSelected(int row, int col, boolean value) {
 		selected[row][col]=value;
+		setInternalSelected(row+1,col+1,value);
 	}
 	
 	public boolean isSelected(int row, int col) {

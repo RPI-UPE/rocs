@@ -2,7 +2,6 @@ package edu.rpi.rocs.client.ui.svg;
 
 import java.util.ArrayList;
 
-import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -34,10 +33,9 @@ public class SVGCanvasWidget extends Widget implements SVGCanvas {
 	
 	public void addSVGElement(SVGElement e) {
 		if(!m_children.contains(e)) {
-			Log.trace("m_children does not contain e");
 			m_children.add(e);
-			Log.trace("Added e to m_children");
 			m_element.appendChild(e.getElement());
+			e.setSVGParent(this);
 		}
 	}
 	
@@ -64,8 +62,11 @@ public class SVGCanvasWidget extends Widget implements SVGCanvas {
 	}
 
 	public void removeSVGElement(SVGElement e) {
-		m_children.remove(e);
-		m_element.removeChild(e.getElement());
+		if(m_children.contains(e)) {
+			e.setSVGParent(null);
+			m_children.remove(e);
+			m_element.removeChild(e.getElement());
+		}
 	}
 
 	public String getHeight() {
@@ -118,6 +119,16 @@ public class SVGCanvasWidget extends Widget implements SVGCanvas {
 	}
 
 	public void detach() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public SVGCanvas getSVGParent() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public void setSVGParent(SVGCanvas parent) {
 		// TODO Auto-generated method stub
 		
 	}

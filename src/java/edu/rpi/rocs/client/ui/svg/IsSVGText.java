@@ -19,4 +19,8 @@ public interface IsSVGText {
 	public TextAnchor getTextAnchor();
 	public void setText(String text);
 	public String getText();
+	public void setFontFamily(String font);
+	public String getFontFamily();
+	public void setFontSize(String size);
+	public String getFontSize();
 }

@@ -1,5 +1,7 @@
 package edu.rpi.rocs.client.ui.svg;
 
+import java.util.ArrayList;
+
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -21,6 +23,8 @@ public class SVGRectWidget extends Widget implements SVGPrimitive, IsColorable,
 	String m_x,m_y,m_w,m_h;
 	String m_fill,m_stroke,m_stroke_width;
 	HandlerManager m_handlerManager;
+	SVGCanvas m_parent;
+	ArrayList<String> m_stroke_dashes;
 	
 	public SVGRectWidget() {
 		m_element = SVGCanvasWidget.createElementNS(SVGCanvasWidget.NS, "rect");
@@ -117,12 +121,36 @@ public class SVGRectWidget extends Widget implements SVGPrimitive, IsColorable,
 	}
 
 	public void attach() {
-		// TODO Auto-generated method stub
 		onAttach();
 	}
 
 	public void detach() {
-		// TODO Auto-generated method stub
 		onDetach();
+	}
+
+	public SVGCanvas getSVGParent() {
+		return m_parent;
+	}
+
+	public void setSVGParent(SVGCanvas parent) {
+		m_parent = parent;
+	}
+
+	public ArrayList<String> getStrokeDashArray() {
+		return m_stroke_dashes;
+	}
+
+	public void setStrokeDashArray(ArrayList<String> dashes) {
+		m_stroke_dashes = dashes;
+		if(dashes!=null) {
+			String result=dashes.get(0);
+			for(int i=1;i<dashes.size();i++) {
+				result += ","+dashes.get(i);
+			}
+			m_element.setAttribute("stroke-dasharray", result);
+		}
+		else {
+			m_element.removeAttribute("stroke-dasharray");
+		}
 	}
 }

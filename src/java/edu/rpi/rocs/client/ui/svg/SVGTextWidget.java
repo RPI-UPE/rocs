@@ -1,15 +1,30 @@
 package edu.rpi.rocs.client.ui.svg;
 
-import com.allen_sauer.gwt.log.client.Log;
+import java.util.ArrayList;
+
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.HasClickHandlers;
+import com.google.gwt.event.dom.client.HasMouseOutHandlers;
+import com.google.gwt.event.dom.client.HasMouseOverHandlers;
+import com.google.gwt.event.dom.client.MouseOutEvent;
+import com.google.gwt.event.dom.client.MouseOutHandler;
+import com.google.gwt.event.dom.client.MouseOverEvent;
+import com.google.gwt.event.dom.client.MouseOverHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Widget;
 
-public class SVGTextWidget extends Widget implements SVGPrimitive, IsColorable, IsSVGText {
+public class SVGTextWidget extends Widget implements SVGPrimitive, IsColorable, IsSVGText, 
+		HasMouseOverHandlers, HasMouseOutHandlers, HasClickHandlers {
 
 	Element m_element;
 	String m_x,m_y,m_w,m_h;
 	String m_text, m_fill, m_stroke, m_stroke_width;
+	String m_font_family, m_font_size;
 	TextAnchor m_anchor;
+	SVGCanvas m_parent;
+	ArrayList<String> m_stroke_dashes;
 	
 	public SVGTextWidget() {
 		this("", TextAnchor.Inherit);
@@ -24,12 +39,9 @@ public class SVGTextWidget extends Widget implements SVGPrimitive, IsColorable, 
 		if(anchor==null) anchor = TextAnchor.Inherit;
 		m_text = text;
 		m_anchor = anchor;
-		Log.trace("Creating text element");
 		m_element = SVGCanvasWidget.createElementNS(SVGCanvasWidget.NS, "text");
 		setElement(m_element);
-		Log.trace("Setting text");
 		m_element.setInnerText(text);
-		Log.trace("Setting text-anchor attribute");
 		m_element.setAttribute("text-anchor", anchor.toString());
 	}
 	
@@ -128,6 +140,62 @@ public class SVGTextWidget extends Widget implements SVGPrimitive, IsColorable, 
 	public void setTextAnchor(TextAnchor a) {
 		m_element.setAttribute("text-anchor", a.toString());
 		m_anchor = a;
+	}
+
+	public SVGCanvas getSVGParent() {
+		return m_parent;
+	}
+
+	public void setSVGParent(SVGCanvas parent) {
+		m_parent = parent;
+	}
+
+	public HandlerRegistration addClickHandler(ClickHandler arg0) {
+		return addDomHandler(arg0, ClickEvent.getType());
+	}
+
+	public HandlerRegistration addMouseOutHandler(MouseOutHandler arg0) {
+		return addDomHandler(arg0, MouseOutEvent.getType());
+	}
+
+	public HandlerRegistration addMouseOverHandler(MouseOverHandler arg0) {
+		return addDomHandler(arg0, MouseOverEvent.getType());
+	}
+
+	public ArrayList<String> getStrokeDashArray() {
+		return m_stroke_dashes;
+	}
+
+	public void setStrokeDashArray(ArrayList<String> dashes) {
+		m_stroke_dashes = dashes;
+		if(dashes!=null) {
+			String result = dashes.get(0);
+			for(int i=1;i<dashes.size();i++) {
+				result += ","+dashes.get(i);
+			}
+			m_element.setAttribute("stroke-dasharray", result);
+		}
+		else {
+			m_element.removeAttribute("stroke-dasharray");
+		}
+	}
+
+	public String getFontFamily() {
+		return m_font_family;
+	}
+
+	public String getFontSize() {
+		return m_font_size;
+	}
+
+	public void setFontFamily(String font) {
+		m_font_family = font;
+		m_element.setAttribute("font-family", font);
+	}
+
+	public void setFontSize(String size) {
+		m_font_size = size;
+		m_element.setAttribute("font-size", size);
 	}
 
 }

@@ -1,6 +1,5 @@
 package edu.rpi.rocs.client.ui;
 
-import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.MouseOutEvent;
@@ -16,6 +15,8 @@ import com.google.gwt.user.client.ui.InlineHyperlink;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.FlexTable.FlexCellFormatter;
 
+import edu.rpi.rocs.client.ui.scheduler.ScheduleViewWidget;
+import edu.rpi.rocs.client.ui.svg.SVGGroupWidget;
 import edu.rpi.rocs.client.ui.svg.SVGRectWidget;
 import edu.rpi.rocs.client.ui.svg.SVGCanvasWidget;
 import edu.rpi.rocs.client.ui.svg.SVGTextWidget;
@@ -35,6 +36,7 @@ public class WelcomeScreen extends VerticalPanel {
 	public SVGCanvasWidget svgWidget;
 	public SVGRectWidget svgRect;
 	public SVGTextWidget svgText;
+	public SVGGroupWidget svgGroup;
 	//EndTemporary
 	
 	public static WelcomeScreen getInstance() {
@@ -68,7 +70,9 @@ public class WelcomeScreen extends VerticalPanel {
 		f.setWidth(0, 4, "20%");
 		
 		//Temporary
-		svgWidget = new SVGCanvasWidget("svg_canvas", "200", "200");
+		//svgWidget = new SVGCanvasWidget("svg_canvas", "200", "200");
+		svgWidget = new ScheduleViewWidget(null);
+		svgGroup = new SVGGroupWidget();
 		svgRect = new SVGRectWidget();
 		svgRect.setX("75");
 		svgRect.setY("75");
@@ -77,12 +81,11 @@ public class WelcomeScreen extends VerticalPanel {
 		svgRect.setFillColor("#ff0000");
 		svgRect.setStrokeColor("#333333");
 		svgRect.setStrokeWidth("1");
-		Log.trace("Creating SVGTextWidget");
 		svgText = new SVGTextWidget("Test", TextAnchor.Middle);
 		svgText.setX("100");
 		svgText.setY("100");
 		svgText.setFillColor("#000000");
-		svgRect.addMouseOverHandler(new MouseOverHandler() {
+		MouseOverHandler overH = new MouseOverHandler() {
 
 			public void onMouseOver(MouseOverEvent arg0) {
 				// TODO Auto-generated method stub
@@ -91,8 +94,10 @@ public class WelcomeScreen extends VerticalPanel {
 				x.setStrokeWidth("2");
 			}
 			
-		});
-		svgRect.addMouseOutHandler(new MouseOutHandler() {
+		};
+		svgRect.addMouseOverHandler(overH);
+		svgText.addMouseOverHandler(overH);
+		MouseOutHandler outH = new MouseOutHandler() {
 
 			public void onMouseOut(MouseOutEvent arg0) {
 				// TODO Auto-generated method stub
@@ -101,18 +106,22 @@ public class WelcomeScreen extends VerticalPanel {
 				x.setStrokeWidth("1");
 			}
 			
-		});
-		svgRect.addClickHandler(new ClickHandler() {
+		};
+		svgRect.addMouseOutHandler(outH);
+		svgText.addMouseOutHandler(outH);
+		ClickHandler clickH = new ClickHandler() {
 
 			public void onClick(ClickEvent arg0) {
 				// TODO Auto-generated method stub
 				Window.alert("Hello world!");
 			}
 			
-		});
-		svgWidget.addSVGElement(svgRect);
-		Log.trace("Adding svgText to svgWidget");
-		svgWidget.addSVGElement(svgText);
+		};
+		svgRect.addClickHandler(clickH);
+		svgText.addClickHandler(clickH);
+		//svgGroup.addSVGElement(svgRect);
+		//svgGroup.addSVGElement(svgText);
+		//svgWidget.addSVGElement(svgGroup);
 		//EndTemporary
 		
 		this.add(title);

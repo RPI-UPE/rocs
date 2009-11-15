@@ -16,4 +16,6 @@ public interface SVGElement {
 	public String getHeight();
 	public void attach();
 	public void detach();
+	public void setSVGParent(SVGCanvas parent);
+	public SVGCanvas getSVGParent();
 }
