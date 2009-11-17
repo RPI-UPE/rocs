@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.google.gwt.user.client.Window;
 
 import edu.rpi.rocs.client.filters.schedule.ScheduleFilter;
 import edu.rpi.rocs.client.filters.schedule.TimeSchedulerFilter;
@@ -32,7 +33,7 @@ public class Schedule implements Serializable {
 	protected String name = "";
 	protected int creditMin = 0;
 	protected int creditMax = 0;
-	protected ArrayList<ArrayList<TimeBlockType>> times=null; 
+	protected ArrayList<ArrayList<TimeBlockType>> times=null;
 	
 	protected enum TimeBlockType {
 		Available,
@@ -150,7 +151,14 @@ public class Schedule implements Serializable {
 		Log.debug("Removing the TimeSchedulerFilter");
 		ArrayList<ScheduleFilter> newFilters = new ArrayList<ScheduleFilter>(filters);
 		newFilters.remove(timeFilter);
-		return buildSchedulesGivenStartingPoint(start, requiredCourseMap, optionalCourseMap, newFilters);
+		ArrayList<Schedule> schedules = buildSchedulesGivenStartingPoint(start, requiredCourseMap, optionalCourseMap, newFilters);
+		ArrayList<Schedule> result = new ArrayList<Schedule>();
+		for(Schedule s : schedules) {
+			if(s.getSections().containsAll(requiredCourses))
+				result.add(s);
+		}
+		if(result.size()==0) Window.alert("Conflict detected. Unable to generate any valid schedules.");
+		return result;
 	}
 
 	public ArrayList<Section> getSections() {

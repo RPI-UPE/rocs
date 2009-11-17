@@ -28,50 +28,7 @@ public class ScheduleViewWidget extends SVGCanvasWidget {
 	private static final int MAJOR_Y_DISTANCE=26;
 	private static final int MAJOR_X_DISTANCE=75;
 	private static final int MINOR_Y_DISTANCE=13;
-	
-	static String[] colors = {
-		"#808080",
-		"#8080b8",
-		"#8080ff",
-		"#80b880",
-		"#80b8b8",
-		"#80b8ff",
-		"#80ff80",
-		"#80ffb8",
-		"#80ffff",
-		"#b88080",
-		"#b880b8",
-		"#b880ff",
-		"#b8b880",
-		"#b8b8ff",
-		"#b8ff80",
-		"#b8ffb8",
-		"#b8ffff",
-		"#ff8080",
-		"#ff80b8",
-		"#ff80ff",
-		"#ffb880",
-		"#ffb8b8",
-		"#ffb8ff",
-		"#ffff80",
-		"#ffffb8"
-	};
-	
-	private ArrayList<Integer> m_colors_available;
-	
-	String randomlySelectColor() {
-		int i = (int)(m_colors_available.size() * Math.random());
-		i = m_colors_available.get(i);
-		m_colors_available.remove(new Integer(i));
-		return colors[i];
-	}
-	
-	void resetColorsAvailable() {
-		m_colors_available = new ArrayList<Integer>();
-		for(int i=0;i<colors.length;i++) {
-			m_colors_available.add(new Integer(i));
-		}
-	}
+	RandomColorGenerator m_generator=new RandomColorGenerator();
 	
 	private class ScheduleBackgroundWidget extends SVGGroupWidget {
 		SVGPathWidget m_solid_lines;
@@ -476,17 +433,16 @@ public class ScheduleViewWidget extends SVGCanvasWidget {
 	
 	public ScheduleViewWidget(Schedule s) {
 		super("schedule_viewer", "600", "400");
-		resetColorsAvailable();
 		m_schedule = s;
 		//ArrayList<Section> sections = s.getSections();
 		if(s==null) {
 			m_background = new ScheduleBackgroundWidget();
 			addSVGElement(m_background);
 			SectionGroupWidget w = new SectionGroupWidget(true);
-			w.setFillColor(randomlySelectColor());
+			w.setFillColor(m_generator.randomlySelectColor());
 			addSVGElement(w);
 			w = new SectionGroupWidget(false);
-			w.setFillColor(randomlySelectColor());
+			w.setFillColor(m_generator.randomlySelectColor());
 			addSVGElement(w);
 		}
 		else {
@@ -495,7 +451,7 @@ public class ScheduleViewWidget extends SVGCanvasWidget {
 			ArrayList<Section> sections = s.getSections();
 			for(Section section : sections) {
 				SectionGroupWidget w = new SectionGroupWidget(section);
-				w.setFillColor(randomlySelectColor());
+				w.setFillColor(m_generator.randomlySelectColor());
 				addSVGElement(w);
 			}
 		}

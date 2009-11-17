@@ -20,6 +20,32 @@ public class ListBoxHTML extends ListBox {
 		insertHTML(html, value, INSERT_AT_END);
 	}
 	
+	public void addStyleNameOfOption(int index, String name) {
+		SelectElement select = getSelectElement2();
+		OptionElement option = select.getOptions().getItem(index);
+		String clsname = option.getClassName();
+		if(clsname.startsWith(name+" ") || clsname.endsWith(" "+name)) return;
+		if(clsname.contains((" "+name+" ").subSequence(0, name.length()+2))) return;
+		clsname += " name";
+		option.setClassName(clsname);
+	}
+	
+	public void removeStyleNameOfOption(int index, String name) {
+		SelectElement select = getSelectElement2();
+		OptionElement option = select.getOptions().getItem(index);
+		String clsname = option.getClassName();
+		if(clsname.startsWith(name+" ")) {
+			clsname.replaceFirst(name+" ", "");
+		}
+		else if(clsname.endsWith(" "+name)) {
+			clsname.replaceFirst(" "+name+"$", "");
+		}
+		else if(clsname.contains((" "+name+" ").subSequence(0, name.length()+2))) {
+			clsname.replaceFirst(" "+name+" ", "");
+		}
+		option.setClassName(clsname);
+	}
+	
 	public void insertHTML(String html, String value, int index) {
 		SelectElement select = getSelectElement2();
 		OptionElement option = Document.get().createOptionElement();

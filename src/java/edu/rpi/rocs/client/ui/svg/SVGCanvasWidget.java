@@ -31,6 +31,20 @@ public class SVGCanvasWidget extends Widget implements SVGCanvas {
 		m_children = new ArrayList<SVGElement>();
 	}
 	
+	public SVGCanvasWidget(String w, String h) {
+		m_element = createElementNS(NS, "svg");
+		m_element.setAttribute("width", w);
+		m_element.setAttribute("height", h);
+		m_element.setAttribute("version", "1.1");
+		setElement(m_element);
+		
+		m_x="";
+		m_y="";
+		m_w=w;
+		m_h=h;
+		m_children = new ArrayList<SVGElement>();
+	}
+
 	public void addSVGElement(SVGElement e) {
 		if(!m_children.contains(e)) {
 			m_children.add(e);

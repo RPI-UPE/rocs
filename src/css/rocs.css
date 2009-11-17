@@ -158,6 +158,10 @@ div#rocs_PORTLET_rocs_search_pane select.search_results option {
     font-size: 8pt;
 }
 
+div#rocs_PORTLET_rocs_search_pane select.search_results option.conflict {
+    background-color: #ff0000;
+}
+
 div#rocs_PORTLET_rocs_scheduler_pane {
     position:absolute;
     top:150px;
@@ -223,7 +227,15 @@ div.rocs-dialog {
 }
 
 .rocs-style .schedule-list {
-    width: 150px;
+    margin-left: 8px;
+    width: 142px;
+    max-width: 150px;
     height: 390px;
-    background-color: #355dae;
+    max-height: 390px;
+    overflow: scroll;
+}
+
+.schedule-list svg {
+    cursor: pointer;
+    margin: 3px;
 }

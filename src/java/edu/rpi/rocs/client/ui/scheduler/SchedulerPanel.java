@@ -1,8 +1,11 @@
 package edu.rpi.rocs.client.ui.scheduler;
 
+import java.util.ArrayList;
+
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.SimplePanel;
 
+import edu.rpi.rocs.client.objectmodel.Schedule;
 import edu.rpi.rocs.client.objectmodel.ScheduleFilterManager;
 import edu.rpi.rocs.client.objectmodel.SchedulerManager;
 
@@ -36,9 +39,13 @@ public class SchedulerPanel extends SimplePanel {
 		case SchedulePage:
 			if(ScheduleFilterManager.get().filtersChanged()) {
 				SchedulerManager.get().generateSchedules();
+				ArrayList<Schedule> schedules = SchedulerManager.get().getAllSchedules();
+				if(schedules==null || schedules.size()==0) {
+					return;
+				}
 				this.remove(currentChild);
 				currentChild = SchedulerDisplayPanel.get();
-				SchedulerDisplayPanel.get().setSchedules(SchedulerManager.get().getAllSchedules());
+				SchedulerDisplayPanel.get().setSchedules(schedules);
 				this.add(currentChild);
 				break;
 			}
