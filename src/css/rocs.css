@@ -221,3 +221,9 @@ div.rocs-dialog {
     width: 70px;
     background-color: #ff0000;
 }
+
+.rocs-style .schedule-list {
+    width: 150px;
+    height: 390px;
+    background-color: #355dae;
+}

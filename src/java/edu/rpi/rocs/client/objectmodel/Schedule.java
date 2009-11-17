@@ -8,10 +8,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
-import java.util.Map.Entry;
 
 import com.allen_sauer.gwt.log.client.Log;
-import com.google.gwt.user.client.Window;
 
 import edu.rpi.rocs.client.filters.schedule.ScheduleFilter;
 import edu.rpi.rocs.client.filters.schedule.TimeSchedulerFilter;
@@ -87,64 +85,34 @@ public class Schedule implements Serializable {
 		}
 	}
 	
-	protected static ArrayList<Section> copyRemovingItem(ArrayList<Section> list, Section item) {
-		ArrayList<Section> copy = new ArrayList<Section>(list);
-		copy.remove(item);
-		return copy;
-	}
-	
-	protected static ArrayList<Map<Course, Section>> copyRemovingItem(ArrayList<Map<Course, Section>> list, Map<Course, Section> item) {
-		ArrayList<Map<Course, Section>> copy = new ArrayList<Map<Course, Section>>(list);
-		copy.remove(item);
-		return copy;
-	}
-	
-	protected static ArrayList<Schedule> buildSchedulesGivenStartingPoint(Schedule start, ArrayList<Map<Course, Section>> required, ArrayList<Map<Course, Section>> optional, ArrayList<ScheduleFilter> filters) {
-		ArrayList<Schedule> finalList = new ArrayList<Schedule>();
-		if(required.size()>0) {
-			Map<Course, Section> course = required.get(0);
-			Collection<Section> sections = course.values();
-			Iterator<Section> i = sections.iterator();
-			while(i.hasNext()) {
-				Schedule newSchedule = new Schedule(start);
-				if(newSchedule.add(i.next())) {
-					for(int j=0;j<filters.size();j++) {
-						ScheduleFilter f = filters.get(j);
-						if(f.doesScheduleSatisfyFilter(newSchedule) || !f.shouldPruneTreeOnFailure()) {
-							finalList.add(newSchedule);
-							finalList.addAll(buildSchedulesGivenStartingPoint(newSchedule, copyRemovingItem(required, course), optional, filters));
-						}
-					}
+	private static ArrayList<Schedule> buildSchedulesGivenStartingPoint(Schedule start, Map<Course, Set<Section>> requiredCourses, Map<Course, Set<Section>> optionalCourses, ArrayList<ScheduleFilter> filters) {
+		ArrayList<Schedule> results = new ArrayList<Schedule>();
+		if(requiredCourses.size()==0) {
+			boolean satisfies=true;
+			for(ScheduleFilter filter : filters) {
+				if(!filter.doesScheduleSatisfyFilter(start)) {
+					satisfies = false;
+				}
+			}
+			if(satisfies) {
+				results.add(start);
+			}
+		}
+		else {
+			Course aCourse = requiredCourses.keySet().iterator().next();
+			Set<Section> sections = requiredCourses.get(aCourse);
+			Map<Course, Set<Section>> newCourses=new HashMap<Course, Set<Section>>(requiredCourses);
+			newCourses.remove(aCourse);
+			for(Section section : sections) {
+				if(!start.willConflict(section)) {
+					Schedule copy = new Schedule(start);
+					copy.add(section);
+					ArrayList<Schedule> temp = buildSchedulesGivenStartingPoint(copy,newCourses,optionalCourses,filters);
+					results.addAll(temp);
 				}
 			}
 		}
-		if(optional.size()>0) {
-			Map<Course, Section> course = optional.get(0);
-			Collection<Section> sections = course.values();
-			Iterator<Section> i = sections.iterator();
-			while(i.hasNext()) {
-				Schedule newSchedule = new Schedule(start);
-				if(newSchedule.add(i.next())) {
-					for(int j=0;j<filters.size();j++) {
-						ScheduleFilter f = filters.get(j);
-						if(f.doesScheduleSatisfyFilter(newSchedule) || !f.shouldPruneTreeOnFailure()) {
-							finalList.add(newSchedule);
-							finalList.addAll(buildSchedulesGivenStartingPoint(newSchedule, copyRemovingItem(required, course), optional, filters));
-						}
-					}
-				}
-			}
-		}
-		for(int j=0;j<filters.size();j++) {
-			ScheduleFilter f = filters.get(j);
-			for(int i=0;i<finalList.size();i++) {
-				if(!f.doesScheduleSatisfyFilter(finalList.get(i))) {
-					finalList.remove(i);
-					i--;
-				}
-			}
-		}
-		return finalList;
+		return results;
 	}
 	
 	public static ArrayList<Schedule> buildAllSchedulesGivenCoursesAndFilters(Collection<Course> requiredCourses, Collection<Course> optionalCourses, Collection<ScheduleFilter> filters) {
@@ -175,115 +143,14 @@ public class Schedule implements Serializable {
 		for(int i=0;i<7;i++) {
 			Integer day = new Integer(i);
 			ArrayList<Time> blocked = times.get(day);
-			ArrayList<TimeBlockType> temp = start.times.get(i);
 			for(Time t : blocked) {
-				temp.set(t.getAbsMinute()/10, TimeBlockType.Blocked);
+				start.blockTime(i, t.getHour(), t.getMinute());
 			}
 		}
 		Log.debug("Removing the TimeSchedulerFilter");
 		ArrayList<ScheduleFilter> newFilters = new ArrayList<ScheduleFilter>(filters);
 		newFilters.remove(timeFilter);
 		return buildSchedulesGivenStartingPoint(start, requiredCourseMap, optionalCourseMap, newFilters);
-	}
-	
-	private static ArrayList<Schedule> buildSchedulesGivenStartingPoint(
-			Schedule start, Map<Course, Set<Section>> requiredCourseMap,
-			Map<Course, Set<Section>> optionalCourseMap,
-			ArrayList<ScheduleFilter> filters) {
-		// TODO Auto-generated method stub
-		ArrayList<Schedule> temp = new ArrayList<Schedule>();
-		if(requiredCourseMap.size()>0) {
-			Log.debug("Getting entry in required course map");
-			Entry<Course, Set<Section>> entry = requiredCourseMap.entrySet().iterator().next();
-			Course course = entry.getKey();
-			Set<Section> sections = entry.getValue();
-			Log.debug("Have course and section set");
-			boolean couldNotPlaceCourse = true;
-			for(Section s : sections) {
-				Log.debug("Processing section " + course.getDept()+"-"+course.getNum()+"-"+s.getNumber());
-				if(start.willConflict(s)) continue;
-				couldNotPlaceCourse = false;
-				Log.debug("Copying current schedule");
-				Schedule newStart = new Schedule(start);
-				Log.debug("Placing section " + course.getDept()+"-"+course.getNum()+"-"+s.getNumber() + " in new schedule");
-				newStart.add(s);
-				
-				boolean prune=false;
-				for(ScheduleFilter filter : filters) {
-					if(!filter.doesScheduleSatisfyFilter(newStart) && filter.shouldPruneTreeOnFailure()) {
-						prune = true;
-						break;
-					}
-				}
-				if(!prune) {
-					if(requiredCourseMap.size()==1) // Only add a schedule if it has all required courses
-						temp.add(newStart);
-					
-					Map<Course, Set<Section>> copy = new HashMap<Course, Set<Section>>();
-					copy.putAll(requiredCourseMap);
-					copy.remove(course);
-					
-					ArrayList<Schedule> recurse = buildSchedulesGivenStartingPoint(start, copy, optionalCourseMap, filters);
-					if(recurse != null)
-						temp.addAll(recurse);
-				}
-			}
-			ArrayList<Schedule> result = new ArrayList<Schedule>();
-			if(couldNotPlaceCourse) {
-				Window.alert("Unable to fit the course " + course.getName() + " into the schedule. You may want to mark it optional.");
-				return result;
-			}
-			for(Schedule s : temp) {
-				for(ScheduleFilter filter : filters) {
-					if(filter.doesScheduleSatisfyFilter(s)) {
-						result.add(s);
-					}
-				}
-			}
-			return result;
-		}
-		else if(optionalCourseMap.size()>0) {
-			for(Entry<Course, Set<Section>> entry : optionalCourseMap.entrySet()) {
-				Course course = entry.getKey();
-				Set<Section> sections = entry.getValue();
-				for(Section s : sections) {
-					if(start.willConflict(s)) continue;
-					Schedule newStart = new Schedule(start);
-					newStart.add(s);
-					
-					boolean prune=false;
-					for(ScheduleFilter filter : filters) {
-						if(!filter.doesScheduleSatisfyFilter(newStart) && filter.shouldPruneTreeOnFailure()) {
-							prune = true;
-							break;
-						}
-					}
-					if(!prune) {
-						temp.add(newStart);
-						
-						Map<Course, Set<Section>> copy = new HashMap<Course, Set<Section>>();
-						copy.putAll(optionalCourseMap);
-						copy.remove(course);
-						
-						ArrayList<Schedule> recurse = buildSchedulesGivenStartingPoint(start, requiredCourseMap, copy, filters);
-						if(recurse != null)
-							temp.addAll(recurse);
-					}
-				}
-			}
-			ArrayList<Schedule> result = new ArrayList<Schedule>();
-			for(Schedule s : temp) {
-				for(ScheduleFilter filter : filters) {
-					if(filter.doesScheduleSatisfyFilter(s)) {
-						result.add(s);
-					}
-				}
-			}
-			return result;
-		}
-		else {
-			return null;
-		}
 	}
 
 	public ArrayList<Section> getSections() {
@@ -307,30 +174,20 @@ public class Schedule implements Serializable {
 	}
 	
 	public boolean willConflict(Section s) {
-		Log.debug("In Schedule.willConflict(Section)");
 		Iterator<Period> i = s.getPeriods().iterator();
 		while(i.hasNext()) {
-			Log.debug("Getting next time period...");
 			Period p = i.next();
-			Log.debug("Period: " + p.toString());
 			int starttime = p.getStart().getAbsMinute();
 			int endtime = p.getEnd().getAbsMinute();
-			starttime /= 30;
-			if(endtime % 30 != 0) {
-				endtime /= 30;
-				endtime++;
-			}
-			else
-				endtime /= 30;
-			Log.debug("Start: " + starttime + " End: " + endtime);
-			Iterator<Integer> dayItr = p.getDays().iterator();
-			while(dayItr.hasNext()) {
-				int day = dayItr.next().intValue();
-				Log.debug("Checking day " + day);
-				Log.debug("Length of day: " + times.get(day).size());
-				for(int time=starttime;time<endtime;time++) {
-					if(times.get(day).get(time) == TimeBlockType.Blocked || 
-							times.get(day).get(time) == TimeBlockType.Filled)
+			starttime /= 10;
+			endtime /= 10;
+			
+			Iterator<Integer> j = p.getDays().iterator();
+			while(j.hasNext()) {
+				int day = j.next().intValue();
+				for(int k=starttime;k<endtime;k++) {
+					TimeBlockType t = times.get(day).get(k);
+					if(t == TimeBlockType.Filled || t == TimeBlockType.Blocked)
 						return true;
 				}
 			}
@@ -338,26 +195,40 @@ public class Schedule implements Serializable {
 		return false;
 	}
 	
-	public void blockTime(int day, int minute) {
-		minute = minute / 10;
-		times.get(day).set(minute, TimeBlockType.Blocked);
+	public void blockTime(int day, int hour, int minute) {
+		day = day % 7;
+		while(day<0) day += 7;
+		hour = hour % 24;
+		while(hour<0) hour += 24;
+		minute = minute % 60;
+		while(minute<0) minute += 60;
+		minute /= 10;
+		times.get(day).set(hour*6+minute, TimeBlockType.Blocked);
 	}
 	
-	public void unblockTime(int day, int minute) {
-		minute = minute / 10;
-		times.get(day).set(minute, TimeBlockType.Available);
+	public void unblockTime(int day, int hour, int minute) {
+		day = day % 7;
+		while(day<0) day += 7;
+		hour = hour % 24;
+		while(hour<0) hour += 24;
+		minute = minute % 60;
+		while(minute<0) minute += 60;
+		minute /= 10;
+		times.get(day).set(hour*6+minute, TimeBlockType.Available);
 	}
 	
 	public boolean add(Section s) {
-		ArrayList<Period> periods = s.getPeriods();
 		if(willConflict(s)) return false;
+		ArrayList<Period> periods = s.getPeriods();
 		Iterator<Period> i = periods.iterator();
 		while(i.hasNext()) {
 			Period p = i.next();
-			Time start = (Time)p.getStart().clone();
-			Time end = (Time)p.getEnd().clone();
+			Time start = p.getStart();
+			Time end = p.getEnd();
 			int starttime = start.getAbsMinute();
 			int endtime = end.getAbsMinute();
+			starttime /= 10;
+			endtime /= 10;
 			ArrayList<Integer> days = p.getDays();
 			Iterator<Integer> dayItr = days.iterator();
 			while(dayItr.hasNext()) {
@@ -388,6 +259,18 @@ public class Schedule implements Serializable {
 				}
 			}
 		}
+	}
+
+	public boolean isBlocked(int day, int hour, int minute) {
+		day = day % 7;
+		while(day<0) day += 7;
+		hour = hour % 24;
+		while(hour<0) hour += 24;
+		minute = minute % 60;
+		while(minute<0) minute += 60;
+		minute /= 10;
+		TimeBlockType t = times.get(day).get(hour*6+minute);
+		return (t == TimeBlockType.Blocked);
 	}
 
 }

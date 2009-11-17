@@ -36,6 +36,16 @@ public class SchedulerPanel extends SimplePanel {
 		case SchedulePage:
 			if(ScheduleFilterManager.get().filtersChanged()) {
 				SchedulerManager.get().generateSchedules();
+				this.remove(currentChild);
+				currentChild = SchedulerDisplayPanel.get();
+				SchedulerDisplayPanel.get().setSchedules(SchedulerManager.get().getAllSchedules());
+				this.add(currentChild);
+				break;
+			}
+			else {
+				this.remove(currentChild);
+				currentChild = SchedulerDisplayPanel.get();
+				this.add(currentChild);
 			}
 		}
 	}

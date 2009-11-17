@@ -2,7 +2,16 @@ package edu.rpi.rocs.client.ui.scheduler;
 
 import java.util.ArrayList;
 
+import com.google.gwt.event.dom.client.MouseOutEvent;
+import com.google.gwt.event.dom.client.MouseOutHandler;
+import com.google.gwt.event.dom.client.MouseOverEvent;
+import com.google.gwt.event.dom.client.MouseOverHandler;
+
+import edu.rpi.rocs.client.objectmodel.Course;
+import edu.rpi.rocs.client.objectmodel.Period;
 import edu.rpi.rocs.client.objectmodel.Schedule;
+import edu.rpi.rocs.client.objectmodel.Section;
+import edu.rpi.rocs.client.objectmodel.Time;
 import edu.rpi.rocs.client.ui.filters.ScheduleTimeBlockFilterWidget;
 import edu.rpi.rocs.client.ui.svg.SVGCanvasWidget;
 import edu.rpi.rocs.client.ui.svg.SVGGroupWidget;
@@ -16,6 +25,9 @@ public class ScheduleViewWidget extends SVGCanvasWidget {
 
 	Schedule m_schedule;
 	ScheduleBackgroundWidget m_background;
+	private static final int MAJOR_Y_DISTANCE=26;
+	private static final int MAJOR_X_DISTANCE=75;
+	private static final int MINOR_Y_DISTANCE=13;
 	
 	static String[] colors = {
 		"#808080",
@@ -67,8 +79,9 @@ public class ScheduleViewWidget extends SVGCanvasWidget {
 		SVGRectWidget m_background;
 		SVGGroupWidget m_x_labels;
 		SVGGroupWidget m_y_labels;
+		SVGPathWidget m_blocked;
 		
-		public ScheduleBackgroundWidget() {
+		private void createBackground() {
 			m_background = new SVGRectWidget();
 			m_background.setX("0");
 			m_background.setY("0");
@@ -77,26 +90,99 @@ public class ScheduleViewWidget extends SVGCanvasWidget {
 			m_background.setFillColor("#ffffff");
 			m_background.setStrokeColor("#000000");
 			m_background.setStrokeWidth("1");
-			addSVGElement(m_background);
+		}
+		
+		private void createBlocked(Schedule s) {
+			m_blocked = new SVGPathWidget();
+			m_blocked.setFillColor("#b8b8b8");
+			ArrayList<SVGPathComponent> temp = new ArrayList<SVGPathComponent>();
+			int start,end,x,y;
+			for(int day=0;day<7;day++) {
+				for(int i=8;i<22;i++) {
+					start=end=x=y=-1;
+					if(s.isBlocked(day, i, 0)) {
+						start = i*2;
+						end = start+1;
+						while(end<22*2) {
+							if(s.isBlocked(day, i, 30)) {
+								end++;
+								i++;
+							}
+							else {
+								break;
+							}
+							if(i==22) break;
+							if(s.isBlocked(day, i, 0)) {
+								end++;
+							}
+							else {
+								break;
+							}
+						}
+					}
+					if(s.isBlocked(day, i, 30)) {
+						start = i*2+1;
+						end = start+1;
+						i++;
+						while(end<22*2) {
+							if(s.isBlocked(day, i, 0))
+								end++;
+							else break;
+							if(s.isBlocked(day, i, 30)) {
+								end++;
+								i++;
+							}
+							else break;
+						}
+					}
+					if(start>0) {
+						x = day * MAJOR_X_DISTANCE;
+						y = (start/2-8) * MAJOR_Y_DISTANCE;
+						if(start%2==1) y += MINOR_Y_DISTANCE;
+						
+						// Adjust for headers
+						x += MAJOR_X_DISTANCE;
+						y += MAJOR_Y_DISTANCE;
+						
+						SVGPathComponent c = SVGPathComponent.createMovePathComponent(Integer.toString(x), Integer.toString(y), false);
+						temp.add(c);
+						c = SVGPathComponent.createLinePathComponent(Integer.toString(MAJOR_X_DISTANCE), "0", true);
+						temp.add(c);
+						c = SVGPathComponent.createLinePathComponent("0", Integer.toString((end-start)*MINOR_Y_DISTANCE), true);
+						temp.add(c);
+						c = SVGPathComponent.createLinePathComponent(Integer.toString(-MAJOR_X_DISTANCE), "0", true);
+						temp.add(c);
+						c = SVGPathComponent.createClosePathComponent(false);
+						temp.add(c);
+					}
+				}
+			}
+			m_blocked.addAll(temp);
+		}
+		
+		private void createSolidLines() {
 			m_solid_lines = new SVGPathWidget();
 			ArrayList<SVGPathComponent> temp = new ArrayList<SVGPathComponent>();
 			for(int i=0;i<14;i++) {
-				temp.add(SVGPathComponent.createMovePathComponent("0", Integer.toString((i+1)*26), false));
+				temp.add(SVGPathComponent.createMovePathComponent("0", Integer.toString((i+1)*MAJOR_Y_DISTANCE), false));
 				temp.add(SVGPathComponent.createLinePathComponent("600", "0", true));
 			}
 			for(int i=0;i<7;i++) {
-				temp.add(SVGPathComponent.createMovePathComponent(Integer.toString((i+1)*75), "0", false));
+				temp.add(SVGPathComponent.createMovePathComponent(Integer.toString((i+1)*MAJOR_X_DISTANCE), "0", false));
 				temp.add(SVGPathComponent.createLinePathComponent("0", "390", true));
 			}
 			m_solid_lines.addAll(temp);
 			m_solid_lines.setStrokeColor("#000000");
 			m_solid_lines.setStrokeWidth("1");
-			addSVGElement(m_solid_lines);
+		}
+		
+		private void createDashedLines() {
 			m_dashed_lines = new SVGPathWidget();
-			temp = new ArrayList<SVGPathComponent>();
+			ArrayList<SVGPathComponent> temp = new ArrayList<SVGPathComponent>();
 			for(int i=0;i<14;i++) {
-				temp.add(SVGPathComponent.createMovePathComponent("75", Integer.toString((i+1)*26+13), false));
-				temp.add(SVGPathComponent.createLinePathComponent("525", "0", true));
+				temp.add(SVGPathComponent.createMovePathComponent(Integer.toString(MAJOR_X_DISTANCE),
+						Integer.toString((i+1)*MAJOR_Y_DISTANCE+MINOR_Y_DISTANCE), false));
+				temp.add(SVGPathComponent.createLinePathComponent(Integer.toString(600-MAJOR_X_DISTANCE), "0", true));
 			}
 			m_dashed_lines.addAll(temp);
 			m_dashed_lines.setStrokeColor("#888888");
@@ -105,7 +191,9 @@ public class ScheduleViewWidget extends SVGCanvasWidget {
 			dash.add("4");
 			dash.add("4");
 			m_dashed_lines.setStrokeDashArray(dash);
-			addSVGElement(m_dashed_lines);
+		}
+		
+		private void createLabels() {
 			m_y_labels = new SVGGroupWidget();
 			for(int i=0;i<7;i++) {
 				SVGTextWidget text = new SVGTextWidget();
@@ -113,11 +201,10 @@ public class ScheduleViewWidget extends SVGCanvasWidget {
 				text.setTextAnchor(TextAnchor.Middle);
 				text.setText(ScheduleTimeBlockFilterWidget.dayOfWeek(i));
 				text.setX(Integer.toString((i+1)*75+75/2));
-				text.setY("18");
-				text.setFontSize("18");
+				text.setY("20");
+				text.setFontSize("16");
 				m_y_labels.addSVGElement(text);
 			}
-			addSVGElement(m_y_labels);
 			m_x_labels = new SVGGroupWidget();
 			for(int i=0;i<14;i++) {
 				SVGTextWidget text = new SVGTextWidget();
@@ -125,10 +212,45 @@ public class ScheduleViewWidget extends SVGCanvasWidget {
 				text.setTextAnchor(TextAnchor.End);
 				text.setText(Integer.toString(i+8));
 				text.setX("72");
-				text.setY(Integer.toString((i+1)*26+18));
-				text.setFontSize("18");
+				text.setY(Integer.toString((i+1)*26+20));
+				text.setFontSize("16");
 				m_x_labels.addSVGElement(text);
 			}
+		}
+		
+		public ScheduleBackgroundWidget() {
+			createBackground();
+			addSVGElement(m_background);
+			m_blocked = new SVGPathWidget();
+			m_blocked.setFillColor("#b8b8b8");
+			ArrayList<SVGPathComponent> temp = new ArrayList<SVGPathComponent>();
+			temp.add(SVGPathComponent.createMovePathComponent("225","91",false));
+			temp.add(SVGPathComponent.createLinePathComponent("75", "0", true));
+			temp.add(SVGPathComponent.createLinePathComponent("0", "117", true));
+			temp.add(SVGPathComponent.createLinePathComponent("-75", "0", true));
+			temp.add(SVGPathComponent.createClosePathComponent(false));
+			m_blocked.addAll(temp);
+			addSVGElement(m_blocked);
+			createSolidLines();
+			addSVGElement(m_solid_lines);
+			createDashedLines();
+			addSVGElement(m_dashed_lines);
+			createLabels();
+			addSVGElement(m_y_labels);
+			addSVGElement(m_x_labels);
+		}
+
+		public ScheduleBackgroundWidget(Schedule mSchedule) {
+			createBackground();
+			addSVGElement(m_background);
+			createBlocked(mSchedule);
+			addSVGElement(m_blocked);
+			createSolidLines();
+			addSVGElement(m_solid_lines);
+			createDashedLines();
+			addSVGElement(m_dashed_lines);
+			createLabels();
+			addSVGElement(m_y_labels);
 			addSVGElement(m_x_labels);
 		}
 	}
@@ -138,6 +260,108 @@ public class ScheduleViewWidget extends SVGCanvasWidget {
 		private ArrayList<SVGRectWidget> m_rects;
 		private ArrayList<SVGTextWidget> m_text;
 		private String m_color;
+		private Section m_section;
+		
+		abstract class SectionMouseOverHandler implements MouseOverHandler {
+			SectionGroupWidget self;
+			
+			SectionMouseOverHandler(SectionGroupWidget w) {
+				self = w;
+			}
+		}
+		
+		abstract class SectionMouseOutHandler implements MouseOutHandler {
+			SectionGroupWidget self;
+			
+			SectionMouseOutHandler(SectionGroupWidget w) {
+				self = w;
+			}
+		}
+		
+		SectionMouseOverHandler overHandle = new SectionMouseOverHandler(this) {
+
+			public void onMouseOver(MouseOverEvent arg0) {
+				for(SVGRectWidget w : self.m_rects) {
+					w.setStrokeColor("#800000");
+					w.setStrokeWidth("2");
+				}
+			}
+			
+		};
+		
+		SectionMouseOutHandler outHandle = new SectionMouseOutHandler(this) {
+
+			public void onMouseOut(MouseOutEvent arg0) {
+				for(SVGRectWidget w : self.m_rects) {
+					w.setStrokeColor("#000000");
+					w.setStrokeWidth("1");
+				}
+			}
+			
+		};
+		
+		public SectionGroupWidget(Section s) {
+			m_section = s;
+			Course temp = s.getParent();
+			m_identifier = temp.getDept() + " " + temp.getNum();
+			m_color = "#ffffff";
+			m_rects = new ArrayList<SVGRectWidget>();
+			m_text = new ArrayList<SVGTextWidget>();
+			ArrayList<Period> times = s.getPeriods();
+			for(Period p : times) {
+				Time start = p.getStart();
+				Time end = p.getEnd();
+				int startPix = (int)((double)MAJOR_Y_DISTANCE*(double)((double)start.getMinute()/60.0));
+				startPix += (start.getHour()-8)*MAJOR_Y_DISTANCE;
+				int endPix = (int)((double)MAJOR_Y_DISTANCE*(double)((double)end.getMinute()/60.0));
+				endPix += (end.getHour()-8)*MAJOR_Y_DISTANCE;
+				
+				// Adjust for header row
+				startPix += MAJOR_Y_DISTANCE;
+				endPix += MAJOR_Y_DISTANCE;
+				
+				for(Integer day : p.getDays()) {
+					int d = day.intValue();
+					int left = MAJOR_X_DISTANCE*d;
+					int right = MAJOR_X_DISTANCE*(d+1);
+					
+					// Adjust for header column
+					left += MAJOR_X_DISTANCE;
+					right += MAJOR_X_DISTANCE;
+					
+					SVGRectWidget rect = new SVGRectWidget();
+					rect.setX(Integer.toString(left));
+					rect.setY(Integer.toString(startPix));
+					rect.setWidth(Integer.toString(right-left));
+					rect.setHeight(Integer.toString(endPix-startPix));
+					rect.setFillColor(m_color);
+					rect.setStrokeColor("#000000");
+					rect.setStrokeWidth("1");
+					rect.addMouseOutHandler(outHandle);
+					rect.addMouseOverHandler(overHandle);
+					m_rects.add(rect);
+					
+					SVGTextWidget text = new SVGTextWidget();
+					text.setX(Integer.toString((left+right)/2));
+					text.setY(Integer.toString(startPix+MINOR_Y_DISTANCE-2));
+					text.setFontSize("12");
+					text.setTextAnchor(TextAnchor.Middle);
+					text.setText(m_identifier);
+					text.addMouseOutHandler(outHandle);
+					text.addMouseOverHandler(overHandle);
+					m_text.add(text);
+				}
+			}
+			for(SVGRectWidget w : m_rects)
+				addSVGElement(w);
+			for(SVGTextWidget w : m_text)
+				addSVGElement(w);
+		}
+		
+		@SuppressWarnings("unused")
+		public Section getSection() {
+			return m_section;
+		}
 		
 		public SectionGroupWidget(boolean twohr) {
 			if(twohr) {
@@ -153,6 +377,8 @@ public class ScheduleViewWidget extends SVGCanvasWidget {
 				rect.setFillColor(m_color);
 				rect.setStrokeColor("#000000");
 				rect.setStrokeWidth("1");
+				rect.addMouseOverHandler(overHandle);
+				rect.addMouseOutHandler(outHandle);
 				m_rects.add(rect);
 				rect = new SVGRectWidget();
 				rect.setX("375");
@@ -162,6 +388,8 @@ public class ScheduleViewWidget extends SVGCanvasWidget {
 				rect.setFillColor(m_color);
 				rect.setStrokeColor("#000000");
 				rect.setStrokeWidth("1");
+				rect.addMouseOutHandler(outHandle);
+				rect.addMouseOverHandler(overHandle);
 				m_rects.add(rect);
 				SVGTextWidget text = new SVGTextWidget();
 				text.setX(Integer.toString(150+76/2));
@@ -169,6 +397,8 @@ public class ScheduleViewWidget extends SVGCanvasWidget {
 				text.setFontSize("14");
 				text.setTextAnchor(TextAnchor.Middle);
 				text.setText(m_identifier);
+				text.addMouseOutHandler(outHandle);
+				text.addMouseOverHandler(overHandle);
 				m_text.add(text);
 				text = new SVGTextWidget();
 				text.setX(Integer.toString(375+76/2));
@@ -176,6 +406,8 @@ public class ScheduleViewWidget extends SVGCanvasWidget {
 				text.setFontSize("14");
 				text.setTextAnchor(TextAnchor.Middle);
 				text.setText(m_identifier);
+				text.addMouseOutHandler(outHandle);
+				text.addMouseOverHandler(overHandle);
 				m_text.add(text);
 				for(SVGRectWidget w : m_rects)
 					addSVGElement(w);
@@ -195,6 +427,8 @@ public class ScheduleViewWidget extends SVGCanvasWidget {
 				rect.setFillColor(m_color);
 				rect.setStrokeColor("#000000");
 				rect.setStrokeWidth("1");
+				rect.addMouseOutHandler(outHandle);
+				rect.addMouseOverHandler(overHandle);
 				m_rects.add(rect);
 				rect = new SVGRectWidget();
 				rect.setX("375");
@@ -204,6 +438,8 @@ public class ScheduleViewWidget extends SVGCanvasWidget {
 				rect.setFillColor(m_color);
 				rect.setStrokeColor("#000000");
 				rect.setStrokeWidth("1");
+				rect.addMouseOutHandler(outHandle);
+				rect.addMouseOverHandler(overHandle);
 				m_rects.add(rect);
 				SVGTextWidget text = new SVGTextWidget();
 				text.setX(Integer.toString(150+76/2));
@@ -211,6 +447,8 @@ public class ScheduleViewWidget extends SVGCanvasWidget {
 				text.setFontSize("14");
 				text.setTextAnchor(TextAnchor.Middle);
 				text.setText(m_identifier);
+				text.addMouseOutHandler(outHandle);
+				text.addMouseOverHandler(overHandle);
 				m_text.add(text);
 				text = new SVGTextWidget();
 				text.setX(Integer.toString(375+76/2));
@@ -218,6 +456,8 @@ public class ScheduleViewWidget extends SVGCanvasWidget {
 				text.setFontSize("14");
 				text.setTextAnchor(TextAnchor.Middle);
 				text.setText(m_identifier);
+				text.addMouseOutHandler(outHandle);
+				text.addMouseOverHandler(overHandle);
 				m_text.add(text);
 				for(SVGRectWidget w : m_rects)
 					addSVGElement(w);
@@ -239,13 +479,25 @@ public class ScheduleViewWidget extends SVGCanvasWidget {
 		resetColorsAvailable();
 		m_schedule = s;
 		//ArrayList<Section> sections = s.getSections();
-		m_background = new ScheduleBackgroundWidget();
-		addSVGElement(m_background);
-		SectionGroupWidget w = new SectionGroupWidget(true);
-		w.setFillColor(randomlySelectColor());
-		addSVGElement(w);
-		w = new SectionGroupWidget(false);
-		w.setFillColor(randomlySelectColor());
-		addSVGElement(w);
+		if(s==null) {
+			m_background = new ScheduleBackgroundWidget();
+			addSVGElement(m_background);
+			SectionGroupWidget w = new SectionGroupWidget(true);
+			w.setFillColor(randomlySelectColor());
+			addSVGElement(w);
+			w = new SectionGroupWidget(false);
+			w.setFillColor(randomlySelectColor());
+			addSVGElement(w);
+		}
+		else {
+			m_background = new ScheduleBackgroundWidget(m_schedule);
+			addSVGElement(m_background);
+			ArrayList<Section> sections = s.getSections();
+			for(Section section : sections) {
+				SectionGroupWidget w = new SectionGroupWidget(section);
+				w.setFillColor(randomlySelectColor());
+				addSVGElement(w);
+			}
+		}
 	}
 }
