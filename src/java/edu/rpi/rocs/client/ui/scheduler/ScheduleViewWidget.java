@@ -28,8 +28,8 @@ public class ScheduleViewWidget extends SVGCanvasWidget {
 	private static final int MAJOR_Y_DISTANCE=26;
 	private static final int MAJOR_X_DISTANCE=75;
 	private static final int MINOR_Y_DISTANCE=13;
-	RandomColorGenerator m_generator=new RandomColorGenerator();
-	
+	RandomColorGenerator m_generator;
+
 	private class ScheduleBackgroundWidget extends SVGGroupWidget {
 		SVGPathWidget m_solid_lines;
 		SVGPathWidget m_dashed_lines;
@@ -37,7 +37,7 @@ public class ScheduleViewWidget extends SVGCanvasWidget {
 		SVGGroupWidget m_x_labels;
 		SVGGroupWidget m_y_labels;
 		SVGPathWidget m_blocked;
-		
+
 		private void createBackground() {
 			m_background = new SVGRectWidget();
 			m_background.setX("0");
@@ -48,7 +48,7 @@ public class ScheduleViewWidget extends SVGCanvasWidget {
 			m_background.setStrokeColor("#000000");
 			m_background.setStrokeWidth("1");
 		}
-		
+
 		private void createBlocked(Schedule s) {
 			m_blocked = new SVGPathWidget();
 			m_blocked.setFillColor("#b8b8b8");
@@ -96,11 +96,11 @@ public class ScheduleViewWidget extends SVGCanvasWidget {
 						x = day * MAJOR_X_DISTANCE;
 						y = (start/2-8) * MAJOR_Y_DISTANCE;
 						if(start%2==1) y += MINOR_Y_DISTANCE;
-						
+
 						// Adjust for headers
 						x += MAJOR_X_DISTANCE;
 						y += MAJOR_Y_DISTANCE;
-						
+
 						SVGPathComponent c = SVGPathComponent.createMovePathComponent(Integer.toString(x), Integer.toString(y), false);
 						temp.add(c);
 						c = SVGPathComponent.createLinePathComponent(Integer.toString(MAJOR_X_DISTANCE), "0", true);
@@ -116,7 +116,7 @@ public class ScheduleViewWidget extends SVGCanvasWidget {
 			}
 			m_blocked.addAll(temp);
 		}
-		
+
 		private void createSolidLines() {
 			m_solid_lines = new SVGPathWidget();
 			ArrayList<SVGPathComponent> temp = new ArrayList<SVGPathComponent>();
@@ -132,7 +132,7 @@ public class ScheduleViewWidget extends SVGCanvasWidget {
 			m_solid_lines.setStrokeColor("#000000");
 			m_solid_lines.setStrokeWidth("1");
 		}
-		
+
 		private void createDashedLines() {
 			m_dashed_lines = new SVGPathWidget();
 			ArrayList<SVGPathComponent> temp = new ArrayList<SVGPathComponent>();
@@ -149,7 +149,7 @@ public class ScheduleViewWidget extends SVGCanvasWidget {
 			dash.add("4");
 			m_dashed_lines.setStrokeDashArray(dash);
 		}
-		
+
 		private void createLabels() {
 			m_y_labels = new SVGGroupWidget();
 			for(int i=0;i<7;i++) {
@@ -174,7 +174,7 @@ public class ScheduleViewWidget extends SVGCanvasWidget {
 				m_x_labels.addSVGElement(text);
 			}
 		}
-		
+
 		public ScheduleBackgroundWidget() {
 			createBackground();
 			addSVGElement(m_background);
@@ -211,30 +211,30 @@ public class ScheduleViewWidget extends SVGCanvasWidget {
 			addSVGElement(m_x_labels);
 		}
 	}
-	
+
 	private class SectionGroupWidget extends SVGGroupWidget {
 		private String m_identifier;
 		private ArrayList<SVGRectWidget> m_rects;
 		private ArrayList<SVGTextWidget> m_text;
 		private String m_color;
 		private Section m_section;
-		
+
 		abstract class SectionMouseOverHandler implements MouseOverHandler {
 			SectionGroupWidget self;
-			
+
 			SectionMouseOverHandler(SectionGroupWidget w) {
 				self = w;
 			}
 		}
-		
+
 		abstract class SectionMouseOutHandler implements MouseOutHandler {
 			SectionGroupWidget self;
-			
+
 			SectionMouseOutHandler(SectionGroupWidget w) {
 				self = w;
 			}
 		}
-		
+
 		SectionMouseOverHandler overHandle = new SectionMouseOverHandler(this) {
 
 			public void onMouseOver(MouseOverEvent arg0) {
@@ -245,7 +245,7 @@ public class ScheduleViewWidget extends SVGCanvasWidget {
 			}
 			
 		};
-		
+
 		SectionMouseOutHandler outHandle = new SectionMouseOutHandler(this) {
 
 			public void onMouseOut(MouseOutEvent arg0) {
@@ -256,7 +256,7 @@ public class ScheduleViewWidget extends SVGCanvasWidget {
 			}
 			
 		};
-		
+
 		public SectionGroupWidget(Section s) {
 			m_section = s;
 			Course temp = s.getParent();
@@ -272,20 +272,20 @@ public class ScheduleViewWidget extends SVGCanvasWidget {
 				startPix += (start.getHour()-8)*MAJOR_Y_DISTANCE;
 				int endPix = (int)((double)MAJOR_Y_DISTANCE*(double)((double)end.getMinute()/60.0));
 				endPix += (end.getHour()-8)*MAJOR_Y_DISTANCE;
-				
+
 				// Adjust for header row
 				startPix += MAJOR_Y_DISTANCE;
 				endPix += MAJOR_Y_DISTANCE;
-				
+
 				for(Integer day : p.getDays()) {
 					int d = day.intValue();
 					int left = MAJOR_X_DISTANCE*d;
 					int right = MAJOR_X_DISTANCE*(d+1);
-					
+
 					// Adjust for header column
 					left += MAJOR_X_DISTANCE;
 					right += MAJOR_X_DISTANCE;
-					
+
 					SVGRectWidget rect = new SVGRectWidget();
 					rect.setX(Integer.toString(left));
 					rect.setY(Integer.toString(startPix));
@@ -297,7 +297,7 @@ public class ScheduleViewWidget extends SVGCanvasWidget {
 					rect.addMouseOutHandler(outHandle);
 					rect.addMouseOverHandler(overHandle);
 					m_rects.add(rect);
-					
+
 					SVGTextWidget text = new SVGTextWidget();
 					text.setX(Integer.toString((left+right)/2));
 					text.setY(Integer.toString(startPix+MINOR_Y_DISTANCE-2));
@@ -314,12 +314,12 @@ public class ScheduleViewWidget extends SVGCanvasWidget {
 			for(SVGTextWidget w : m_text)
 				addSVGElement(w);
 		}
-		
+
 		@SuppressWarnings("unused")
 		public Section getSection() {
 			return m_section;
 		}
-		
+
 		public SectionGroupWidget(boolean twohr) {
 			if(twohr) {
 				m_identifier = "CSCI 4210";
@@ -422,7 +422,7 @@ public class ScheduleViewWidget extends SVGCanvasWidget {
 					addSVGElement(w);
 			}
 		}
-		
+
 		public void setFillColor(String color) {
 			super.setFillColor(color);
 			m_color = color;
@@ -430,10 +430,11 @@ public class ScheduleViewWidget extends SVGCanvasWidget {
 				w.setFillColor(color);
 		}
 	}
-	
-	public ScheduleViewWidget(Schedule s) {
+
+	public ScheduleViewWidget(Schedule s, RandomColorGenerator g) {
 		super("schedule_viewer", "600", "400");
 		m_schedule = s;
+		m_generator = g;
 		//ArrayList<Section> sections = s.getSections();
 		if(s==null) {
 			m_background = new ScheduleBackgroundWidget();
@@ -451,7 +452,7 @@ public class ScheduleViewWidget extends SVGCanvasWidget {
 			ArrayList<Section> sections = s.getSections();
 			for(Section section : sections) {
 				SectionGroupWidget w = new SectionGroupWidget(section);
-				w.setFillColor(m_generator.randomlySelectColor());
+				w.setFillColor(m_generator.randomlySelectColor(section.getParent()));
 				addSVGElement(w);
 			}
 		}

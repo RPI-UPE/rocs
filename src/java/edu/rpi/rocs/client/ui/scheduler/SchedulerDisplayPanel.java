@@ -18,15 +18,16 @@ public class SchedulerDisplayPanel extends HorizontalPanel {
 	Schedule m_current;
 	ScheduleViewWidget m_view;
 	FlowPanel m_summary;
-	
+	RandomColorGenerator m_genMap = new RandomColorGenerator();
+
 	private void setActiveSchedule(Schedule s) {
 		m_current = s;
 		updateSchedulePanel();
 	}
-	
+
 	class ScheduleClickHandler implements ClickHandler {
 		Schedule m_schedule;
-		
+
 		ScheduleClickHandler(Schedule s) {
 			m_schedule = s;
 		}
@@ -38,7 +39,7 @@ public class SchedulerDisplayPanel extends HorizontalPanel {
 			setActiveSchedule(m_schedule);
 		}
 	}
-	
+
 	private SchedulerDisplayPanel() {
 		m_current = null;
 		m_view = null;
@@ -47,18 +48,18 @@ public class SchedulerDisplayPanel extends HorizontalPanel {
 		m_summary.addStyleName("schedule-list");
 		add(m_summary);
 	}
-	
+
 	public static SchedulerDisplayPanel get() {
 		if(theInstance==null) theInstance = new SchedulerDisplayPanel();
 		return theInstance;
 	}
-	
+
 	public void setSchedules(ArrayList<Schedule> schedules) {
 		m_schedules = schedules;
 		if(m_schedules.size()>0) {
 			m_current = m_schedules.get(0);
 			for(Schedule s : schedules) {
-				ScheduleMiniViewWidget w = new ScheduleMiniViewWidget(s);
+				ScheduleMiniViewWidget w = new ScheduleMiniViewWidget(s, m_genMap);
 				m_summary.add(w);
 				w.addClickHandler(new ScheduleClickHandler(s));
 			}
@@ -68,7 +69,7 @@ public class SchedulerDisplayPanel extends HorizontalPanel {
 		}
 		updateSchedulePanel();
 	}
-	
+
 	private void updateSchedulePanel() {
 		if(m_view!=null) {
 			remove(m_view);
@@ -77,7 +78,7 @@ public class SchedulerDisplayPanel extends HorizontalPanel {
 			Window.alert("Unable to compute at least one valid schedule.");
 			return;
 		}
-		m_view = new ScheduleViewWidget(m_current);
+		m_view = new ScheduleViewWidget(m_current, m_genMap);
 		this.insert(m_view, 0);
 	}
 }

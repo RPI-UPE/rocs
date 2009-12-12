@@ -19,7 +19,10 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import edu.rpi.rocs.client.SemesterManager;
 import edu.rpi.rocs.client.SemesterManager.SemesterManagerCallback;
 import edu.rpi.rocs.client.objectmodel.Course;
+import edu.rpi.rocs.client.objectmodel.Period;
 import edu.rpi.rocs.client.objectmodel.SchedulerManager;
+import edu.rpi.rocs.client.objectmodel.SchedulerManager.CourseStatusObject;
+import edu.rpi.rocs.client.objectmodel.Section;
 import edu.rpi.rocs.client.objectmodel.Semester;
 import edu.rpi.rocs.client.objectmodel.Course.CourseComparator;
 import edu.rpi.rocs.client.ui.ListBoxHTML;
@@ -58,9 +61,9 @@ public class CourseSearchPanel extends VerticalPanel {
 					deptList.addItem(str);
 				}
 			}
-		
+
 	};
-	
+
 	private static CourseSearchPanel instance = null;
 	public static CourseSearchPanel getInstance() {
 		if (instance == null) {
@@ -68,7 +71,7 @@ public class CourseSearchPanel extends VerticalPanel {
 		}
 		return instance;
 	}
-	
+
 	private CourseSearchPanel() {
 		SemesterManager.getInstance().addSemesterChangeListener(semesterChangeCallback);
 		deptList.addItem("Any");
@@ -89,7 +92,7 @@ public class CourseSearchPanel extends VerticalPanel {
 		layout.setWidget(3, 1, nameTextbox);
 		layout.setWidget(4, 0, searchButton);
 		layout.getFlexCellFormatter().setColSpan(4, 0, 2);
-		
+
 		searchButton.addStyleName("greybutton");
 		searchButton.addStyleName("linkbutton");
 		searchButton.addClickHandler(new ClickHandler() {
@@ -98,11 +101,11 @@ public class CourseSearchPanel extends VerticalPanel {
 				// TODO Auto-generated method stub
 				CourseSearchPanel.getInstance().search();
 			}
-			
+
 		});
-		
+
 		resultsListBox.addStyleName("search_results");
-		
+
 		resultAdd.addStyleName("greenbutton");
 		resultAdd.addStyleName("linkbutton");
 		resultAdd.addClickHandler(new ClickHandler() {
@@ -113,17 +116,18 @@ public class CourseSearchPanel extends VerticalPanel {
 					if(resultsListBox.isItemSelected(i)) {
 						Course c = theResults.get(i);
 						SchedulerManager.get().addCourse(c);
+						CourseSearchPanel.getInstance().search();
 					}
 				}
 			}
-			
+
 		});
-		
+
 		resultAdd.addStyleName("right-padded");
-		
+
 		resultsWrapper.addStyleName("search_results");
 		resultsWrapper.add(resultsListBox);
-		
+
 		this.add(layout);
 		this.add(resultsWrapper);
 		this.add(resultAdd);
@@ -134,7 +138,7 @@ public class CourseSearchPanel extends VerticalPanel {
 		}
 		*/
 	}
-	
+
 	private ArrayList<Course> theResults=null;
 
 	public void search() {
@@ -143,22 +147,28 @@ public class CourseSearchPanel extends VerticalPanel {
 		Log.debug("There are " + courses.size() + " courses");
 		String dept = deptList.getValue(deptList.getSelectedIndex());
 		if(dept == "Any") dept = null;
-		
+
 		String level = getSearchLevel();
-		
+
 		String name = nameTextbox.getValue();
 		if(name == null) name = null;
 		else if(name.equals("")) name = null;
-		
+
 		String num = numberTextbox.getValue();
 		if(num == null) num = null;
 		else if(num.equals("")) num = null;
-		
+
 		int userCourseNum = -1;
 		if(num != null){
 			userCourseNum = Integer.parseInt(num);
 		}
-		
+
+		List<CourseStatusObject> CSOlist = SchedulerManager.get().getSelectedCourses();
+		ArrayList<Course> CRSlist = new ArrayList<Course>();
+		for (CourseStatusObject CSO : CSOlist) if (CSO.getRequired()) CRSlist.add(CSO.getCourse());
+		ArrayList<Section> sArr = new ArrayList<Section>(); sArr.add(new Section());
+		ArrayList<Section> blocking = possibleTimeBlocks(sArr, CRSlist, true);
+
 		theResults = new ArrayList<Course>();
 		for(Course course : courses) {
 			if(dept==null || course.getDept()==dept) {
@@ -172,13 +182,84 @@ public class CourseSearchPanel extends VerticalPanel {
 			}
 		}
 		Collections.sort(theResults, new CourseComparator());
-		
+
 		resultsListBox.clear();
 		for(Course course : theResults) {
+			ArrayList<Course> cArr = new ArrayList<Course>(); cArr.add(course);
+			boolean conflicted = (possibleTimeBlocks(blocking, cArr, false).size() > 0);
 			resultsListBox.addHTML(course.getListDescription(), course.getDept()+course.getNum());
 		}
 	}
-	
+	private ArrayList<Section> possibleTimeBlocks(ArrayList<Section> accrue, ArrayList<Course> remaining, boolean fullList) {
+		if (remaining.size() == 0) return accrue;
+
+		ArrayList<Section> retVal = new ArrayList<Section>();
+		Course course = remaining.remove(0);
+
+		if (fullList) {
+			for (Section S1 : accrue) {
+				for (Section S2 : course.getSections()) {
+					Section S3 = combineSections(S1, S2);
+					if (S3 != null && !containsMatch(retVal, S3)) retVal.add(S3);
+				}
+			}
+			ArrayList<Section> realRetVal = possibleTimeBlocks(retVal, remaining, false);
+			remaining.add(0, course);
+			return realRetVal;
+		}
+		else {
+			remaining.add(0, course);
+			for (Section S1 : accrue) {
+				for (Section S2 : course.getSections()) {
+					Section S3 = combineSections(S1, S2);
+					if (S3 != null) {
+						retVal.add(S3);
+						return retVal;
+					}
+				}
+			}
+			return retVal;
+		}
+	}
+	private Section combineSections(Section S1, Section S2) {
+		Section retVal = new Section();
+		for (Period P : S1.getPeriods()) retVal.addPeriod(P);
+		for (Period P : S2.getPeriods()) if (!addPeriod(retVal, P)) return null;
+		return retVal;
+	}
+	private boolean addPeriod(Section S, Period P) {
+		int time1 = P.getStart().getAbsMinute(), time2 = P.getEnd().getAbsMinute();
+		for (Period P2 : S.getPeriods()) if (intersects(P.getDays(), P2.getDays())) {
+			int time3 = P2.getStart().getAbsMinute(), time4 = P2.getEnd().getAbsMinute();
+			if (time3 <= time2 && time4 >= time1) return false;
+		}
+		S.addPeriod(P);
+		return true;
+	}
+	private boolean intersects(ArrayList<Integer> arr1, ArrayList<Integer> arr2) {
+		for (Integer i : arr1) for (Integer j : arr2) if (i.equals(j)) return true;
+		return false;
+	}
+	private boolean containsMatch(ArrayList<Section> list, Section section) {
+		for (Section S : list) if (match(S, section)) return true;
+		return false;
+	}
+	private boolean match(Section S1, Section S2) {
+		for (Period P1 : S1.getPeriods()) for (Integer i : P1.getDays()) {
+			boolean covered = false;
+			int time1 = P1.getStart().getAbsMinute(), time2 = P1.getEnd().getAbsMinute();
+			for (Period P2 : S2.getPeriods()) if (P2.getDays().contains(i)) {
+				int time3 = P2.getStart().getAbsMinute(), time4 = P2.getEnd().getAbsMinute();
+				if (time1 == time3 && time2 == time4) {
+					covered = true;
+					break;
+				}
+			}
+			if (!covered) return false;
+		}
+		return true;
+	}
+
 	private String getSearchLevel() {
 		String level = levelList.getValue(levelList.getSelectedIndex());
 		if(level.indexOf("Any") != -1) {
@@ -203,7 +284,7 @@ public class CourseSearchPanel extends VerticalPanel {
 			return "6";
 		}
 	}
-	
+
 	private boolean getCorrectCourseLevel(String level, int courseNum){
 		if(level.equals("0")){
 				return true;

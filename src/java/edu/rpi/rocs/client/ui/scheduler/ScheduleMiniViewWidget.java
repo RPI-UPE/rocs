@@ -26,11 +26,12 @@ public class ScheduleMiniViewWidget extends SVGCanvasWidget implements
 	Schedule m_schedule;
 	SVGRectWidget m_background;
 	ArrayList<SVGRectWidget> m_classes=new ArrayList<SVGRectWidget>();
-	RandomColorGenerator m_generator=new RandomColorGenerator();
-	
-	public ScheduleMiniViewWidget(Schedule s) {
+	RandomColorGenerator m_generator;
+
+	public ScheduleMiniViewWidget(Schedule s, RandomColorGenerator g) {
 		super("80","94");
 		m_schedule = s;
+		m_generator = g;
 		m_background = new SVGRectWidget();
 		m_background.setX("0");
 		m_background.setY("0");
@@ -42,7 +43,7 @@ public class ScheduleMiniViewWidget extends SVGCanvasWidget implements
 		ArrayList<Section> sections = m_schedule.getSections();
 		for(Section section : sections) {
 			ArrayList<Period> periods = section.getPeriods();
-			String color = m_generator.randomlySelectColor();
+			String color = m_generator.randomlySelectColor(section.getParent());
 			for(Period p : periods) {
 				int start = p.getStart().getAbsMinute();
 				int end = p.getEnd().getAbsMinute();
@@ -84,7 +85,7 @@ public class ScheduleMiniViewWidget extends SVGCanvasWidget implements
 			}
 		});
 	}
-	
+
 	public HandlerRegistration addMouseOutHandler(MouseOutHandler arg0) {
 		return addDomHandler(arg0, MouseOutEvent.getType());
 	}
