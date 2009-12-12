@@ -107,7 +107,10 @@ public class Schedule implements Serializable {
 			for(Section section : sections) {
 				if(!start.willConflict(section)) {
 					Schedule copy = new Schedule(start);
-					copy.add(section);
+					if(!copy.add(section)) {
+						Log.debug("Went to add section, but add() returned false. Aborting");
+						return results;
+					}
 					ArrayList<Schedule> temp = buildSchedulesGivenStartingPoint(copy,newCourses,optionalCourses,filters);
 					results.addAll(temp);
 				}
@@ -153,12 +156,23 @@ public class Schedule implements Serializable {
 		newFilters.remove(timeFilter);
 		ArrayList<Schedule> schedules = buildSchedulesGivenStartingPoint(start, requiredCourseMap, optionalCourseMap, newFilters);
 		ArrayList<Schedule> result = new ArrayList<Schedule>();
+		
 		for(Schedule s : schedules) {
-			if(s.getSections().containsAll(requiredCourses))
+			if(s.getCourses().containsAll(requiredCourses)) {
 				result.add(s);
+			}
 		}
 		if(result.size()==0) Window.alert("Conflict detected. Unable to generate any valid schedules.");
+		
 		return result;
+	}
+	
+	public ArrayList<Course> getCourses() {
+		ArrayList<Course> courses=new ArrayList<Course>();
+		for(Section s : sections) {
+			courses.add(s.getParent());
+		}
+		return courses;
 	}
 
 	public ArrayList<Section> getSections() {

@@ -73,25 +73,19 @@ div#rocs_PORTLET_rocs_root_view h4 {
 }
 
 div#rocs_PORTLET_rocs_semester_pane {
-    position:absolute;
-    top:0px;
-    left:0px;
-    width:188px;
+    width:1000px;
     height:76px;
     padding:6px;
 }
 
 div#rocs_PORTLET_rocs_courses_pane {
-    position:absolute;
-    top:0px;
-    left:200px;
-    width:800px;
+    width:1000px;
     height:150px;
     overflow:hidden;
 }
 
 div#rocs_PORTLET_rocs_courses_pane select.class_view {    
-    width: 650px;
+    width: 800px;
     height: 90px;
     overflow-x: scroll;
 }
@@ -113,10 +107,7 @@ div#rocs_PORTLET_rocs_courses_pane table td {
 }
 
 div#rocs_PORTLET_rocs_search_pane {
-    position:absolute;
-    top:88px;
-    left:0px;
-    width:188px;
+    width:1000px;
     height:500px;
     overflow:hidden;
     padding:6px;
@@ -131,15 +122,15 @@ div#rocs_PORTLET_rocs_search_pane table td {
 }
 
 div#rocs_PORTLET_rocs_search_pane table td select {
-    width: 88px;
+/*    width: 792px;*/
 }
 
 div#rocs_PORTLET_rocs_search_pane table td input[type="text"] {
-    width: 88px;
+/*    width: 792px;*/
 }
 
 div#rocs_PORTLET_rocs_search_pane div.search_results {
-    width: 178px;
+    width: 800px;
     height: 260px;
     margin: 5px;
     position: relative;
@@ -148,7 +139,7 @@ div#rocs_PORTLET_rocs_search_pane div.search_results {
 }
 
 div#rocs_PORTLET_rocs_search_pane select.search_results {
-    min-width: 178px;
+    min-width: 792px;
     height: 245px;
     font-family: Courier New;
     width: auto;
@@ -163,10 +154,7 @@ div#rocs_PORTLET_rocs_search_pane select.search_results option.conflict {
 }
 
 div#rocs_PORTLET_rocs_scheduler_pane {
-    position:absolute;
-    top:150px;
-    left:200px;
-    width:776px;
+    width:1000px;
     height:426px;
     overflow:hidden;
     padding: 12px;
@@ -238,4 +226,18 @@ div.rocs-dialog {
 .schedule-list svg {
     cursor: pointer;
     margin: 3px;
+}
+
+div#rocs_PORTLET_rocs_root_view .gwt-MultiStackPanelItem-selected, .gwt-MultiStackPanelItem {
+    background-color: #989898;
+    width: 100%;
+    height: 28px;
+    font-weight: bold;
+    font-size: 12pt;
+    border: 1px solid #000000;
+    margin: 2px;
+}
+
+div#rocs_PORTLET_rocs_root_view .gwt-MultiStackPanel {
+    width: 1000px;
 }

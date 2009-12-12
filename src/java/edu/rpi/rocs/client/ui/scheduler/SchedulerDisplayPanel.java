@@ -2,6 +2,7 @@ package edu.rpi.rocs.client.ui.scheduler;
 
 import java.util.ArrayList;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
@@ -9,6 +10,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 
 import edu.rpi.rocs.client.objectmodel.Schedule;
+import edu.rpi.rocs.client.objectmodel.Section;
 
 public class SchedulerDisplayPanel extends HorizontalPanel {
 	ArrayList<Schedule> m_schedules=null;
@@ -30,6 +32,9 @@ public class SchedulerDisplayPanel extends HorizontalPanel {
 		}
 
 		public void onClick(ClickEvent arg0) {
+			for(Section s : m_schedule.getSections()) {
+				Log.debug("Section " + s.getNumber() + " of course " + s.getParent().getDept() + "-" + s.getParent().getNum());
+			}
 			setActiveSchedule(m_schedule);
 		}
 	}

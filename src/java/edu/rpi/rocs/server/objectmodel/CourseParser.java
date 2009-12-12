@@ -48,8 +48,10 @@ public class CourseParser {
     		Node n = children.item(i);
     		if(n.getNodeName().equalsIgnoreCase("Section")) {
     			Section s = SectionParser.parse(n);
-    			s.setParent(course);
-    			course.addSection(s);
+    			if(s.getPeriods().size()>0) {
+	    			s.setParent(course);
+	    			course.addSection(s);
+    			}
     		}
     		else if(n.getNodeName().equalsIgnoreCase("Note")) {
     			course.addNote(n.getFirstChild().getNodeValue());

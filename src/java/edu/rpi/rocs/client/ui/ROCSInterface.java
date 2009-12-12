@@ -21,6 +21,7 @@ public class ROCSInterface extends HTMLPanel {
 	}
 	
 	private ROCSInterface() {
+		/*
 		super("<div id=\"rocs_PORTLET_rocs_semester_pane\"></div>"+
 				"<div id=\"rocs_PORTLET_rocs_courses_pane\"></div>" +
 				"<div id=\"rocs_PORTLET_rocs_search_pane\"></div>" +
@@ -37,5 +38,28 @@ public class ROCSInterface extends HTMLPanel {
 		this.add(searchPanel, "rocs_PORTLET_rocs_search_pane");
 		this.add(schedulerPanel, "rocs_PORTLET_rocs_scheduler_pane");
 		this.add(viewPanel, "rocs_PORTLET_rocs_courses_pane");
+		*/
+		super("<div id=\"rocs_PORTLET_rocs_stackbody\"></div>");
+		
+		MultiStackPanel thePanel = new MultiStackPanel();
+		HTMLPanel temp = new HTMLPanel("<div id=\"rocs_PORTLET_rocs_semester_pane\"></div>");
+		semesterPanel = SemesterSelectionPanel.getInstance();
+		temp.add(semesterPanel, "rocs_PORTLET_rocs_semester_pane");
+		thePanel.add(temp,"Semester - ",false);
+		searchPanel = CourseSearchPanel.getInstance();
+		temp = new HTMLPanel("<div id=\"rocs_PORTLET_rocs_search_pane\"></div>");
+		temp.add(searchPanel, "rocs_PORTLET_rocs_search_pane");
+		thePanel.add(temp,"Course Search",false);
+		viewPanel = ClassViewPanel.getInstance();
+		temp = new HTMLPanel("<div id=\"rocs_PORTLET_rocs_courses_pane\"></div>");
+		temp.add(viewPanel, "rocs_PORTLET_rocs_courses_pane");
+		thePanel.add(temp,"Selected Courses",false);
+		schedulerPanel = SchedulerPanel.get();
+		temp = new HTMLPanel("<div id=\"rocs_PORTLET_rocs_scheduler_pane\"></div>");
+		temp.add(schedulerPanel, "rocs_PORTLET_rocs_scheduler_pane");
+		thePanel.add(temp,"Scheduler",false);
+		thePanel.showStack(0);
+		thePanel.showStack(1);
+		this.add(thePanel, "rocs_PORTLET_rocs_stackbody");
 	}
 }
