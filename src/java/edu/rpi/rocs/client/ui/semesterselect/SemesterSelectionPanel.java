@@ -148,7 +148,7 @@ public class SemesterSelectionPanel extends VerticalPanel {
 				int i = semesterList.getSelectedIndex();
 				Integer id = Integer.valueOf(semesterList.getValue(i));
 				for(SemesterDescription desc : allSemesters) {
-					if(desc.getSemesterId() == id) {
+					if(desc.getSemesterId().intValue() == id.intValue()) {
 						selectedSemester = desc;
 						selectedSemesterDidChange();
 						break;

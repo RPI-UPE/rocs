@@ -15,6 +15,9 @@ public class Course extends MajorMinorRevisionObject implements Comparable<Cours
 	public static class CourseComparator implements Comparator<Course> {
 		public final int compare(Course a, Course b) {
 			int result;
+			if(a==null&&b==null) return 0;
+			if(b==null) return 1;
+			if(a==null) return -1;
 			result = a.getDept().compareTo(b.getDept());
 			if(result!=0) return result;
 			return a.getNum()-b.getNum();

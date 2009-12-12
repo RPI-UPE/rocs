@@ -32,6 +32,10 @@ public class SchedulerManager implements Serializable {
 	 */
 	private ArrayList<Schedule> generatedSchedules=null;
 	/**
+	 * True if the courses have changed
+	 */
+	private boolean m_changed = false;
+	/**
 	 * The schedule currently selected by the user
 	 */
 	private Schedule currentSchedule=null;
@@ -190,6 +194,7 @@ public class SchedulerManager implements Serializable {
 	public void addCourse(Course c) {
 		CourseStatusObject status =new CourseStatusObject(c, true); 
 		currentCourses.put(c, status);
+		m_changed = true;
 		for(CourseAddedHandler e : courseAddHandlers) {
 			e.handleEvent(status);
 		}
@@ -200,6 +205,7 @@ public class SchedulerManager implements Serializable {
 	 * @param c The course to make required
 	 */
 	public void setCourseRequired(Course c) {
+		m_changed = true;
 		CourseStatusObject obj = currentCourses.get(c);
 		if(obj!=null) {
 			obj.setRequired(true);
@@ -214,6 +220,7 @@ public class SchedulerManager implements Serializable {
 	 * @param c The course to make optional
 	 */
 	public void setCourseOptional(Course c) {
+		m_changed = true;
 		CourseStatusObject obj = currentCourses.get(c);
 		if(obj!=null) {
 			obj.setRequired(false);
@@ -241,6 +248,7 @@ public class SchedulerManager implements Serializable {
 	 * @param c The course to remove
 	 */
 	public void removeCourse(Course c) {
+		m_changed = true;
 		CourseStatusObject status = currentCourses.get(c);
 		currentCourses.remove(c);
 		for(CourseRemovedHandler e : courseRemoveHandlers) {
@@ -311,5 +319,8 @@ public class SchedulerManager implements Serializable {
 			Log.trace("Generated " + generatedSchedules.size() + " schedules");
 		if(generatedSchedules != null && generatedSchedules.size()>0)
 			currentSchedule = generatedSchedules.get(0);
+		m_changed = false;
 	}
+	
+	public boolean hasChanged() { return m_changed; }
 }

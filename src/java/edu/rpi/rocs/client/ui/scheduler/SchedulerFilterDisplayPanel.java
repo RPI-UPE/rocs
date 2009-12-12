@@ -18,9 +18,10 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import edu.rpi.rocs.client.ReflectiveFactory;
 import edu.rpi.rocs.client.filters.schedule.ScheduleFilter;
 import edu.rpi.rocs.client.filters.schedule.TimeSchedulerFilter;
+import edu.rpi.rocs.client.objectmodel.Schedule;
 import edu.rpi.rocs.client.objectmodel.ScheduleFilterManager;
+import edu.rpi.rocs.client.objectmodel.SchedulerManager;
 import edu.rpi.rocs.client.ui.scheduler.SchedulerFilterDialogBox.SchedulerFilterDialogBoxCompleted;
-import edu.rpi.rocs.client.ui.scheduler.SchedulerPanel.SchedulerPage;
 
 public class SchedulerFilterDisplayPanel extends VerticalPanel implements SchedulerFilterDialogBoxCompleted, ChangeHandler {
 	private FlexTable layout = new FlexTable();
@@ -118,7 +119,14 @@ public class SchedulerFilterDisplayPanel extends VerticalPanel implements Schedu
 			}
 		}
 		else if(button == generateButton) {
-			SchedulerPanel.get().switchTo(SchedulerPage.SchedulePage);
+			if(ScheduleFilterManager.get().filtersChanged() || SchedulerManager.get().hasChanged()) {
+				SchedulerManager.get().generateSchedules();
+				ArrayList<Schedule> schedules = SchedulerManager.get().getAllSchedules();
+				if(schedules==null || schedules.size()==0) {
+					return;
+				}
+				SchedulerDisplayPanel.get().setSchedules(schedules);
+			}
 		}
 	}
 	

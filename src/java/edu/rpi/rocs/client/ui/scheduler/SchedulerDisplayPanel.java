@@ -58,6 +58,7 @@ public class SchedulerDisplayPanel extends HorizontalPanel {
 		m_schedules = schedules;
 		if(m_schedules.size()>0) {
 			m_current = m_schedules.get(0);
+			m_summary.clear();
 			for(Schedule s : schedules) {
 				ScheduleMiniViewWidget w = new ScheduleMiniViewWidget(s, m_genMap);
 				m_summary.add(w);
