@@ -5,13 +5,13 @@ import java.util.Comparator;
 
 /**
  * Describes a course object to the GWT client.
- * 
+ *
  * @author elsajg
  * @author ewpatton
  *
  */
 public class Course extends MajorMinorRevisionObject implements Comparable<Course> {
-	
+
 	public static class CourseComparator implements Comparator<Course> {
 		public final int compare(Course a, Course b) {
 			int result;
@@ -23,12 +23,12 @@ public class Course extends MajorMinorRevisionObject implements Comparable<Cours
 			return a.getNum()-b.getNum();
 		}
 	}
-	  
+
     /**
 	 * UID for Serializable interface
 	 */
 	private static final long serialVersionUID = -4156341852068456290L;
-	
+
 	/** Protected data set by @see edu.rpi.rocs.server.objectmodel.CourseImpl */
     protected String name;
     protected String dept;
@@ -38,7 +38,7 @@ public class Course extends MajorMinorRevisionObject implements Comparable<Cours
     protected String gradetype;
     protected ArrayList<String> notes;
     protected ArrayList<Section> sections;
-    
+
     /**
      * Empty constructor needed by interface Serializable
      */
@@ -52,10 +52,10 @@ public class Course extends MajorMinorRevisionObject implements Comparable<Cours
     	notes = new ArrayList<String>();
     	sections = new ArrayList<Section>();
     }
-    
+
     /**
      * Custom constructor to populate every field
-     * 
+     *
      * @param aName Written name of the course
      * @param aDept Department identifier
      * @param aNumber Course number
@@ -76,73 +76,73 @@ public class Course extends MajorMinorRevisionObject implements Comparable<Cours
         	notes = new ArrayList<String>();
         sections = new ArrayList<Section>();
     }
-    
+
     /**
      * Gets the name of this course
-     * 
+     *
      * @return The course name
      */
     public String getName(){
         return name;
     }
-    
+
     /**
      * Gets the department this course is offered in.
-     * 
+     *
      * @return The department ID
      */
     public String getDept(){
         return dept;
     }
-    
+
     /**
      * Gets the course number for this course
-     * 
+     *
      * @return The course number
      */
     public int getNum(){
         return num;
     }
-    
+
     /**
      * Gets the minimum number of credits this course can be
-     * 
+     *
      * @return Credit minimum
      */
     public int getCredmin(){
         return credmin;
     }
-    
+
     /**
      * Gets the maximum number of credits this course can be
-     * 
+     *
      * @return Credit maximum
      */
     public int getCredmax(){
         return credmax;
     }
-    
+
     /**
      * Gets the grade type of this course
-     * 
+     *
      * @return The grade type
      */
     public String getGradetype(){
         return gradetype;
     }
-    
+
     /**
      * Gets any notes added to this course.
-     * 
+     *
      * @return The course notes
      */
     public ArrayList<String> getNotes() {
     	return new ArrayList<String>(notes);
     }
-    
+
     /**
      * Gets a list of sections in this course
-     * 
+     *
      * @return Course sections
      */
     public ArrayList<Section> getSections() {
@@ -153,59 +153,56 @@ public class Course extends MajorMinorRevisionObject implements Comparable<Cours
 		// TODO Auto-generated method stub
 		return num / 1000;
 	}
-	
+
 	   //accesssor functions
     public void setName(String newValue){
         name = newValue;
     }
-    
+
     public void setDept(String newValue){
         dept = newValue;
     }
-    
+
     public void setNum(int newValue){
         num = newValue;
     }
-    
+
     public void setCredmin(int newValue){
         credmin = newValue;
     }
-    
+
     public void setCredmax(int newValue){
         credmax = newValue;
     }
-    
+
     public void setGradetype(String newValue){
         gradetype = newValue;
     }
-    
+
     public void addNote(String newValue) {
     	notes.add(newValue);
     }
-    
+
     public void removeNote(String note) {
     	notes.remove(note);
     }
-    
+
     public void addSection(Section s) {
     	sections.add(s);
     }
-    
+
     public void removeSection(Section s) {
     	sections.remove(s);
     }
-    
+
+    public boolean isClosed()
+    {
+    	for(Section s : sections) if(!s.isClosed()) return false;
+    	return true;
+    }
+
     public String getListDescription() {
-    	boolean closed=true;
-    	for(Section s : sections) {
-    		if(!s.isClosed()) {
-    			closed = false;
-    			break;
-    		}
-    	}
-    	String result="";
-    	if(closed) result += "C&nbsp;&nbsp;";
-    	else result += "&nbsp;&nbsp;&nbsp;";
+    	String result="&nbsp;&nbsp;";
     	result += dept;
     	result += "&nbsp;&nbsp;";
     	result += num;

@@ -29,6 +29,39 @@ import edu.rpi.rocs.client.ui.ListBoxHTML;
 
 public class CourseSearchPanel extends VerticalPanel {
 
+	private static final String CHECK = IMG("check"),
+										 BADCHECK = IMG("badcheck"),
+										 CONFLICT = IMG("cross"),
+										 CLOSED = IMG("closed"),
+										 SPACE = IMG("space");
+	private static final String IMG(String name) {
+		return "<img src='/rocs/"+name+".png' width=12 heigth=12>";
+	}
+
+	// 1 = selected, 2 = closed, 4 = conflicts
+	private static final String[] LIST_HEAD =
+	{
+		SPACE+SPACE+SPACE+"&nbsp;&nbsp;&nbsp;&nbsp;",
+		CHECK+SPACE+SPACE+"&nbsp;&nbsp;&nbsp;&nbsp;",
+		SPACE+CLOSED+SPACE+"&nbsp;&nbsp;&nbsp;&nbsp;",
+		BADCHECK+CLOSED+SPACE+"&nbsp;&nbsp;&nbsp;&nbsp;",
+		SPACE+SPACE+CONFLICT+"&nbsp;&nbsp;&nbsp;&nbsp;",
+		BADCHECK+SPACE+CONFLICT+"&nbsp;&nbsp;&nbsp;&nbsp;",
+		SPACE+CLOSED+CONFLICT+"&nbsp;&nbsp;&nbsp;&nbsp;",
+		BADCHECK+CLOSED+CONFLICT+"&nbsp;&nbsp;&nbsp;&nbsp;"
+	};
+	private static final String[] LIST_TAIL =
+	{
+		"",
+		"</b></font>",
+		"",
+		"</font></b>",
+		"",
+		"</font></b>",
+		"",
+		"</font></b>",
+	};
+
 	FlexTable layout = new FlexTable();
 	Label deptLabel = new Label("Department:");
 	ListBox deptList = new ListBox();
@@ -185,9 +218,21 @@ public class CourseSearchPanel extends VerticalPanel {
 
 		resultsListBox.clear();
 		for(Course course : theResults) {
+			boolean chosen = false;
+			for (Course C : CRSlist) if ((new CourseComparator()).compare(C, course) == 0) {
+				chosen = true;
+				break;
+			}
+			int bits = 0;
 			ArrayList<Course> cArr = new ArrayList<Course>(); cArr.add(course);
-			boolean conflicted = (possibleTimeBlocks(blocking, cArr, false).size() > 0);
-			resultsListBox.addHTML(course.getListDescription(), course.getDept()+course.getNum());
+			if (chosen) {
+				bits += 1;
+				for (int i = 0; i < cArr.size(); i++) if ((new CourseComparator()).compare(course, cArr.get(i)) == 0) cArr.remove(i);
+			}
+			if (possibleTimeBlocks(blocking, cArr, false).size() == 0) bits += 4;
+			if (chosen) cArr.add(course);
+			if (course.isClosed()) bits += 2;
+			resultsListBox.addHTML(LIST_HEAD[bits]+course.getListDescription()+LIST_TAIL[bits], course.getDept()+course.getNum());
 		}
 	}
 	private ArrayList<Section> possibleTimeBlocks(ArrayList<Section> accrue, ArrayList<Course> remaining, boolean fullList) {
