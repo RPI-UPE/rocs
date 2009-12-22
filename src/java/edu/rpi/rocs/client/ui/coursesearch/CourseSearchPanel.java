@@ -16,12 +16,13 @@ import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
-import edu.rpi.rocs.client.SemesterManager;
-import edu.rpi.rocs.client.SemesterManager.SemesterManagerCallback;
+import edu.rpi.rocs.client.ImageManager;
 import edu.rpi.rocs.client.objectmodel.Course;
 import edu.rpi.rocs.client.objectmodel.Period;
 import edu.rpi.rocs.client.objectmodel.SchedulerManager;
+import edu.rpi.rocs.client.objectmodel.SemesterManager;
 import edu.rpi.rocs.client.objectmodel.SchedulerManager.CourseStatusObject;
+import edu.rpi.rocs.client.objectmodel.SemesterManager.SemesterManagerCallback;
 import edu.rpi.rocs.client.objectmodel.Section;
 import edu.rpi.rocs.client.objectmodel.Semester;
 import edu.rpi.rocs.client.objectmodel.Course.CourseComparator;
@@ -29,13 +30,13 @@ import edu.rpi.rocs.client.ui.ListBoxHTML;
 
 public class CourseSearchPanel extends VerticalPanel {
 
-	private static final String CHECK = IMG("check"),
-										 BADCHECK = IMG("badcheck"),
-										 CONFLICT = IMG("cross"),
-										 CLOSED = IMG("closed"),
-										 SPACE = IMG("space");
+	private static final String CHECK = IMG("check.png"),
+										 BADCHECK = IMG("badcheck.png"),
+										 CONFLICT = IMG("cross.png"),
+										 CLOSED = IMG("closed.png"),
+										 SPACE = IMG("space.png");
 	private static final String IMG(String name) {
-		return "<img src='/rocs/"+name+".png' width=12 heigth=12>";
+		return "<img src=\"" + ImageManager.getPathForImage(name) + "\" width=12 heigth=12>";
 	}
 
 	// 1 = selected, 2 = closed, 4 = conflicts

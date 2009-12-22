@@ -32,6 +32,11 @@ import edu.rpi.rocs.server.objectmodel.SemesterParser;
  */
 public class Scheduler extends GenericPortlet {
 	
+	public static class Document {
+		public String path;
+		public String changeTime;
+	}
+	
 	/**
 	 * Base path to where CourseDB XML files are stored
 	 */
@@ -39,7 +44,7 @@ public class Scheduler extends GenericPortlet {
 	/**
 	 * List of XML documents to be loaded by the scheduler
 	 */
-	public static ArrayList<String> documents=new ArrayList<String>();
+	public static ArrayList<Document> documents=new ArrayList<Document>();
 	/**
 	 * The current instance of the Scheduler
 	 */
@@ -66,21 +71,30 @@ public class Scheduler extends GenericPortlet {
 		 * @param html Contents of an HTML file as a String
 		 * @return A list of XML filenames which may contain CourseDBs.
 		 */
-		public ArrayList<String> parseHTML(String html) {
-			ArrayList<String> results=new ArrayList<String>();
-			Pattern p = Pattern.compile("[^h]*(href=\"([^\"]*)\")|h[^r]", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE);
+		public ArrayList<Document> parseHTML(String html) {
+			ArrayList<Document> results=new ArrayList<Document>();
+			Pattern p = Pattern.compile("[^h]*(href=\"([^\"]*)\")>[^<]*</a>\\s*([^\\s]*)\\s([^\\s]*)|h[^r]", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE);
 			Matcher m = p.matcher(html);
+			int found=0;
 			while(m.find()) {
+				found++;
 				String path = m.group(1);
+				String date = m.group(3)+" "+m.group(4);
+				//System.out.println("path = "+path);
+				//System.out.println("date = "+date);
 				if(path!=null) {
 					path = path.replaceAll("\"", "");
 					path = path.replace("href=", "");
 					path = path.replace("HREF=", "");
 					if(path.endsWith(".xml")) {
-						results.add(path);
+						Document d = new Document();
+						d.path = path;
+						d.changeTime = date;
+						results.add(d);
 					}
 				}
 			}
+			//System.out.println("Found "+found+" semester files.");
 			return results;
 		}
 		
@@ -101,9 +115,9 @@ public class Scheduler extends GenericPortlet {
 				in.close();
 				
 				Scheduler.documents = parseHTML(data);
-				for(String file : Scheduler.documents) {
-					String newPath = Scheduler.xmlPath + file;
-					SemesterParser.parse(newPath);
+				for(Document file : Scheduler.documents) {
+					String newPath = Scheduler.xmlPath + file.path;
+					SemesterParser.parse(newPath, file.changeTime);
 				}
 			}
 			catch(Exception e) {
@@ -166,8 +180,8 @@ public class Scheduler extends GenericPortlet {
 		}
 		String userName = (String)userinfo.get("user.login.id");
 		userInfoMap.put(new Integer(userName.hashCode()), userinfo);
+		out.println("<script language=\"javascript\">var rocsUserName=\""+userName.hashCode()+"\";\nvar rocsContext=\""+aRequest.getContextPath()+"\";\nwindow.rocsContext=rocsContext;</script>");
 		out.println("<script language=\"javascript\" src=\"" + aRequest.getContextPath() + "/rocs.gwt/rocs.gwt.nocache.js\"></script>");
-		out.println("<script language=\"javascript\">var rocsUserName=\""+userName.hashCode()+"\";</script>");
 		out.println("<link rel=\"stylesheet\" type=\"text/css\" href=\"" + aRequest.getContextPath() + "/css/rocs.css\"/>");
 		out.println("<div id=\"rocs_PORTLET_rocs_root_view\" class=\"rocs-style\">");
 		out.println("</div>");

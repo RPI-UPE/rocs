@@ -2,6 +2,7 @@ package edu.rpi.rocs.client.objectmodel;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashSet;
 
 /**
  * Describes a course object to the GWT client.
@@ -208,8 +209,42 @@ public class Course extends MajorMinorRevisionObject implements Comparable<Cours
     	result += num;
     	result += "&nbsp;&nbsp;";
     	result += name;
+    	int size = 40 - name.length();
+    	size = (size > 1 ? size : 1);
+    	for(int i=0;i<size;i++) {
+    		result += "&nbsp;";
+    	}
+    	result += getProfessors();
     	return result;
     }
+
+	private String getProfessors() {
+		HashSet<String> profs = new HashSet<String>();
+		for(Section s : sections) {
+			HashSet<String> subprofs = s.getProfessors();
+			profs.addAll(subprofs);
+		}
+		profs.remove("** TBA **");
+		if(profs.size()==0) {
+			return "TBA";
+		}
+		profs.remove("Staff");
+		if(profs.size()==0) {
+			return "Staff";
+		}
+		boolean first=true;
+		String result = "";
+		for(String s : profs) {
+			if(first) {
+				result = s;
+				first = false;
+			}
+			else {
+				result += ", " + s;
+			}
+		}
+		return result;
+	}
 
 	public int compareTo(Course o) {
 		// TODO Auto-generated method stub

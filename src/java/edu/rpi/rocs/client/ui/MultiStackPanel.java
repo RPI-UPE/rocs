@@ -16,6 +16,22 @@ public class MultiStackPanel extends StackPanel {
 	private Element m_tbody;
 	
 	private HashSet<Integer> m_selected=new HashSet<Integer>();
+	private boolean programmatic=false;
+	
+	public interface MultiStackPanelVisibilityChangeHandler {
+		public void onChange(int index, boolean visible);
+	}
+	
+	private HashSet<MultiStackPanelVisibilityChangeHandler> changeHandlers
+		= new HashSet<MultiStackPanelVisibilityChangeHandler>();
+	
+	public void addChangeHandler(MultiStackPanelVisibilityChangeHandler h) {
+		changeHandlers.add(h);
+	}
+	
+	public void removeChangeHandler(MultiStackPanelVisibilityChangeHandler h) {
+		changeHandlers.remove(h);
+	}
 	
 	public MultiStackPanel() {
 		m_table = getElement();
@@ -72,10 +88,14 @@ public class MultiStackPanel extends StackPanel {
 		updateIndicesFrom(beforeIndex);
 		
 		if(m_selected.size()==0) {
+			programmatic=true;
 			showStack(0);
+			programmatic=false;
 		}
 		else {
+			programmatic=true;
 			setStackVisible(beforeIndex, false);
+			programmatic=false;
 		}
 	}
 	
@@ -169,6 +189,12 @@ public class MultiStackPanel extends StackPanel {
 			Element tdNext = DOM.getFirstChild(trNext);
 			setStyleName(tdNext, DEFAULT_ITEM_STYLENAME+"-below-selected", visible);
 		}
+		
+		if(!programmatic) {
+			for(MultiStackPanelVisibilityChangeHandler h : changeHandlers) {
+				h.onChange(index, visible);
+			}
+		}
 	}
 	
 	private void updateIndicesFrom(int beforeIndex) {
@@ -184,5 +210,10 @@ public class MultiStackPanel extends StackPanel {
 				setStyleName(childTD, DEFAULT_ITEM_STYLENAME+"-first", false);
 			}
 		}
+	}
+	
+	public boolean isVisible(int index) {
+		if(index < 0 || index >= getWidgetCount()) return false;
+		return m_selected.contains(new Integer(index));
 	}
 }

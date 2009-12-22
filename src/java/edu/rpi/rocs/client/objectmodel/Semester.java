@@ -26,6 +26,7 @@ public class Semester implements Serializable, Comparable<Semester> {
     protected HashMap<Integer, CrossListing> crosslistings;
     protected HashMap<Integer, Section> crnmap = new HashMap<Integer, Section>();
     protected int counter;
+    protected String lastChangeTime;
     
     /**
      * Empty constructor to satisfy Serializable interface
@@ -37,6 +38,7 @@ public class Semester implements Serializable, Comparable<Semester> {
     	semesterdesc = "";
     	courses = new HashMap<String, Course>();
     	crosslistings = new HashMap<Integer, CrossListing>();
+    	lastChangeTime = "";
     }
     
     /**
@@ -46,13 +48,18 @@ public class Semester implements Serializable, Comparable<Semester> {
      * @param aSemesterNumber Semester number in YYYYMM format
      * @param aSemesterDesc Written description for this semester
      */
-    public Semester(int aTimeStamp, int aSemesterNumber, String aSemesterDesc){
+    public Semester(int aTimeStamp, int aSemesterNumber, String aSemesterDesc, String aChangeTime){
     	counter = 0;
         timestamp = aTimeStamp;
         semesterId = aSemesterNumber;
         semesterdesc = aSemesterDesc;
         courses = new HashMap<String, Course>();
         crosslistings = new HashMap<Integer, CrossListing>();
+        lastChangeTime = aChangeTime;
+    }
+    
+    public String getLastChangeTime() {
+    	return lastChangeTime;
     }
     
     /**

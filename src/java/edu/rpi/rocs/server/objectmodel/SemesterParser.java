@@ -33,14 +33,14 @@ public class SemesterParser {
 	private static final long serialVersionUID = -6328488261276368411L;
 	
 
-    public static void parse(String xmlFile) throws Exception {
+    public static void parse(String xmlFile, String changeTime) throws Exception {
     	//XML File should get parsed, key should
     	//be the semesterID from the XML file
     	Long oldrev = MajorMinorRevisionObject.getCurrentRevision();
     	MajorMinorRevisionObject.setCurrentRevision(System.currentTimeMillis()/1000);
     	Semester parsedSemester;
     	try {
-    		parsedSemester = SemesterParser.LoadCourseDB(xmlFile);
+    		parsedSemester = SemesterParser.LoadCourseDB(xmlFile, changeTime);
     		SemesterDB.putInstance(parsedSemester.getSemesterId(), parsedSemester);
     	}
     	catch(Exception e) {
@@ -49,15 +49,15 @@ public class SemesterParser {
     	}
     }
 
-    static private Semester LoadCourseDB(String path) throws MalformedURLException, IOException, ParserConfigurationException, SAXException, InvalidCourseDatabaseException {
-    	return LoadCourseDB(new URL(path));
+    static private Semester LoadCourseDB(String path, String changeTime) throws MalformedURLException, IOException, ParserConfigurationException, SAXException, InvalidCourseDatabaseException {
+    	return LoadCourseDB(new URL(path), changeTime);
     }
     
-    static private Semester LoadCourseDB(URL path) throws IOException, ParserConfigurationException, SAXException, InvalidCourseDatabaseException {
-    	return LoadCourseDB(path.openStream());
+    static private Semester LoadCourseDB(URL path, String changeTime) throws IOException, ParserConfigurationException, SAXException, InvalidCourseDatabaseException {
+    	return LoadCourseDB(path.openStream(), changeTime);
     }
     
-    static private Semester LoadCourseDB(InputStream stream) throws IOException, ParserConfigurationException, SAXException, InvalidCourseDatabaseException {
+    static private Semester LoadCourseDB(InputStream stream, String changeTime) throws IOException, ParserConfigurationException, SAXException, InvalidCourseDatabaseException {
     	DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
     	DocumentBuilder db = dbf.newDocumentBuilder();
     	Document doc = db.parse(stream);
@@ -68,7 +68,7 @@ public class SemesterParser {
     		time = Integer.parseInt(doc.getDocumentElement().getAttribute("timestamp"));
     		num = Integer.parseInt(doc.getDocumentElement().getAttribute("semesternumber"));
     		desc = doc.getDocumentElement().getAttribute("semesterdesc");
-    		semester = new Semester(time, num, desc);
+    		semester = new Semester(time, num, desc, changeTime);
     		for(Node n = doc.getDocumentElement().getFirstChild(); n.getNextSibling() != null; n = n.getNextSibling()) {
     			if(n.getNodeName().equalsIgnoreCase("CrossListing")) {
     				CrossListing c = CrossListingParser.parse(n);

@@ -9,11 +9,13 @@
 	<property name="war.classes"       value="${war.webinf}/classes"/>
 	<property name="war.lib"           value="${war.webinf}/lib"/>
 	<property name="war.css"           value="${war.dir}/css"/>
+	<property name="war.images"		   value="${war.dir}/images"/>
 	<property name="gwt.dir"           value="${war.dir}/${gwt.module}"/>
 	<property name="src.dir"           value="src"/>
 	<property name="src.java.dir"      value="${src.dir}/java"/>
 	<property name="src.resources.dir" value="${src.dir}/resources"/>
 	<property name="src.css.dir"       value="${src.dir}/css"/>
+	<property name="src.images.dir"    value="${src.dir}/images"/>
 	<property name="docs.dir"          value="docs"/>
 	<property name="lib.dir"           value="lib"/>
 
@@ -116,6 +118,10 @@
 	  <copy todir="${war.css}">
 	    <fileset dir="${src.css.dir}"/>
 	  </copy>
+	  <mkdir dir="${war.images}"/>
+      <copy todir="${war.images}">
+		<fileset dir="${src.images.dir}"/>
+      </copy>
 		<zip destfile="${ant.project.name}.war" excludes="*.html" basedir="war"/>
 	</target>
 

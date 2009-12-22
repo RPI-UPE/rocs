@@ -14,9 +14,9 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
-import edu.rpi.rocs.client.SemesterManager;
 import edu.rpi.rocs.client.objectmodel.SchedulerManager;
 import edu.rpi.rocs.client.objectmodel.SemesterDescription;
+import edu.rpi.rocs.client.objectmodel.SemesterManager;
 import edu.rpi.rocs.client.services.coursedb.CourseDBService;
 
 

@@ -1,11 +1,10 @@
-package edu.rpi.rocs.client;
+package edu.rpi.rocs.client.objectmodel;
 
 import java.util.HashSet;
 import java.util.Set;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
-import edu.rpi.rocs.client.objectmodel.Semester;
 import edu.rpi.rocs.client.services.coursedb.CourseDBService;
 
 

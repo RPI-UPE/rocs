@@ -1,6 +1,7 @@
 package edu.rpi.rocs.client.objectmodel;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 
 /**
  * Describes a particular course section.
@@ -165,4 +166,12 @@ public class Section extends MajorMinorRevisionObject {
     	result += parent.getName();
     	return result;
     }
+
+	public HashSet<String> getProfessors() {
+		HashSet<String> profs = new HashSet<String>();
+		for(Period p : periods) {
+			profs.add(p.getInstructor());
+		}
+		return profs;
+	}
 }
