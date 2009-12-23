@@ -71,7 +71,7 @@ public class ScheduleFilterManager {
 		registeredFilters.put(displayTitle, qName);
 	}
 
-	public static ScheduleFilterManager get() {
+	public static ScheduleFilterManager getInstance() {
 		if(theInstance==null) {
 			theInstance = new ScheduleFilterManager();
 			TimeSchedulerFilter.register();

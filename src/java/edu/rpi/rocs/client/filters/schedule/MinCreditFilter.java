@@ -16,7 +16,7 @@ public class MinCreditFilter implements ScheduleFilter, MinCreditValueChanged {
 	private static String QUALIFIED_NAME="edu.rpi.rocs.client.filters.schedule.MinCreditFilter";
 	
 	public static boolean register() {
-		ScheduleFilterManager.get().registerFilter(DISPLAY_NAME, QUALIFIED_NAME);
+		ScheduleFilterManager.getInstance().registerFilter(DISPLAY_NAME, QUALIFIED_NAME);
 		return true;
 	}
 

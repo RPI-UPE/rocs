@@ -18,7 +18,7 @@ public class TimeSchedulerFilter implements ScheduleFilter {
 	private static String QUALIFIED_NAME="edu.rpi.rocs.client.filters.schedule.TimeSchedulerFilter";
 	
 	public static boolean register() {
-		ScheduleFilterManager.get().registerFilter(DISPLAY_NAME, QUALIFIED_NAME);
+		ScheduleFilterManager.getInstance().registerFilter(DISPLAY_NAME, QUALIFIED_NAME);
 		return true;
 	}
 	

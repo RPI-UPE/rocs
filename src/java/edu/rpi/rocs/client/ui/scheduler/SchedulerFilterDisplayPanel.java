@@ -21,7 +21,11 @@ import edu.rpi.rocs.client.filters.schedule.TimeSchedulerFilter;
 import edu.rpi.rocs.client.objectmodel.Schedule;
 import edu.rpi.rocs.client.objectmodel.ScheduleFilterManager;
 import edu.rpi.rocs.client.objectmodel.SchedulerManager;
+import edu.rpi.rocs.client.ui.ROCSInterface;
+import edu.rpi.rocs.client.ui.classview.ClassViewPanel;
+import edu.rpi.rocs.client.ui.coursesearch.CourseSearchPanel;
 import edu.rpi.rocs.client.ui.scheduler.SchedulerFilterDialogBox.SchedulerFilterDialogBoxCompleted;
+import edu.rpi.rocs.client.ui.semesterselect.SemesterSelectionPanel;
 
 public class SchedulerFilterDisplayPanel extends VerticalPanel implements SchedulerFilterDialogBoxCompleted, ChangeHandler {
 	private FlexTable layout = new FlexTable();
@@ -40,7 +44,7 @@ public class SchedulerFilterDisplayPanel extends VerticalPanel implements Schedu
 		return new ArrayList<ScheduleFilter>(currentFilters);
 	}
 	
-	public static SchedulerFilterDisplayPanel get() {
+	public static SchedulerFilterDisplayPanel getInstance() {
 		if(theInstance==null) theInstance = new SchedulerFilterDisplayPanel();
 		return theInstance;
 	}
@@ -48,7 +52,7 @@ public class SchedulerFilterDisplayPanel extends VerticalPanel implements Schedu
 	private SchedulerFilterDisplayPanel() {
 		TimeSchedulerFilter filter = new TimeSchedulerFilter();
 		currentFilters.add(filter);
-		ScheduleFilterManager.get().addFilter(filter);
+		ScheduleFilterManager.getInstance().addFilter(filter);
 		filterList.addItem(currentFilters.get(0).getDisplayTitle(), "0");
 		
 		addButton.addStyleName("linkbutton");
@@ -112,20 +116,25 @@ public class SchedulerFilterDisplayPanel extends VerticalPanel implements Schedu
 				ScheduleFilter theFilter = currentFilters.get(filterList.getSelectedIndex());
 				currentFilters.remove(theFilter);
 				filterList.removeItem(filterList.getSelectedIndex());
-				ScheduleFilterManager.get().removeFilter(theFilter);
+				ScheduleFilterManager.getInstance().removeFilter(theFilter);
 				filterList.setSelectedIndex(0);
 				wrapperPanel.remove(theFilter.getWidget());
 				wrapperPanel.add(currentFilters.get(0).getWidget());
 			}
 		}
 		else if(button == generateButton) {
-			if(ScheduleFilterManager.get().filtersChanged() || SchedulerManager.get().hasChanged()) {
-				SchedulerManager.get().generateSchedules();
-				ArrayList<Schedule> schedules = SchedulerManager.get().getAllSchedules();
+			if(ScheduleFilterManager.getInstance().filtersChanged() || SchedulerManager.getInstance().hasChanged()) {
+				SchedulerManager.getInstance().generateSchedules();
+				ArrayList<Schedule> schedules = SchedulerManager.getInstance().getAllSchedules();
 				if(schedules==null || schedules.size()==0) {
 					return;
 				}
-				SchedulerDisplayPanel.get().setSchedules(schedules);
+				SchedulerDisplayPanel.getInstance().setSchedules(schedules);
+				ROCSInterface.getInstance().show(SemesterSelectionPanel.getInstance(), false);
+				ROCSInterface.getInstance().show(CourseSearchPanel.getInstance(), false);
+				ROCSInterface.getInstance().show(ClassViewPanel.getInstance(), false);
+				ROCSInterface.getInstance().show(this, false);
+				ROCSInterface.getInstance().show(SchedulerPanel.getInstance(), true);
 			}
 		}
 	}
@@ -156,7 +165,7 @@ public class SchedulerFilterDisplayPanel extends VerticalPanel implements Schedu
 		if(newFilter!=null) {
 			currentFilters.add(newFilter);
 			filterList.addItem(newFilter.getDisplayTitle(), Integer.toString(currentFilters.size()-1));
-			ScheduleFilterManager.get().addFilter(newFilter);
+			ScheduleFilterManager.getInstance().addFilter(newFilter);
 		}
 	}
 

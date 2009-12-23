@@ -27,6 +27,8 @@ import edu.rpi.rocs.client.objectmodel.Section;
 import edu.rpi.rocs.client.objectmodel.Semester;
 import edu.rpi.rocs.client.objectmodel.Course.CourseComparator;
 import edu.rpi.rocs.client.ui.ListBoxHTML;
+import edu.rpi.rocs.client.ui.ROCSInterface;
+import edu.rpi.rocs.client.ui.classview.ClassViewPanel;
 
 public class CourseSearchPanel extends VerticalPanel {
 
@@ -149,7 +151,9 @@ public class CourseSearchPanel extends VerticalPanel {
 				for(int i=0;i<resultsListBox.getItemCount();i++) {
 					if(resultsListBox.isItemSelected(i)) {
 						Course c = theResults.get(i);
-						SchedulerManager.get().addCourse(c);
+						SchedulerManager.getInstance().addCourse(c);
+						if(!ROCSInterface.getInstance().isDisplaying(ClassViewPanel.getInstance()))
+							ROCSInterface.getInstance().show(ClassViewPanel.getInstance(), true);
 						CourseSearchPanel.getInstance().search();
 					}
 				}
@@ -197,7 +201,7 @@ public class CourseSearchPanel extends VerticalPanel {
 			userCourseNum = Integer.parseInt(num);
 		}
 
-		List<CourseStatusObject> CSOlist = SchedulerManager.get().getSelectedCourses();
+		List<CourseStatusObject> CSOlist = SchedulerManager.getInstance().getSelectedCourses();
 		ArrayList<Course> CRSlist = new ArrayList<Course>();
 		for (CourseStatusObject CSO : CSOlist) if (CSO.getRequired()) CRSlist.add(CSO.getCourse());
 		ArrayList<Section> sArr = new ArrayList<Section>(); sArr.add(new Section());

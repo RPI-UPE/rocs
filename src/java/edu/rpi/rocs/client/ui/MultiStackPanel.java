@@ -18,6 +18,17 @@ public class MultiStackPanel extends StackPanel {
 	private HashSet<Integer> m_selected=new HashSet<Integer>();
 	private boolean programmatic=false;
 	
+	private int animate=0;
+	
+	public void setAnimationTime(int millis) {
+		if(millis<0) millis = 0;
+		animate = millis;
+	}
+	
+	public int getAnimationTime() {
+		return animate;
+	}
+	
 	public interface MultiStackPanelVisibilityChangeHandler {
 		public void onChange(int index, boolean visible);
 	}
@@ -165,10 +176,44 @@ public class MultiStackPanel extends StackPanel {
 		 return removed;
 	}
 	
-	private void setStackContentVisible(int index, boolean visible) {
-		Element tr = DOM.getChild(m_tbody, (index * 2)+1);
+	private native void animationHelper(Element tr, Element w, int index, boolean visible)/*-{
+		if($wnd.helpGenerator === undefined) {
+			$wnd.helpGeneratorCounter = 0;
+			$wnd.helpGenerator = function() {
+				var temp = $wnd.helpGeneratorCounter++;
+				if($wnd.helpGeneratorCounter==10) $wnd.helpGeneratorCounter = 0;
+				var tempfunc = eval("(function () { var temp = "+temp+"; if(!$wnd.msp[temp]['visible']) $wnd.msp[temp]['this'].onAnimationFinished($wnd.msp[temp]['tr'], $wnd.msp[temp]['index'], $wnd.msp[temp]['visible']); })");
+				return { id: temp, func: tempfunc };
+			}
+		}
+		if(this.@edu.rpi.rocs.client.ui.MultiStackPanel::animate==0) {
+			this.@edu.rpi.rocs.client.ui.MultiStackPanel::onAnimationFinished(Lcom/google/gwt/user/client/Element;IZ)(tr, index, visible);
+			return;
+		}
+		var helper = $wnd.helpGenerator();
+		if($wnd.msp === undefined) $wnd.msp = [];
+		$wnd.msp[helper.id] = {};
+		$wnd.msp[helper.id]['tr'] = tr;
+		$wnd.msp[helper.id]['w'] = w;
+		$wnd.msp[helper.id]['index'] = index;
+		$wnd.msp[helper.id]['visible'] = visible;
+		$wnd.msp[helper.id]['this'] = this;
+		var h = '0px';
+		if(visible) {
+			h = $wnd.jQuery(w.firstChild).css("height");
+		}
+		$wnd.jQuery(w).animate({ height: h }, this.@edu.rpi.rocs.client.ui.MultiStackPanel::animate, "swing", helper.func);
+	}-*/;
+
+	private void onAnimationFinished(Element tr, int index, boolean visible) {
 		UIObject.setVisible(tr, visible);
 		getWidget(index).setVisible(visible);
+	}
+	
+	private void setStackContentVisible(int index, boolean visible) {
+		Element tr = DOM.getChild(m_tbody, (index * 2)+1);
+		if(visible) onAnimationFinished(tr, index, visible);
+		animationHelper(tr, getWidget(index).getElement(), index, visible);
 	}
 	
 	private void setStackVisible(int index, boolean visible) {

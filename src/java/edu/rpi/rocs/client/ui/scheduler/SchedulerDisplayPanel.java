@@ -49,7 +49,7 @@ public class SchedulerDisplayPanel extends HorizontalPanel {
 		add(m_summary);
 	}
 
-	public static SchedulerDisplayPanel get() {
+	public static SchedulerDisplayPanel getInstance() {
 		if(theInstance==null) theInstance = new SchedulerDisplayPanel();
 		return theInstance;
 	}

@@ -158,7 +158,7 @@ public class SchedulerManager implements Serializable {
 	 * Gets the singleton ScheduleManager instance
 	 * @return The ScheduleManager
 	 */
-	public static SchedulerManager get() {
+	public static SchedulerManager getInstance() {
 		if(theInstance==null) theInstance = new SchedulerManager();
 		return theInstance;
 	}
@@ -313,7 +313,7 @@ public class SchedulerManager implements Serializable {
 				optionalCourses.add(status.getCourse());
 			}
 		}
-		HashSet<ScheduleFilter> filters = ScheduleFilterManager.get().getFilters();
+		HashSet<ScheduleFilter> filters = ScheduleFilterManager.getInstance().getFilters();
 		generatedSchedules = Schedule.buildAllSchedulesGivenCoursesAndFilters(requiredCourses, optionalCourses, filters);
 		if(generatedSchedules != null)
 			Log.trace("Generated " + generatedSchedules.size() + " schedules");

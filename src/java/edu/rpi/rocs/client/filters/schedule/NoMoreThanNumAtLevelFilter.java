@@ -18,7 +18,7 @@ public class NoMoreThanNumAtLevelFilter implements ScheduleFilter, NoMoreThanNum
 	private static String QUALIFIED_NAME="edu.rpi.rocs.client.filters.schedule.NoMoreThanNumAtLevelFilter";
 	
 	public static boolean register() {
-		ScheduleFilterManager.get().registerFilter(DISPLAY_NAME, QUALIFIED_NAME);
+		ScheduleFilterManager.getInstance().registerFilter(DISPLAY_NAME, QUALIFIED_NAME);
 		return true;
 	}
 

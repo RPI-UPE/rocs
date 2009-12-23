@@ -40,7 +40,7 @@ public class SchedulerIntroPanel extends SimplePanel {
 
 		public void onClick(ClickEvent event) {
 			// TODO Auto-generated method stub
-			SchedulerPanel.get().switchTo(SchedulerPage.FilterPage);
+			SchedulerPanel.getInstance().switchTo(SchedulerPage.FilterPage);
 		}
 		
 	};

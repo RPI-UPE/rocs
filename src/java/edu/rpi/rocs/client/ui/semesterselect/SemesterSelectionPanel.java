@@ -56,7 +56,7 @@ public class SemesterSelectionPanel extends VerticalPanel {
 
 			public void onClick(ClickEvent event) {
 				// TODO Auto-generated method stub
-				SchedulerManager.get().getScheduleList(getScheduleListCallback);
+				SchedulerManager.getInstance().getScheduleList(getScheduleListCallback);
 			}
 			
 		});

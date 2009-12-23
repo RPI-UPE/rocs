@@ -24,7 +24,7 @@ public class SchedulerPanel extends SimplePanel {
 		this.add(currentChild);
 	}
 	
-	public static SchedulerPanel get() {
+	public static SchedulerPanel getInstance() {
 		if(theInstance==null) theInstance = new SchedulerPanel();
 		return theInstance;
 	}
@@ -33,25 +33,25 @@ public class SchedulerPanel extends SimplePanel {
 		switch(page) {
 		case FilterPage:
 			this.remove(currentChild);
-			currentChild = SchedulerFilterDisplayPanel.get();
+			currentChild = SchedulerFilterDisplayPanel.getInstance();
 			this.add(currentChild);
 			break;
 		case SchedulePage:
-			if(ScheduleFilterManager.get().filtersChanged()) {
-				SchedulerManager.get().generateSchedules();
-				ArrayList<Schedule> schedules = SchedulerManager.get().getAllSchedules();
+			if(ScheduleFilterManager.getInstance().filtersChanged()) {
+				SchedulerManager.getInstance().generateSchedules();
+				ArrayList<Schedule> schedules = SchedulerManager.getInstance().getAllSchedules();
 				if(schedules==null || schedules.size()==0) {
 					return;
 				}
 				this.remove(currentChild);
-				currentChild = SchedulerDisplayPanel.get();
-				SchedulerDisplayPanel.get().setSchedules(schedules);
+				currentChild = SchedulerDisplayPanel.getInstance();
+				SchedulerDisplayPanel.getInstance().setSchedules(schedules);
 				this.add(currentChild);
 				break;
 			}
 			else {
 				this.remove(currentChild);
-				currentChild = SchedulerDisplayPanel.get();
+				currentChild = SchedulerDisplayPanel.getInstance();
 				this.add(currentChild);
 			}
 		}

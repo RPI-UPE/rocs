@@ -25,7 +25,7 @@ public class SchedulerFilterDialogBox extends DialogBox {
 	private Anchor cancelButton = new Anchor("Cancel");
 	private Anchor acceptButton = new Anchor("Select");
 	private HorizontalPanel buttonLayout = new HorizontalPanel();
-	private ArrayList<String> filterNames = ScheduleFilterManager.get().getRegisteredFilterNames();
+	private ArrayList<String> filterNames = ScheduleFilterManager.getInstance().getRegisteredFilterNames();
 	
 	public SchedulerFilterDialogBox() {
 		this.setText("ROCS Filter List");
@@ -75,7 +75,7 @@ public class SchedulerFilterDialogBox extends DialogBox {
 		if(accepted) {
 			for(SchedulerFilterDialogBoxCompleted callback : completeCallbacks) {
 				String filterName = filterNames.get(filters.getSelectedIndex());
-				String qName = ScheduleFilterManager.get().getFilterByName(filterName);
+				String qName = ScheduleFilterManager.getInstance().getFilterByName(filterName);
 				callback.completedWithFilter(qName);
 			}
 		}

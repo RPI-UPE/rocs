@@ -39,10 +39,10 @@ public class ClassViewPanel extends HorizontalPanel implements CourseAddedHandle
 	}
 	
 	private ClassViewPanel() {
-		SchedulerManager.get().addCourseAddedEventHandler( this );
-		SchedulerManager.get().addCourseOptionalEventHandler(this);
-		SchedulerManager.get().addCourseRequiredEventHandler(this);
-		SchedulerManager.get().addCourseRemovedEventHandler(this);
+		SchedulerManager.getInstance().addCourseAddedEventHandler( this );
+		SchedulerManager.getInstance().addCourseOptionalEventHandler(this);
+		SchedulerManager.getInstance().addCourseRequiredEventHandler(this);
+		SchedulerManager.getInstance().addCourseRemovedEventHandler(this);
 		
 		layout = new FlexTable();
 		
@@ -109,13 +109,13 @@ public class ClassViewPanel extends HorizontalPanel implements CourseAddedHandle
 	
 	private void updateList()
 	{
-		curCourses = SchedulerManager.get().getSelectedCourses();
+		curCourses = SchedulerManager.getInstance().getSelectedCourses();
 		classList.clear();
 		for(int x = 0; x < curCourses.size(); x++)
 		{
 			Course course = curCourses.get(x).getCourse();
 			String data = "";
-			if( SchedulerManager.get().isCourseRequired( course ) )
+			if( SchedulerManager.getInstance().isCourseRequired( course ) )
 			{
 				data += "R&nbsp;&nbsp;";
 			}
@@ -141,7 +141,7 @@ public class ClassViewPanel extends HorizontalPanel implements CourseAddedHandle
 			if( classList.isItemSelected(i) )
 			{
 				Course c = curCourses.get(i).getCourse();
-				SchedulerManager.get().setCourseRequired(c);
+				SchedulerManager.getInstance().setCourseRequired(c);
 			}
 		}
 	}
@@ -153,7 +153,7 @@ public class ClassViewPanel extends HorizontalPanel implements CourseAddedHandle
 			if( classList.isItemSelected(i) )
 			{
 				Course c = curCourses.get(i).getCourse();
-				SchedulerManager.get().setCourseOptional(c);
+				SchedulerManager.getInstance().setCourseOptional(c);
 			}
 		}
 	}
@@ -165,7 +165,7 @@ public class ClassViewPanel extends HorizontalPanel implements CourseAddedHandle
 			if( classList.isItemSelected(i) )
 			{
 				Course c = curCourses.get(i).getCourse();
-				SchedulerManager.get().removeCourse(c);
+				SchedulerManager.getInstance().removeCourse(c);
 			}
 		}
 	}
