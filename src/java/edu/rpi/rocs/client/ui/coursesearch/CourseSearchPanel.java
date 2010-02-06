@@ -17,8 +17,11 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 import edu.rpi.rocs.client.ImageManager;
+import edu.rpi.rocs.client.filters.schedule.ScheduleFilter;
+import edu.rpi.rocs.client.filters.schedule.TimeSchedulerFilter;
 import edu.rpi.rocs.client.objectmodel.Course;
 import edu.rpi.rocs.client.objectmodel.Period;
+import edu.rpi.rocs.client.objectmodel.Schedule;
 import edu.rpi.rocs.client.objectmodel.SchedulerManager;
 import edu.rpi.rocs.client.objectmodel.SemesterManager;
 import edu.rpi.rocs.client.objectmodel.SchedulerManager.CourseStatusObject;
@@ -29,6 +32,7 @@ import edu.rpi.rocs.client.objectmodel.Course.CourseComparator;
 import edu.rpi.rocs.client.ui.ListBoxHTML;
 import edu.rpi.rocs.client.ui.ROCSInterface;
 import edu.rpi.rocs.client.ui.classview.ClassViewPanel;
+import edu.rpi.rocs.client.ui.scheduler.SchedulerFilterDisplayPanel;
 
 public class CourseSearchPanel extends VerticalPanel {
 
@@ -202,10 +206,13 @@ public class CourseSearchPanel extends VerticalPanel {
 		}
 
 		List<CourseStatusObject> CSOlist = SchedulerManager.getInstance().getSelectedCourses();
-		ArrayList<Course> CRSlist = new ArrayList<Course>();
-		for (CourseStatusObject CSO : CSOlist) if (CSO.getRequired()) CRSlist.add(CSO.getCourse());
-		ArrayList<Section> sArr = new ArrayList<Section>(); sArr.add(new Section());
-		ArrayList<Section> blocking = possibleTimeBlocks(sArr, CRSlist, true);
+		ArrayList<Course> ReqList = new ArrayList<Course>(), OptList = new ArrayList<Course>();
+		for (CourseStatusObject CSO : CSOlist) if (CSO.getRequired()) ReqList.add(CSO.getCourse());
+															else OptList.add(CSO.getCourse());
+		ArrayList<ScheduleFilter> filter = new ArrayList<ScheduleFilter>();
+		filter.add(SchedulerFilterDisplayPanel.theInstance.getCurrentFilters().get(0));
+		ArrayList<Schedule> posSchedules = Schedule.buildAllSchedulesGivenCoursesAndFilters(ReqList,
+																  new ArrayList<Course>(), filter);
 
 		theResults = new ArrayList<Course>();
 		for(Course course : courses) {
@@ -224,90 +231,24 @@ public class CourseSearchPanel extends VerticalPanel {
 		resultsListBox.clear();
 		for(Course course : theResults) {
 			boolean chosen = false;
-			for (Course C : CRSlist) if ((new CourseComparator()).compare(C, course) == 0) {
+			for (Course C : ReqList) if ((new CourseComparator()).compare(C, course) == 0) {
 				chosen = true;
 				break;
 			}
 			int bits = 0;
 			ArrayList<Course> cArr = new ArrayList<Course>(); cArr.add(course);
-			if (chosen) {
-				bits += 1;
-				for (int i = 0; i < cArr.size(); i++) if ((new CourseComparator()).compare(course, cArr.get(i)) == 0) cArr.remove(i);
-			}
-			if (possibleTimeBlocks(blocking, cArr, false).size() == 0) bits += 4;
-			if (chosen) cArr.add(course);
+			if (chosen) bits += 1;
+			if (!chosen && !hasSpace(course, posSchedules)) bits += 4;
 			if (course.isClosed()) bits += 2;
+			Log.debug("Hello there?");
 			resultsListBox.addHTML(LIST_HEAD[bits]+course.getListDescription()+LIST_TAIL[bits], course.getDept()+course.getNum());
 		}
 	}
-	private ArrayList<Section> possibleTimeBlocks(ArrayList<Section> accrue, ArrayList<Course> remaining, boolean fullList) {
-		if (remaining.size() == 0) return accrue;
 
-		ArrayList<Section> retVal = new ArrayList<Section>();
-		Course course = remaining.remove(0);
-
-		if (fullList) {
-			for (Section S1 : accrue) {
-				for (Section S2 : course.getSections()) {
-					Section S3 = combineSections(S1, S2);
-					if (S3 != null && !containsMatch(retVal, S3)) retVal.add(S3);
-				}
-			}
-			ArrayList<Section> realRetVal = possibleTimeBlocks(retVal, remaining, false);
-			remaining.add(0, course);
-			return realRetVal;
-		}
-		else {
-			remaining.add(0, course);
-			for (Section S1 : accrue) {
-				for (Section S2 : course.getSections()) {
-					Section S3 = combineSections(S1, S2);
-					if (S3 != null) {
-						retVal.add(S3);
-						return retVal;
-					}
-				}
-			}
-			return retVal;
-		}
-	}
-	private Section combineSections(Section S1, Section S2) {
-		Section retVal = new Section();
-		for (Period P : S1.getPeriods()) retVal.addPeriod(P);
-		for (Period P : S2.getPeriods()) if (!addPeriod(retVal, P)) return null;
-		return retVal;
-	}
-	private boolean addPeriod(Section S, Period P) {
-		int time1 = P.getStart().getAbsMinute(), time2 = P.getEnd().getAbsMinute();
-		for (Period P2 : S.getPeriods()) if (intersects(P.getDays(), P2.getDays())) {
-			int time3 = P2.getStart().getAbsMinute(), time4 = P2.getEnd().getAbsMinute();
-			if (time3 <= time2 && time4 >= time1) return false;
-		}
-		S.addPeriod(P);
-		return true;
-	}
-	private boolean intersects(ArrayList<Integer> arr1, ArrayList<Integer> arr2) {
-		for (Integer i : arr1) for (Integer j : arr2) if (i.equals(j)) return true;
+	private boolean hasSpace(Course CS, ArrayList<Schedule> schedules)
+	{
+		for (Schedule S : schedules) for (Section S2 : CS.getSections()) if (!S.willConflict(S2)) return true;
 		return false;
-	}
-	private boolean containsMatch(ArrayList<Section> list, Section section) {
-		for (Section S : list) if (match(S, section)) return true;
-		return false;
-	}
-	private boolean match(Section S1, Section S2) {
-		for (Period P1 : S1.getPeriods()) for (Integer i : P1.getDays()) {
-			boolean covered = false;
-			int time1 = P1.getStart().getAbsMinute(), time2 = P1.getEnd().getAbsMinute();
-			for (Period P2 : S2.getPeriods()) if (P2.getDays().contains(i)) {
-				int time3 = P2.getStart().getAbsMinute(), time4 = P2.getEnd().getAbsMinute();
-				if (time1 == time3 && time2 == time4) {
-					covered = true;
-					break;
-				}
-			}
-			if (!covered) return false;
-		}
-		return true;
 	}
 
 	private String getSearchLevel() {
