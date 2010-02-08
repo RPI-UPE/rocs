@@ -210,7 +210,7 @@ public class CourseSearchPanel extends VerticalPanel {
 		for (CourseStatusObject CSO : CSOlist) if (CSO.getRequired()) ReqList.add(CSO.getCourse());
 															else OptList.add(CSO.getCourse());
 		ArrayList<ScheduleFilter> filter = new ArrayList<ScheduleFilter>();
-		filter.add(SchedulerFilterDisplayPanel.theInstance.getCurrentFilters().get(0));
+		filter.add(SchedulerFilterDisplayPanel.getInstance().getCurrentFilters().get(0));
 		ArrayList<Schedule> posSchedules = Schedule.buildAllSchedulesGivenCoursesAndFilters(ReqList,
 																  new ArrayList<Course>(), filter);
 

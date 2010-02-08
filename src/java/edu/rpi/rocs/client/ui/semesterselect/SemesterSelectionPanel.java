@@ -1,5 +1,6 @@
 package edu.rpi.rocs.client.ui.semesterselect;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.allen_sauer.gwt.log.client.Log;
@@ -18,6 +19,7 @@ import edu.rpi.rocs.client.objectmodel.SchedulerManager;
 import edu.rpi.rocs.client.objectmodel.SemesterDescription;
 import edu.rpi.rocs.client.objectmodel.SemesterManager;
 import edu.rpi.rocs.client.services.coursedb.CourseDBService;
+import edu.rpi.rocs.client.services.updatemanager.UpdateItem;
 
 
 public class SemesterSelectionPanel extends VerticalPanel {
@@ -30,9 +32,9 @@ public class SemesterSelectionPanel extends VerticalPanel {
 	private Anchor newFile = new Anchor("New");
 	private Anchor loadFile = new Anchor("Load");
 	private Anchor saveFile = new Anchor("Save");
-	
+
 	private SemesterDescription selectedSemester = null;
-	
+
 	private static SemesterSelectionPanel instance = null;
 	public static SemesterSelectionPanel getInstance() {
 		if (instance == null) {
@@ -40,14 +42,14 @@ public class SemesterSelectionPanel extends VerticalPanel {
 		}
 		return instance;
 	}
-	
+
 	private SemesterSelectionPanel() {
 		layout.setWidget(0, 0, title);
 		semesterList.addChangeHandler(handleSemesterChange);
-		
+
 		add(layout);
 		add(file);
-		
+
 		newFile.addStyleName("greybutton");
 		newFile.addStyleName("linkbutton");
 		loadFile.addStyleName("greybutton");
@@ -58,21 +60,21 @@ public class SemesterSelectionPanel extends VerticalPanel {
 				// TODO Auto-generated method stub
 				SchedulerManager.getInstance().getScheduleList(getScheduleListCallback);
 			}
-			
+
 		});
-		
+
 		saveFile.addStyleName("greybutton");
 		saveFile.addStyleName("linkbutton");
-		
+
 		buttons.setWidget(0, 0, newFile);
 		buttons.setWidget(0, 1, loadFile);
 		buttons.setWidget(0, 2, saveFile);
-		
+
 		add(buttons);
-		
+
 		CourseDBService.Singleton.getInstance().getSemesterList(semesterListCallback);
 	}
-	
+
 	private AsyncCallback<List<SemesterDescription>> semesterListCallback =
 		new AsyncCallback<List<SemesterDescription>>() {
 
@@ -89,11 +91,11 @@ public class SemesterSelectionPanel extends VerticalPanel {
 				for(SemesterDescription desc : result) {
 					semesterList.addItem(desc.getDescription(), desc.getSemesterId().toString());
 				}
-				
+
 				CourseDBService.Singleton.getInstance().getCurrentSemester(currentSemesterCallback);
 			}
 	};
-	
+
 	private AsyncCallback<SemesterDescription> currentSemesterCallback =
 		new AsyncCallback<SemesterDescription>() {
 
@@ -121,9 +123,9 @@ public class SemesterSelectionPanel extends VerticalPanel {
 				}
 				selectedSemesterDidChange();
 			}
-		
+
 	};
-	
+
 	private AsyncCallback<List<String>> getScheduleListCallback =
 		new AsyncCallback<List<String>>() {
 
@@ -137,9 +139,9 @@ public class SemesterSelectionPanel extends VerticalPanel {
 				LoadScheduleDialogBox.get().setScheduleList(result);
 				LoadScheduleDialogBox.get().center();
 			}
-		
+
 	};
-	
+
 	private ChangeHandler handleSemesterChange =
 		new ChangeHandler() {
 
@@ -156,11 +158,39 @@ public class SemesterSelectionPanel extends VerticalPanel {
 				}
 			}
 	};
-	
+
 	public void selectedSemesterDidChange() {
 		SemesterManager.getInstance().retrieveCourseDB(selectedSemester.getSemesterId());
+		javascriptThread(selectedSemester);
 	}
-	
+
+	private void javaThread(SemesterDescription SD)
+	{
+		if (selectedSemester.getSemesterId() == SD.getSemesterId())
+		{
+			CourseDBService.Singleton.getInstance().getUpdateList(SD.getSemesterId(),
+																 SemesterManager.getInstance().getCurrentSemester().getTimeStamp(),
+																 getUpdatedItems);
+			javascriptThread(SD);
+		}
+	}
+	private native void javascriptThread(SemesterDescription SD)/*-{
+		globalSemesterDesc = SD;
+		window.setTimeout("this.@edu.rpi.rocs.client.ui.semesterselect.SemesterSelectionPanel::javaThread(globalSemesterDesc);", 310000);
+	}-*/;
+
+	private AsyncCallback<ArrayList<UpdateItem>> getUpdatedItems =
+		new AsyncCallback<ArrayList<UpdateItem>>()
+		{
+			public void onFailure(Throwable caught) {
+				Log.error("Failed to get a response from the Update server.", caught);
+			}
+			public void onSuccess(ArrayList<UpdateItem> result) {
+				SemesterManager.getInstance().manageUpdates(result);
+			}
+		};
+
+
 	public SemesterDescription getSelectedSemester() {
 		return selectedSemester;
 	}
