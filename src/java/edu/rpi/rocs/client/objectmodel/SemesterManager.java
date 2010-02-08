@@ -129,6 +129,12 @@ public class SemesterManager {
 		ArrayList<Course> modifiedCRS = new ArrayList<Course>();
 		ArrayList<CrossListing> modifiedCL = new ArrayList<CrossListing>();
 
+		for (UpdateItem UI : updates)
+		{
+			if (UI.isCourse()) modifiedCRS.add((Course)UI.getObject());
+			else modifiedCL.add((CrossListing)UI.getObject());
+		}
+
 		List<Course> getCourses = currentSemester.getCourses();
 		for (Course C : modifiedCRS) for (Course C2 : getCourses) if (C.getNum() == C2.getNum())
 		{
