@@ -6,7 +6,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.Widget;
 
 public class HTMLTableList extends Widget {
@@ -169,7 +171,8 @@ public class HTMLTableList extends Widget {
 		m_table = DOM.createTable();
 		m_tbody = DOM.createTBody();
 		m_table.appendChild(m_tbody);
-		m_divwrap.appendChild(m_divwrap);
+		m_divwrap.appendChild(m_table);
+		m_divwrap.setClassName("htmlTableList");
 		Element temp = DOM.createTR();
 		m_tbody.appendChild(temp);
 	}
@@ -259,7 +262,16 @@ public class HTMLTableList extends Widget {
 	}
 	
 	public void removeRowData(HTMLTableListRow row) {
-		
+		int r = m_rows.indexOf(row);
+		m_rows.remove(r);
+		Element n = m_tbody.getNextSiblingElement();
+		r++;
+		while(r!=0&&n!=null) {
+			r--;
+			n = n.getNextSiblingElement();
+		}
+		if(n!=null)
+			m_tbody.removeChild(n);
 	}
 	
 	public void clear() {
@@ -268,5 +280,73 @@ public class HTMLTableList extends Widget {
 			m_tbody.removeChild(m_tbody.getFirstChild());
 		}
 		m_tbody.appendChild(m_header.generateHeaderRow());
+	}
+	
+	private class ClickContainer {
+		public ClickHandler handler=null;
+		public int row=-1,col=-1;
+	}
+	
+	private ArrayList<ClickContainer> m_clickHandlers = new ArrayList<ClickContainer>();
+	
+	public void addClickHandler(ClickHandler h) {
+		ClickContainer cc = new ClickContainer();
+		cc.handler = h;
+		addClickHandler(cc);
+	}
+	
+	public void addClickHandler(ClickHandler h, int row) {
+		ClickContainer cc = new ClickContainer();
+		cc.handler = h;
+		cc.row = row;
+		addClickHandler(cc);
+	}
+	
+	public void addClickHandler(ClickHandler h, int row, int col) {
+		ClickContainer cc = new ClickContainer();
+		cc.handler = h;
+		cc.row = row;
+		cc.col = col;
+		addClickHandler(cc);
+	}
+	
+	private void addClickHandler(ClickContainer cc) {
+		m_clickHandlers.add(cc);
+		if(cc.row < 0) {
+			
+		}
+		else if(cc.col < 0) {
+			
+		}
+		else {
+			
+		}
+	}
+	public void onBrowserEvent(Event event) {
+		if(DOM.eventGetType(event) == Event.ONCLICK) {
+			Element target = DOM.eventGetTarget(event);
+			if("td".equals(target.getNodeName())) {
+				
+			}
+			else if("tr".equals(target.getNodeName())) {
+				
+			}
+			else if("tbody".equals(target.getNodeName())) {
+				
+			}
+			else if("table".equals(target.getNodeName())) {
+				
+			}
+		}
+		else if(DOM.eventGetType(event) == Event.ONDBLCLICK) {
+			Element target = DOM.eventGetTarget(event);
+		}
+		else if(DOM.eventGetType(event) == Event.ONMOUSEOVER) {
+			Element target = DOM.eventGetTarget(event);
+		}
+		else if(DOM.eventGetType(event) == Event.ONMOUSEOUT) {
+			Element target = DOM.eventGetTarget(event);
+		}
+		super.onBrowserEvent(event);
 	}
 }

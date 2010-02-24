@@ -8,7 +8,12 @@ import com.google.gwt.user.client.ui.Widget;
 import edu.rpi.rocs.client.filters.course.reason.InvalidReason;
 import edu.rpi.rocs.client.objectmodel.Course;
 import edu.rpi.rocs.client.objectmodel.Section;
-
+/**
+ * DepartmentCourseFilter is a CourseFilter that removes any Courses that do
+ * not appear within the specified department.
+ * @author ewpatton
+ *
+ */
 public class DepartmentCourseFilter extends CourseFilter {
 	
 	private HorizontalPanel filterPanel = new HorizontalPanel();

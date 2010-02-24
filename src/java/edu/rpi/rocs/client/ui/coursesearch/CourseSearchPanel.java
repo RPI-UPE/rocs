@@ -18,13 +18,12 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 
 import edu.rpi.rocs.client.ImageManager;
 import edu.rpi.rocs.client.filters.schedule.ScheduleFilter;
-import edu.rpi.rocs.client.filters.schedule.TimeSchedulerFilter;
 import edu.rpi.rocs.client.objectmodel.Course;
 import edu.rpi.rocs.client.objectmodel.Period;
 import edu.rpi.rocs.client.objectmodel.Schedule;
 import edu.rpi.rocs.client.objectmodel.SchedulerManager;
 import edu.rpi.rocs.client.objectmodel.SemesterManager;
-import edu.rpi.rocs.client.objectmodel.SchedulerManager.CourseStatusObject;
+import edu.rpi.rocs.client.objectmodel.CourseStatusObject;
 import edu.rpi.rocs.client.objectmodel.SemesterManager.SemesterManagerCallback;
 import edu.rpi.rocs.client.objectmodel.Section;
 import edu.rpi.rocs.client.objectmodel.Semester;
@@ -245,6 +244,30 @@ public class CourseSearchPanel extends VerticalPanel {
 		}
 	}
 
+	private Section combineSections(Section S1, Section S2) {
+		Section retVal = new Section();
+		for (Period P : S1.getPeriods()) retVal.addPeriod(P);
+		for (Period P : S2.getPeriods()) if (!addPeriod(retVal, P)) return null;
+		return retVal;
+	}
+	private boolean addPeriod(Section S, Period P) {
+		int time1 = P.getStart().getAbsMinute(), time2 = P.getEnd().getAbsMinute();
+		for (Period P2 : S.getPeriods()) if (intersects(P.getDays(), P2.getDays())) {
+			int time3 = P2.getStart().getAbsMinute(), time4 = P2.getEnd().getAbsMinute();
+			if (time3 <= time2 && time4 >= time1) return false;
+		}
+		S.addPeriod(P);
+		return true;
+	}
+	private boolean intersects(List<Integer> arr1, List<Integer> arr2) {
+		for (Integer i : arr1) for (Integer j : arr2) if (i.equals(j)) return true;
+		return false;
+	}
+	/*
+	private boolean containsMatch(ArrayList<Section> list, Section section) {
+		for (Section S : list) if (match(S, section)) return true;
+	}
+	*/
 	private boolean hasSpace(Course CS, ArrayList<Schedule> schedules)
 	{
 		for (Schedule S : schedules) for (Section S2 : CS.getSections()) if (!S.willConflict(S2)) return true;

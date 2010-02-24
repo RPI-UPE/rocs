@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="edu.rpi.rocs.client.objectmodel">
+  <class name="SchedulerManager">
+  	<id name="dbid" column="STATE_ID">
+  		<generator class="native"/>
+  	</id>
+  	 
+  	<map name="currentCourses">
+  		<key column="STATE_ID"/>
+  		<index-many-to-many column="COURSE_ID" class="Course"/>
+  		<one-to-many class="CourseStatusObject"/>
+  	</map>
+  	
+  </class>
+</hibernate-mapping>

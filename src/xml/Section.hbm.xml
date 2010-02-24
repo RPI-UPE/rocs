@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="edu.rpi.rocs.client.objectmodel">
+  <class name="Section">
+  	<id name="dbid" column="SECTION_ID">
+  		<generator class="native"/>
+  	</id>
+  	<property name="crn"/>
+  	<property name="seats"/>
+  	<property name="students"/>
+  	<property name="number"/>
+  	<list name="notes" table="SECTION_NOTES">
+  		<key column="SECTION_ID"/>
+  		<index column="INDEX_COL"/>
+  		<element column="SECTION_NOTE" type="string"/>
+  	</list>
+  	<list name="periods" table="SECTION_PERIODS">
+  		<key column="SECTION_ID"/>
+  		<index column="INDEX_COL"/>
+  		<one-to-many class="Period"/>
+  	</list>
+  	<many-to-one name="parent"
+  		class="Course"
+  		column="PARENT_ID"/>
+  	<many-to-one name="CrossListing"
+  		class="CrossListing"
+  		column="CROSSLIST_ID"/>
+  	<property name="MajorRevision"/>
+  	<property name="MinorRevision"/>
+  </class>
+</hibernate-mapping>

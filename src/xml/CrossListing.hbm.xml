@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="edu.rpi.rocs.client.objectmodel">
+  <class name="CrossListing">
+  	<id name="dbid" column="CROSSLIST_ID">
+  		<generator class="native"/>
+  	</id>
+  	<property name="UID"/>
+  	<property name="numberOfSeats"/>
+  	<list name="crns">
+  		<key column="CROSSLIST_ID"/>
+  		<index column="INDEX_COL"/>
+  		<element type="integer"/>
+  	</list>
+  	<list name="sections">
+  		<key column="CROSSLIST_ID"/>
+  		<index column="INDEX_COL"/>
+  		<one-to-many class="Section"/>
+  	</list>
+  	<property name="MajorRevision"/>
+  	<property name="MinorRevision"/>
+  </class>
+</hibernate-mapping>

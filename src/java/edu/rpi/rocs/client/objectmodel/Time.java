@@ -1,5 +1,6 @@
 package edu.rpi.rocs.client.objectmodel;
 
+
 import java.io.Serializable;
 
 public class Time implements Serializable, Cloneable {
@@ -14,6 +15,11 @@ public class Time implements Serializable, Cloneable {
 	public Time() {
 		hour = 0;
 		minute = 0;
+	}
+	
+	public Time(int absh) {
+		hour = absh/60;
+		minute = absh%60;
 	}
 	
 	public Time(int h, int m) {

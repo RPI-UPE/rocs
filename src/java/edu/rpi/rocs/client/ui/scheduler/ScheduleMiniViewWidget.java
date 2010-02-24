@@ -2,6 +2,7 @@ package edu.rpi.rocs.client.ui.scheduler;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -42,7 +43,7 @@ public class ScheduleMiniViewWidget extends SVGCanvasWidget implements
 		m_background.setFillColor("#ffffff");
 		ArrayList<Section> sections = m_schedule.getSections();
 		for(Section section : sections) {
-			ArrayList<Period> periods = section.getPeriods();
+			List<Period> periods = section.getPeriods();
 			String color = m_generator.randomlySelectColor(section.getParent());
 			for(Period p : periods) {
 				int start = p.getStart().getAbsMinute();

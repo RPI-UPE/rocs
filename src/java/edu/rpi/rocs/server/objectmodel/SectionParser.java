@@ -27,7 +27,7 @@ public class SectionParser{
 			String name = n.getNodeName();
 			String val = n.getNodeValue();
 			if(name == "crn") {
-				section.setCRN(Integer.parseInt(val));
+				section.setCrn(Integer.parseInt(val));
 			}
 			else if(name == "num") {
 				section.setNumber(val);

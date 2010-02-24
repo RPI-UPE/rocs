@@ -1,5 +1,6 @@
 package edu.rpi.rocs.client.objectmodel;
 
+
 import java.io.Serializable;
 
 /**

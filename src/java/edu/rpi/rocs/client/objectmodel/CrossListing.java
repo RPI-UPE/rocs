@@ -1,6 +1,8 @@
 package edu.rpi.rocs.client.objectmodel;
 
+
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * CrossListing class which stores information about multiple classes if they 
@@ -36,7 +38,7 @@ public class CrossListing extends MajorMinorRevisionObject {
 	 * 
 	 * @return An array of CRNs
 	 */
-	public ArrayList<Integer> getCRNs() {
+	public List<Integer> getCRNs() {
 		return new ArrayList<Integer>(crns);
 	}
 	
@@ -131,5 +133,25 @@ public class CrossListing extends MajorMinorRevisionObject {
 			filledSeats += s.getStudents();
 		}
 		return (filledSeats >= numberOfSeats);
+	}
+	
+	public void setSections(List<Section> list) {
+		sections = new ArrayList<Section>(list);
+	}
+	
+	public List<Section> getSections() {
+		return new ArrayList<Section>(sections);
+	}
+	
+	public void setCrns(List<Integer> list) {
+		crns = new ArrayList<Integer>(list);
+	}
+	
+	private Long dbid;
+	public void setDbid(Long id) {
+		dbid = id;
+	}
+	public Long getDbid() {
+		return dbid;
 	}
 }

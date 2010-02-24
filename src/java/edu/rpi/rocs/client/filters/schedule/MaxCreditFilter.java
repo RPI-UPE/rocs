@@ -90,13 +90,19 @@ public class MaxCreditFilter implements ScheduleFilter {
 	public boolean shouldPruneTreeOnFailure() {
 		return true;
 	}
-
+	
+	/**
+	 * @return the widget associated with this ScheduleFilter.
+	 */
 	public Widget getWidget() {
 		// TODO Auto-generated method stub
 		if(widget==null) widget = new MaxCreditFilterWidget(maxcreds);
 		return widget;
 	}
 
+	/**
+	 * @return the title to be displayed in the Filter list.
+	 */
 	public String getDisplayTitle() {
 		// TODO Auto-generated method stub
 		return DISPLAY_NAME;
@@ -104,11 +110,17 @@ public class MaxCreditFilter implements ScheduleFilter {
 	
 	private HashSet<ChangeHandler> changeHandlers = new HashSet<ChangeHandler>();
 
+	/**
+	 * Adds a Handler to be called when the value of the MaxCreditFilter changes.
+	 */
 	public void addChangeHandler(ChangeHandler e) {
 		// TODO Auto-generated method stub
 		changeHandlers.add(e);
 	}
 
+	/**
+	 * Removes a Handler from the registered AddHandlers list.
+	 */
 	public void removeChangeHandler(ChangeHandler e) {
 		// TODO Auto-generated method stub
 		changeHandlers.remove(e);

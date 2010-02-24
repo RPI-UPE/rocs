@@ -1,7 +1,9 @@
 package edu.rpi.rocs.client.objectmodel;
 
+
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 
 /**
  * Describes a particular course section.
@@ -41,7 +43,7 @@ public class Section extends MajorMinorRevisionObject {
      *
      * @return CRN
      */
-    public int getCRN(){
+    public int getCrn(){
         return crn;
     }
 
@@ -89,12 +91,20 @@ public class Section extends MajorMinorRevisionObject {
      *
      * @return List of periods
      */
-    public ArrayList<Period> getPeriods() {
+    public List<Period> getPeriods() {
     	return new ArrayList<Period>(periods);
     }
+    
+    public void setPeriods(List<Period> list) {
+    	periods = new ArrayList<Period>(list);
+    }
 
-    public ArrayList<String> getNotes() {
+    public List<String> getNotes() {
     	return new ArrayList<String>(notes);
+    }
+    
+    public void setNotes(List<String> list) {
+    	notes = new ArrayList<String>(list);
     }
 
     public Course getParent() {
@@ -102,7 +112,7 @@ public class Section extends MajorMinorRevisionObject {
     }
 
 
-    public void setCRN(int newValue){
+    public void setCrn(int newValue){
         crn = newValue;
     }
 
@@ -173,5 +183,15 @@ public class Section extends MajorMinorRevisionObject {
 			profs.add(p.getInstructor());
 		}
 		return profs;
+	}
+	
+	private Long dbid;
+	
+	public Long getDbid() {
+		return dbid;
+	}
+	
+	public void setDbid(Long id) {
+		dbid = id;
 	}
 }

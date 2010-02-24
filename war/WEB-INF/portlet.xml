@@ -18,7 +18,7 @@
 		</init-param>
 		<init-param>
 			<name>edu.rpi.rocs.Scheduler.refreshInterval</name>
-			<value>60</value>
+			<value>300</value>
 		</init-param>
 		<expiration-cache>0</expiration-cache>
 		<supports>

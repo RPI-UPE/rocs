@@ -1,16 +1,15 @@
 package edu.rpi.rocs.client.objectmodel;
 
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import com.allen_sauer.gwt.log.client.Log;
-import com.google.gwt.user.client.Window;
 
 import edu.rpi.rocs.client.filters.schedule.ScheduleFilter;
 import edu.rpi.rocs.client.filters.schedule.TimeSchedulerFilter;
@@ -31,15 +30,36 @@ public class Schedule implements Serializable {
 
 	protected ArrayList<Section> sections = new ArrayList<Section>();
 	protected String name = "";
+	protected String owner = "";
 	protected int creditMin = 0;
 	protected int creditMax = 0;
 	protected ArrayList<ArrayList<TimeBlockType>> times=null;
 	
 	protected enum TimeBlockType {
-		Available,
-		Desirable,
-		Filled,
-		Blocked
+		Available(0),
+		Desirable(1),
+		Filled(2),
+		Blocked(3);
+		
+		private int id;
+		
+		private TimeBlockType(int id) {
+			this.id = id;
+		}
+		
+		public int getId() {
+			return id;
+		}
+		
+		public static TimeBlockType valueOf(int id) {
+			switch(id) {
+			case 0: return Available;
+			case 1: return Desirable;
+			case 2: return Filled;
+			case 3: return Blocked;
+			default: return null;
+			}
+		}
 	}
 	
 	public Schedule() {
@@ -64,6 +84,7 @@ public class Schedule implements Serializable {
 		calculateCredits();
 	}
 	
+	
 	protected Schedule(ArrayList<Section> sections) throws InvalidScheduleException {
 		this();
 		Iterator<Section> i = sections.iterator();
@@ -73,6 +94,7 @@ public class Schedule implements Serializable {
 				throw new InvalidScheduleException("Set of courses passed to schedule cannot be scheduled");
 		}
 	}
+	
 	
 	protected void calculateCredits() {
 		creditMin = 0;
@@ -85,6 +107,7 @@ public class Schedule implements Serializable {
 			creditMax = c.getCredmax();
 		}
 	}
+	
 	
 	private static ArrayList<Schedule> buildSchedulesGivenStartingPoint(Schedule start, Map<Course, Set<Section>> requiredCourses, Map<Course, Set<Section>> optionalCourses, ArrayList<ScheduleFilter> filters) {
 		ArrayList<Schedule> results = new ArrayList<Schedule>();
@@ -108,7 +131,7 @@ public class Schedule implements Serializable {
 				if(!start.willConflict(section)) {
 					Schedule copy = new Schedule(start);
 					if(!copy.add(section)) {
-						Log.debug("Went to add section, but add() returned false. Aborting");
+						//Log.debug("Went to add section, but add() returned false. Aborting");
 						return results;
 					}
 					ArrayList<Schedule> temp = buildSchedulesGivenStartingPoint(copy,newCourses,optionalCourses,filters);
@@ -119,21 +142,22 @@ public class Schedule implements Serializable {
 		return results;
 	}
 	
+	
 	public static ArrayList<Schedule> buildAllSchedulesGivenCoursesAndFilters(Collection<Course> requiredCourses, Collection<Course> optionalCourses, Collection<ScheduleFilter> filters) {
-		Log.debug("Inside buildAllSchedulesGivenCoursesAndFilters");
-		Log.debug("Building required courses hashmap");
+		//Log.debug("Inside buildAllSchedulesGivenCoursesAndFilters");
+		//Log.debug("Building required courses hashmap");
 		Map<Course, Set<Section>> requiredCourseMap = new HashMap<Course, Set<Section>>();
 		for(Course c : requiredCourses) {
 			Set<Section> set = new HashSet<Section>(c.getSections());
 			requiredCourseMap.put(c, set);
 		}
-		Log.debug("Building optional courses hashmap");
+		//Log.debug("Building optional courses hashmap");
 		Map<Course, Set<Section>> optionalCourseMap = new HashMap<Course, Set<Section>>();
 		for(Course c : optionalCourses) {
 			Set<Section> set = new HashSet<Section>(c.getSections());
 			optionalCourseMap.put(c, set);
 		}
-		Log.debug("Finding TimeSchedulerFilter");
+		//Log.debug("Finding TimeSchedulerFilter");
 		TimeSchedulerFilter timeFilter=null;
 		for(ScheduleFilter filter : filters) {
 			if(filter.getClass().equals(TimeSchedulerFilter.class)) {
@@ -141,7 +165,7 @@ public class Schedule implements Serializable {
 				break;
 			}
 		}
-		Log.debug("Blocking out times specified in filter");
+		//Log.debug("Blocking out times specified in filter");
 		HashMap<Integer, ArrayList<Time>> times = timeFilter.getTimes();
 		Schedule start = new Schedule();
 		for(int i=0;i<7;i++) {
@@ -151,7 +175,7 @@ public class Schedule implements Serializable {
 				start.blockTime(i, t.getHour(), t.getMinute());
 			}
 		}
-		Log.debug("Removing the TimeSchedulerFilter");
+		//Log.debug("Removing the TimeSchedulerFilter");
 		ArrayList<ScheduleFilter> newFilters = new ArrayList<ScheduleFilter>(filters);
 		newFilters.remove(timeFilter);
 		ArrayList<Schedule> schedules = buildSchedulesGivenStartingPoint(start, requiredCourseMap, optionalCourseMap, newFilters);
@@ -162,10 +186,11 @@ public class Schedule implements Serializable {
 				result.add(s);
 			}
 		}
-		if(result.size()==0) Window.alert("Conflict detected. Unable to generate any valid schedules.");
+		//if(result.size()==0) Window.alert("Conflict detected. Unable to generate any valid schedules.");
 		
 		return result;
 	}
+	
 	
 	public ArrayList<Course> getCourses() {
 		ArrayList<Course> courses=new ArrayList<Course>();
@@ -177,6 +202,11 @@ public class Schedule implements Serializable {
 
 	public ArrayList<Section> getSections() {
 		return new ArrayList<Section>(sections);
+	}
+	
+	public void setSections(List<Section> list) {
+		sections = new ArrayList<Section>(list);
+		/* TODO: Process the list and compute the time blocks.*/
 	}
 	
 	public String getName() {
@@ -241,7 +271,7 @@ public class Schedule implements Serializable {
 	
 	public boolean add(Section s) {
 		if(willConflict(s)) return false;
-		ArrayList<Period> periods = s.getPeriods();
+		List<Period> periods = s.getPeriods();
 		Iterator<Period> i = periods.iterator();
 		while(i.hasNext()) {
 			Period p = i.next();
@@ -251,7 +281,7 @@ public class Schedule implements Serializable {
 			int endtime = end.getAbsMinute();
 			starttime /= 10;
 			endtime /= 10;
-			ArrayList<Integer> days = p.getDays();
+			List<Integer> days = p.getDays();
 			Iterator<Integer> dayItr = days.iterator();
 			while(dayItr.hasNext()) {
 				int day = dayItr.next().intValue();
@@ -293,6 +323,30 @@ public class Schedule implements Serializable {
 		minute /= 10;
 		TimeBlockType t = times.get(day).get(hour*6+minute);
 		return (t == TimeBlockType.Blocked);
+	}
+	
+	private Long dbid;
+	public void setDbid(Long id) {
+		dbid = id;
+	}
+	public Long getDbid() {
+		return dbid;
+	}
+
+	public void setOwner(String string) {
+		// TODO Auto-generated method stub
+		owner = string;
+	}
+	public String getOwner() {
+		return owner;
+	}
+	
+	private SchedulerManager mgrInstance=null;
+	public void setManager(SchedulerManager mgr) {
+		mgrInstance = mgr;
+	}
+	public SchedulerManager getManager() {
+		return mgrInstance;
 	}
 
 }

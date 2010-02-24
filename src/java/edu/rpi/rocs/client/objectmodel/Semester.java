@@ -1,5 +1,6 @@
 package edu.rpi.rocs.client.objectmodel;
 
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -129,9 +130,9 @@ public class Semester implements Serializable, Comparable<Semester> {
 
     public void removeCourse(Course course) {
     	courses.remove(course.getDept() + Integer.toString(course.getNum()));
-    	ArrayList<Section> sections = course.getSections();
+    	List<Section> sections = course.getSections();
     	for(Section s : sections) {
-    		crnmap.remove(new Integer(s.getCRN()));
+    		crnmap.remove(new Integer(s.getCrn()));
     	}
     }
 
@@ -148,14 +149,36 @@ public class Semester implements Serializable, Comparable<Semester> {
 
     public void addCourse(Course course) {
     	courses.put(course.getDept() + Integer.toString(course.getNum()), course);
-    	ArrayList<Section> sections = course.getSections();
+    	List<Section> sections = course.getSections();
     	for(Section s : sections) {
-    		crnmap.put(new Integer(s.getCRN()), s);
+    		crnmap.put(new Integer(s.getCrn()), s);
     	}
     }
 
 	public int compareTo(Semester o) {
 		// This will sort semesters in reverse order, i.e., newest semester first.
 		return o.getSemesterId() - semesterId.intValue();
+	}
+	
+	public void setCourses(List<Course> list) {
+		courses = new HashMap<String, Course>();
+		for(Course c : list) {
+			courses.put(c.getDept() + Integer.toString(c.getNum()), c);
+		}
+	}
+	
+	public void setCrossListings(List<CrossListing> list) {
+		crosslistings = new HashMap<Integer, CrossListing>();
+		for(CrossListing c : list) {
+			crosslistings.put(c.getUID(), c);
+		}
+	}
+	
+	private Long dbid;
+	public Long getDbid() {
+		return dbid;
+	}
+	public void setDbid(Long id) {
+		dbid = id;
 	}
 }

@@ -1,5 +1,6 @@
 package edu.rpi.rocs.server.objectmodel;
 
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -10,6 +11,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.hibernate.Session;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
@@ -19,6 +21,7 @@ import edu.rpi.rocs.client.objectmodel.CrossListing;
 import edu.rpi.rocs.client.objectmodel.MajorMinorRevisionObject;
 import edu.rpi.rocs.client.objectmodel.Semester;
 import edu.rpi.rocs.exceptions.InvalidCourseDatabaseException;
+import edu.rpi.rocs.server.hibernate.util.HibernateUtil;
 
 /**
  * Course Database Implementation on the server side. Extends the implementation for the client side.
@@ -41,6 +44,12 @@ public class SemesterParser {
     	Semester parsedSemester;
     	try {
     		parsedSemester = SemesterParser.LoadCourseDB(xmlFile, changeTime);
+    		Session session = HibernateUtil.getSessionFactory().getCurrentSession();
+    		session.beginTransaction();
+    		SemesterWriter sw = new SemesterWriter();
+    		sw.setSession(session);
+    		sw.visit(parsedSemester);
+    		session.getTransaction().commit();
     		SemesterDB.putInstance(parsedSemester.getSemesterId(), parsedSemester);
     	}
     	catch(Exception e) {

@@ -13,7 +13,6 @@ import edu.rpi.rocs.client.objectmodel.Semester;
 import edu.rpi.rocs.client.services.coursedb.CourseDBService;
 import edu.rpi.rocs.client.services.updatemanager.UpdateItem;
 
-
 /**
  * This class handles keeping semester data up to date on the
  * client side.
@@ -83,6 +82,7 @@ public class SemesterManager {
 	/**
 	 * Callback for when the client completes the loading of a semester from the server.
 	 */
+	
 	private AsyncCallback<Semester> retrieveCallback = new AsyncCallback<Semester>(){
 
 		public void onFailure(Throwable caught) {
@@ -102,14 +102,15 @@ public class SemesterManager {
 		}
 
 	};
-
 	/**
 	 * Retrieves a course database given a particular semester ID.
 	 *
 	 * @param semesterId Identifier for the semester to retrieve
 	 */
 	public void retrieveCourseDB(Integer semesterId) {
+		/*
 		CourseDBService.Singleton.getInstance().getSemesterData(semesterId, retrieveCallback);
+		*/
 	}
 
 	/**

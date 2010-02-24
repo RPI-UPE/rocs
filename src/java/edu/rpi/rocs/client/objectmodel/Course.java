@@ -1,8 +1,10 @@
 package edu.rpi.rocs.client.objectmodel;
 
+
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashSet;
+import java.util.List;
 
 /**
  * Describes a course object to the GWT client.
@@ -146,7 +148,7 @@ public class Course extends MajorMinorRevisionObject implements Comparable<Cours
      *
      * @return Course sections
      */
-    public ArrayList<Section> getSections() {
+    public List<Section> getSections() {
     	return new ArrayList<Section>(sections);
     }
 
@@ -249,5 +251,19 @@ public class Course extends MajorMinorRevisionObject implements Comparable<Cours
 	public int compareTo(Course o) {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+	
+	private Long dbid;
+	
+	public Long getDbid() {
+		return dbid;
+	}
+	
+	public void setDbid(Long id) {
+		dbid = id;
+	}
+	
+	public void setSections(List<Section> list) {
+		sections = new ArrayList<Section>(list);
 	}
 }

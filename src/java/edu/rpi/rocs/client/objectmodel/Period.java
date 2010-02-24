@@ -1,6 +1,8 @@
 package edu.rpi.rocs.client.objectmodel;
 
+
 import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -74,8 +76,12 @@ public class Period extends MajorMinorRevisionObject {
      * 
      * @return A list of days
      */
-    public ArrayList<Integer> getDays() {
+    public List<Integer> getDays() {
     	return new ArrayList<Integer>(days);
+    }
+    
+    public void setDays(List<Integer> list) {
+    	days = new ArrayList<Integer>(list);
     }
     
     /**
@@ -138,8 +144,34 @@ public class Period extends MajorMinorRevisionObject {
         end = newValue;
     }
     
+    public Integer getStartInt() {
+    	return start.getAbsMinute();
+    }
+    
+    public Integer getEndInt() {
+    	return end.getAbsMinute();
+    }
+    
+    public void setStartInt(Integer x) {
+    	start = new Time(x);
+    }
+    
+    public void setEndInt(Integer x) {
+    	end = new Time(x);
+    }
+    
     public void setLocation(String newValue){
         location = newValue;
+    }
+    
+    private Long dbid;
+    
+    public Long getDbid() {
+    	return dbid;
+    }
+    
+    public void setDbid(Long id) {
+    	dbid = id;
     }
     
     public String toString() {

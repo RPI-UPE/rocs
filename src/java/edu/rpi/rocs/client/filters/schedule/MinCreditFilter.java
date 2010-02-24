@@ -9,12 +9,20 @@ import edu.rpi.rocs.client.objectmodel.Schedule;
 import edu.rpi.rocs.client.objectmodel.ScheduleFilterManager;
 import edu.rpi.rocs.client.ui.filters.MinCreditFilterWidget;
 import edu.rpi.rocs.client.ui.filters.MinCreditFilterWidget.MinCreditValueChanged;
-
+/**
+ * A schedule filter which removes a schedule if the total sum of its credits
+ * is below the specified minimum.
+ * @author ewpatton
+ *
+ */
 public class MinCreditFilter implements ScheduleFilter, MinCreditValueChanged {
 
 	private static String DISPLAY_NAME="Minimum Credit Filter";
 	private static String QUALIFIED_NAME="edu.rpi.rocs.client.filters.schedule.MinCreditFilter";
-	
+	/**
+	 * Registers the MinCreditFilter with the scheduler filter manager.
+	 * @return true if successful.
+	 */
 	public static boolean register() {
 		ScheduleFilterManager.getInstance().registerFilter(DISPLAY_NAME, QUALIFIED_NAME);
 		return true;
@@ -83,6 +91,9 @@ public class MinCreditFilter implements ScheduleFilter, MinCreditValueChanged {
 		return false;
 	}
 
+	/**
+	 * @return the widget associated with the MinCreditFilter.
+	 */
 	public Widget getWidget() {
 		// TODO Auto-generated method stub
 		if(widget == null) {
@@ -92,6 +103,9 @@ public class MinCreditFilter implements ScheduleFilter, MinCreditValueChanged {
 		return widget;
 	}
 
+	/**
+	 * @return the Title to be displayed in the Filter list.
+	 */
 	public String getDisplayTitle() {
 		// TODO Auto-generated method stub
 		return DISPLAY_NAME;
@@ -99,11 +113,17 @@ public class MinCreditFilter implements ScheduleFilter, MinCreditValueChanged {
 	
 	private HashSet<ChangeHandler> changeHandlers = new HashSet<ChangeHandler>();
 
+	/**
+	 * Adds a Handler to be called when the value of MinCreditFilter changes.
+	 */
 	public void addChangeHandler(ChangeHandler e) {
 		// TODO Auto-generated method stub
 		changeHandlers.add(e);
 	}
 
+	/**
+	 * Removes a Handler from the registered AddHandlers list.
+	 */
 	public void removeChangeHandler(ChangeHandler e) {
 		// TODO Auto-generated method stub
 		changeHandlers.remove(e);

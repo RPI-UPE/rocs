@@ -1,5 +1,10 @@
 package edu.rpi.rocs.client.filters.course.reason;
-
+/**
+ * The ReasonSeverity enumerator identifies a number of levels that can be used by CourseFilters to 
+ * accept or reject various courses.
+ * @author ewpatton
+ *
+ */
 public enum ReasonSeverity {
 	//Do nothing, class was accepted
 	ACCEPTED(0),
@@ -21,7 +26,11 @@ public enum ReasonSeverity {
 	private ReasonSeverity(Integer level) {
 		this.level = level;
 	}
-	
+	/**
+	 * Compares two severity levels.
+	 * @param other the severity level this level is being compared to.
+	 * @return true or false
+	 */
 	public boolean isMoreSevere(ReasonSeverity other) {
 		return (other == null) || (this.level > other.level);
 	}
@@ -34,7 +43,9 @@ public enum ReasonSeverity {
 	}
 	
 	public int compareTo(ReasonSeverity)*/
-	
+	/**
+	 * @return the maximum possible severity.
+	 */
 	public static ReasonSeverity getMaxSeverity() {
 		return FILTERED;
 	}

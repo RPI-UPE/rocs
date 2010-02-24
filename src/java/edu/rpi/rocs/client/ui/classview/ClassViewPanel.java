@@ -12,8 +12,9 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import edu.rpi.rocs.client.ui.ListBoxHTML;
 import edu.rpi.rocs.client.objectmodel.SchedulerManager;
-import edu.rpi.rocs.client.objectmodel.SchedulerManager.*;
+import edu.rpi.rocs.client.objectmodel.CourseStatusObject;
 import edu.rpi.rocs.client.objectmodel.Course;
+import edu.rpi.rocs.client.objectmodel.SchedulerManager.*;
 
 public class ClassViewPanel extends HorizontalPanel implements CourseAddedHandler, CourseRemovedHandler, CourseRequiredHandler, CourseOptionalHandler 
 {

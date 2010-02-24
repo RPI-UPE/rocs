@@ -1,6 +1,7 @@
 package edu.rpi.rocs.client.ui.scheduler;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import com.google.gwt.event.dom.client.MouseOutEvent;
 import com.google.gwt.event.dom.client.MouseOutHandler;
@@ -264,7 +265,7 @@ public class ScheduleViewWidget extends SVGCanvasWidget {
 			m_color = "#ffffff";
 			m_rects = new ArrayList<SVGRectWidget>();
 			m_text = new ArrayList<SVGTextWidget>();
-			ArrayList<Period> times = s.getPeriods();
+			List<Period> times = s.getPeriods();
 			for(Period p : times) {
 				Time start = p.getStart();
 				Time end = p.getEnd();

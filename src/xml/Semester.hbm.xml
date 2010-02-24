@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="edu.rpi.rocs.client.objectmodel">
+  <class name="Semester">
+  	<id name="dbid">
+  		<generator class="native"/>
+  	</id>
+  	<property name="TimeStamp" column="SEMESTER_TS"/>
+  	<property name="SemesterId" column="SEMESTER_ID"/>
+  	<property name="SemesterDesc"/>
+  	<list name="Courses">
+  		<key column="SEMESTER_ID"/>
+  		<index column="INDEX_COL"/>
+  		<one-to-many class="Course"/>
+  	</list>
+  	<list name="CrossListings">
+  		<key column="SEMESTER_ID"/>
+  		<index column="INDEX_COL"/>
+  		<one-to-many class="CrossListing"/>
+  	</list>
+  </class>
+</hibernate-mapping>

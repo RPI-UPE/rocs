@@ -1,10 +1,12 @@
 package edu.rpi.rocs.client.objectmodel;
 
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.shared.EventHandler;
@@ -40,58 +42,6 @@ public class SchedulerManager implements Serializable {
 	 */
 	private Schedule currentSchedule=null;
 
-	/**
-	 * This is a helper class which stores whether a course is required or optional for inclusion
-	 * in generated schedules.
-	 * 
-	 * @author ewpatton
-	 *
-	 */
-	public class CourseStatusObject {
-		/**
-		 * The course to store status about
-		 */
-		private Course theCourse;
-		/**
-		 * Flag for whether a course is required or not
-		 */
-		private boolean isRequired;
-		
-		/**
-		 * Creates a course status given a course and whether it is required
-		 * @param c The course to store
-		 * @param required Whether the course is required
-		 */
-		public CourseStatusObject(Course c, boolean required) {
-			theCourse = c;
-			isRequired = required;
-			getCourse();
-		}
-		
-		/**
-		 * Sets the requirement flag
-		 * @param required true if required, false if optional
-		 */
-		public void setRequired(boolean required) {
-			isRequired = required;
-		}
-		
-		/**
-		 * Gets the requirement flag
-		 * @return The requirement flag
-		 */
-		public boolean getRequired() {
-			return isRequired;
-		}
-		
-		/**
-		 * Gets the course we're storing status of
-		 * @return The course
-		 */
-		public Course getCourse() {
-			return theCourse;
-		}
-	}
 	
 	/**
 	 * The current set of courses for this session.
@@ -106,6 +56,7 @@ public class SchedulerManager implements Serializable {
 	/**
 	 * Listeners for when a course is added
 	 */
+	
 	private HashSet<CourseAddedHandler> courseAddHandlers=new HashSet<CourseAddedHandler>();
 	private HashSet<CourseRemovedHandler> courseRemoveHandlers=new HashSet<CourseRemovedHandler>();
 	private HashSet<CourseRequiredHandler> courseRequiredHandlers=new HashSet<CourseRequiredHandler>();
@@ -114,7 +65,7 @@ public class SchedulerManager implements Serializable {
 	/**
 	 * Hidden for singleton management
 	 */
-	private SchedulerManager() {
+	public SchedulerManager() {
 	
 	}
 	
@@ -167,6 +118,7 @@ public class SchedulerManager implements Serializable {
 	 * Gets the list of saved schedules from the server.
 	 * @param callback The AsyncCallback to call after the list has been retrieved
 	 */
+	
 	public void getScheduleList(AsyncCallback<List<String>> callback) {
 		ScheduleManagerService.Singleton.getInstance().getScheduleList(callback);
 	}
@@ -195,9 +147,11 @@ public class SchedulerManager implements Serializable {
 		CourseStatusObject status =new CourseStatusObject(c, true); 
 		currentCourses.put(c, status);
 		m_changed = true;
+		
 		for(CourseAddedHandler e : courseAddHandlers) {
 			e.handleEvent(status);
 		}
+		
 	}
 	
 	/**
@@ -209,9 +163,11 @@ public class SchedulerManager implements Serializable {
 		CourseStatusObject obj = currentCourses.get(c);
 		if(obj!=null) {
 			obj.setRequired(true);
+			
 			for(CourseRequiredHandler e : courseRequiredHandlers) {
 				e.handleEvent(obj);
 			}
+			
 		}
 	}
 	
@@ -224,9 +180,11 @@ public class SchedulerManager implements Serializable {
 		CourseStatusObject obj = currentCourses.get(c);
 		if(obj!=null) {
 			obj.setRequired(false);
+			
 			for(CourseOptionalHandler e : courseOptionalHandlers) {
 				e.handleEvent(obj);
 			}
+			
 		}
 	}
 	
@@ -251,9 +209,11 @@ public class SchedulerManager implements Serializable {
 		m_changed = true;
 		CourseStatusObject status = currentCourses.get(c);
 		currentCourses.remove(c);
+		
 		for(CourseRemovedHandler e : courseRemoveHandlers) {
 			e.handleEvent(status);
 		}
+		
 	}
 	
 	/**
@@ -286,6 +246,7 @@ public class SchedulerManager implements Serializable {
 	 * @param name The name to give the schedule for later reference.
 	 */
 	public void saveCurrentSchedule(String name) {
+		
 		ScheduleManagerService.Singleton.getInstance().saveSchedule(name, currentSchedule, new AsyncCallback<Void>() {
 
 			public void onFailure(Throwable caught) {
@@ -299,6 +260,7 @@ public class SchedulerManager implements Serializable {
 			}
 			
 		});
+		
 	}
 
 	public void generateSchedules() {
@@ -313,6 +275,7 @@ public class SchedulerManager implements Serializable {
 				optionalCourses.add(status.getCourse());
 			}
 		}
+		
 		HashSet<ScheduleFilter> filters = ScheduleFilterManager.getInstance().getFilters();
 		generatedSchedules = Schedule.buildAllSchedulesGivenCoursesAndFilters(requiredCourses, optionalCourses, filters);
 		if(generatedSchedules != null)
@@ -320,7 +283,36 @@ public class SchedulerManager implements Serializable {
 		if(generatedSchedules != null && generatedSchedules.size()>0)
 			currentSchedule = generatedSchedules.get(0);
 		m_changed = false;
+		
 	}
 	
 	public boolean hasChanged() { return m_changed; }
+	public void setCurrentCourses(Map<Course, CourseStatusObject> map) {
+		currentCourses = new HashMap<Course, CourseStatusObject>(map);
+	}
+	public Map<Course, CourseStatusObject> getCurrentCourses() {
+		return new HashMap<Course, CourseStatusObject>(currentCourses);
+	}
+	
+	private String m_uid=null;
+	public String getUserId() {
+		if(m_uid==null) m_uid = User.getUserID();
+		return m_uid;
+	}
+	
+	public void setUserId(String uid) {
+		m_uid = uid;
+	}
+	
+	public void setCurrentSchedule(Schedule s) {
+		currentSchedule = s;
+	}
+	
+	private Long dbid;
+	public Long getDbid() {
+		return dbid;
+	}
+	public void setDbid(Long id) {
+		dbid = id;
+	}
 }
