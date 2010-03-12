@@ -2,165 +2,218 @@ package edu.rpi.rocs.client.ui;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
 
+import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.HasClickHandlers;
+import com.google.gwt.event.dom.client.HasMouseOutHandlers;
+import com.google.gwt.event.dom.client.HasMouseOverHandlers;
+import com.google.gwt.event.dom.client.MouseOutEvent;
+import com.google.gwt.event.dom.client.MouseOutHandler;
+import com.google.gwt.event.dom.client.MouseOverEvent;
+import com.google.gwt.event.dom.client.MouseOverHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.Widget;
 
-public class HTMLTableList extends Widget {
+public class HTMLTableList extends Widget implements List<HTMLTableList.HTMLTableListRow>, 
+	HasClickHandlers, HasMouseOutHandlers, HasMouseOverHandlers {
 	protected Element m_divwrap;
 	protected Element m_table;
 	protected Element m_tbody;
-	protected HTMLTableListHeader m_header;
-	protected ArrayList<HTMLTableListRow> m_rows;
+	protected ArrayList<HTMLTableListRow> m_rows=new ArrayList<HTMLTableList.HTMLTableListRow>();
 	
-	public interface HTMLTableListSortColumnCallback {
-		public ArrayList<HTMLTableListRow> sortTableData(HTMLTableList table, String column, SortMethod method);
-	}
-	
-	public static enum SortMethod {
-		Ascending,
-		Descending,
-		Unknown
-	}
-	
-	public class HTMLTableListHeader implements Iterable<String> {
-		private class HeaderObject implements Comparable<HeaderObject> {
-			public String name="";
-			@SuppressWarnings("unused")
-			public boolean sortable=false;
-			@SuppressWarnings("unused")
-			public SortMethod current_sort=SortMethod.Unknown;
-			@SuppressWarnings("unused")
-			public HTMLTableListSortColumnCallback callback=null;
-			public boolean asHTML=false;
-			public int compareTo(HeaderObject o) {
-				if(o == null) throw new NullPointerException();
-				return this.name.compareTo(o.name);
-			}
-			@SuppressWarnings("unused")
-			public boolean equals(HeaderObject o) {
-				if(o==null) return false;
-				return name.equals(o.name);
-			}
+	public class HTMLTableListCell extends Widget implements HasClickHandlers, HasMouseOverHandlers, HasMouseOutHandlers {
+		public Element m_td=null;
+		
+		public HTMLTableListCell() {
+			this(false);
 		}
 		
-		private class HeaderIterator implements Iterator<String> {
-			Iterator<HeaderObject> x;
-			
-			public HeaderIterator(Iterator<HeaderObject> parent) {
-				x = parent;
-			}
-
-			public boolean hasNext() {
-				return x.hasNext();
-			}
-
-			public String next() {
-				return x.next().name;
-			}
-
-			public void remove() {
-				
-			}
-			
+		public HTMLTableListCell(boolean t) {
+			m_td = (t? DOM.createTH() : DOM.createTD());
+			setElement(m_td);
 		}
 		
-		protected ArrayList<HeaderObject> m_columns;
-		
-		public HTMLTableListHeader(boolean asHTML) {
-			m_columns = new ArrayList<HeaderObject>();
+		public void setText(String text) {
+			m_td.setInnerText(text);
 		}
 		
-		public Element generateHeaderRow() {
-			Element row = DOM.createTR();
-			for(HeaderObject o : m_columns) {
-				Element col = DOM.createTH();
-				if(o.asHTML) {
-					col.setInnerHTML(o.name);
-				}
-				else {
-					col.setInnerText(o.name);
-				}
-				row.appendChild(col);
-			}
-			return row;
+		public void setHTML(String html) {
+			m_td.setInnerHTML(html);
 		}
 		
-		public void addColumn(String str) {
-			addColumn(str, false, null);
-		}
-		
-		public void addColumn(String str, boolean asHTML) {
-			addColumn(str, asHTML, null);
-		}
-		
-		public void addColumn(String str, HTMLTableListSortColumnCallback sorter) {
-			addColumn(str, false, sorter);
-		}
-		
-		public void addColumn(String str, boolean asHTML, HTMLTableListSortColumnCallback sorter) {
-			HeaderObject temp = new HeaderObject();
-			temp.name = str;
-			if(sorter!=null) {
-				temp.sortable = true;
-				temp.callback = sorter;
-			}
-			temp.asHTML = asHTML;
-			if(m_columns.contains(temp)) return;
-			m_columns.add(temp);
-		}
-		
-		public void removeColumn(String str) {
-			HeaderObject temp = new HeaderObject();
-			temp.name = str;
-			m_columns.remove(temp);
+		public void setWidget(Widget w) {
+			m_td.appendChild(w.getElement());
 		}
 
-		public Iterator<String> iterator() {
-			return new HeaderIterator(m_columns.iterator());
+		public HandlerRegistration addClickHandler(ClickHandler arg0) {
+			return addDomHandler(arg0, ClickEvent.getType());
+		}
+
+		public HandlerRegistration addMouseOverHandler(MouseOverHandler arg0) {
+			return addDomHandler(arg0, MouseOverEvent.getType());
+		}
+
+		public HandlerRegistration addMouseOutHandler(MouseOutHandler arg0) {
+			return addDomHandler(arg0, MouseOutEvent.getType());
+		}
+		
+		public void attach() {
+			onAttach();
+		}
+		
+		public void detach() {
+			onDetach();
 		}
 	}
 	
-	public class HTMLTableListRow {
-		private class Data {
-			public String text;
-			public boolean asHTML;
-		}
-		
-		private HashMap<String, Data> m_data;
+	public class HTMLTableListRow extends Widget implements List<HTMLTableListCell>, HasClickHandlers, HasMouseOverHandlers, HasMouseOutHandlers {
+		public Element m_tr=null;
+		public ArrayList<HTMLTableListCell> m_cells=new ArrayList<HTMLTableListCell>();
 		
 		public HTMLTableListRow() {
-			m_data = new HashMap<String, Data>();
+			m_tr = DOM.createTR();
+			setElement(m_tr);
 		}
 		
-		public void put(String column, String value) {
-			put(column, value, false);
+		public boolean add(HTMLTableListCell e) {
+			m_tr.appendChild(e.getElement());
+			return m_cells.add(e);
+		}
+
+		public void add(int index, HTMLTableListCell element) {
+			Node n = m_tr.getChild(index);
+			m_tr.insertBefore(element.getElement(), n);
+			m_cells.add(index, element);
+		}
+
+		public boolean addAll(Collection<? extends HTMLTableListCell> c) {
+			return m_cells.addAll(c);
+		}
+
+		public boolean addAll(int index,
+				Collection<? extends HTMLTableListCell> c) {
+			return m_cells.addAll(index, c);
+		}
+
+		public void clear() {
+			m_cells.clear();
+		}
+
+		public boolean contains(Object o) {
+			return m_cells.contains(o);
+		}
+
+		public boolean containsAll(Collection<?> c) {
+			return m_cells.containsAll(c);
+		}
+
+		public HTMLTableListCell get(int index) {
+			return m_cells.get(index);
+		}
+
+		public int indexOf(Object o) {
+			return m_cells.indexOf(o);
+		}
+
+		public boolean isEmpty() {
+			return m_cells.isEmpty();
+		}
+
+		public Iterator<HTMLTableListCell> iterator() {
+			return m_cells.iterator();
+		}
+
+		public int lastIndexOf(Object o) {
+			return m_cells.lastIndexOf(o);
+		}
+
+		public ListIterator<HTMLTableListCell> listIterator() {
+			return m_cells.listIterator();
+		}
+
+		public ListIterator<HTMLTableListCell> listIterator(int index) {
+			return m_cells.listIterator(index);
+		}
+
+		public boolean remove(Object o) {
+			return m_cells.remove(o);
+		}
+
+		public HTMLTableListCell remove(int index) {
+			return m_cells.remove(index);
+		}
+
+		public boolean removeAll(Collection<?> c) {
+			return m_cells.removeAll(c);
+		}
+
+		public boolean retainAll(Collection<?> c) {
+			return m_cells.retainAll(c);
+		}
+
+		public HTMLTableListCell set(int index, HTMLTableListCell element) {
+			return m_cells.set(index, element);
+		}
+
+		public int size() {
+			return m_cells.size();
+		}
+
+		public List<HTMLTableListCell> subList(int fromIndex, int toIndex) {
+			return m_cells.subList(fromIndex, toIndex);
+		}
+
+		public Object[] toArray() {
+			return m_cells.toArray();
+		}
+
+		public <T> T[] toArray(T[] a) {
+			return m_cells.toArray(a);
 		}
 		
-		public void put(String column, String value, boolean asHTML) {
-			Data newData = new Data();
-			newData.text = value;
-			newData.asHTML = asHTML;
-			m_data.put(column, newData);
+		public HTMLTableListCell cell(int index) {
+			return m_cells.get(index);
+		}
+
+		public HandlerRegistration addClickHandler(ClickHandler arg0) {
+			return addDomHandler(arg0, ClickEvent.getType());
+		}
+
+		public HandlerRegistration addMouseOverHandler(MouseOverHandler arg0) {
+			return addDomHandler(arg0, MouseOverEvent.getType());
+		}
+
+		public HandlerRegistration addMouseOutHandler(MouseOutHandler arg0) {
+			return addDomHandler(arg0, MouseOutEvent.getType());
 		}
 		
-		public String getText(String column) {
-			if(m_data.containsKey(column)) {
-				return m_data.get(column).text;
+		@Override
+		protected void doAttachChildren() {
+			for(HTMLTableListCell c : m_cells) {
+				c.attach();
 			}
-			else return "";
 		}
 		
-		public boolean isHTML(String column) {
-			if(m_data.containsKey(column)) {
-				return m_data.get(column).asHTML;
+		@Override
+		protected void doDetachChildren() {
+			for(HTMLTableListCell c : m_cells) {
+				c.detach();
 			}
-			else return false;
+		}
+
+		public void attach() {
+			onAttach();
+		}
+		
+		public void detach() {
+			onDetach();
 		}
 	}
 	
@@ -173,180 +226,160 @@ public class HTMLTableList extends Widget {
 		m_table.appendChild(m_tbody);
 		m_divwrap.appendChild(m_table);
 		m_divwrap.setClassName("htmlTableList");
-		Element temp = DOM.createTR();
-		m_tbody.appendChild(temp);
 	}
 	
-	public void setHeader(HTMLTableListHeader header) {
-		if(header==null) return;
-		m_header = header;
-		Element newHeader = header.generateHeaderRow();
-		m_tbody.insertBefore(newHeader, m_tbody.getFirstChild());
-		m_tbody.removeChild(m_tbody.getFirstChild().getNextSibling());
+	public boolean add(HTMLTableListRow e) {
+		m_tbody.appendChild(e.getElement());
+		if(isAttached()) e.attach();
+		return m_rows.add(e);
 	}
-	
-	public void addRowData(HTMLTableListRow row) {
-		insertRow(row, m_rows.size());
+
+	public void add(int index, HTMLTableListRow element) {
+		Node n = m_tbody.getChild(index);
+		m_tbody.insertBefore(element.getElement(), n);
+		m_rows.add(index, element);
 	}
-	
-	public void addMultipleRows(Collection<? extends HTMLTableListRow> rows) {
-		insertRows(rows, m_rows.size());
+
+	public boolean addAll(Collection<? extends HTMLTableListRow> c) {
+		return m_rows.addAll(c);
 	}
-	
-	private Element trForRow(HTMLTableListRow row) {
-		Element newElement = DOM.createTR();
-		for(String column : m_header) {
-			Element cell = DOM.createTD();
-			String text = row.getText(column);
-			boolean isHTML = row.isHTML(column);
-			if(isHTML) {
-				cell.setInnerHTML(text);
-			}
-			else {
-				cell.setInnerText(text);
-			}
-			newElement.appendChild(cell);
-		}
-		return newElement;
+
+	public boolean addAll(int index, Collection<? extends HTMLTableListRow> c) {
+		return m_rows.addAll(index, c);
 	}
-	
-	public void insertRow(HTMLTableListRow row, int beforeIndex) {
-		m_rows.add(beforeIndex, row);
-		Element newElement = trForRow(row);
-		
-		// Begin insert algorithm
-		Element index = m_tbody.getFirstChildElement();
-		// Skip the first child element since it should be the header
-		if(index != null) index = index.getNextSiblingElement();
-		while(index != null && beforeIndex>0) {
-			index = index.getNextSiblingElement();
-			beforeIndex--;
-		}
-		if(index == null) {
-			m_tbody.appendChild(newElement);
-		}
-		else {
-			m_tbody.insertBefore(newElement, index);
-		}
-	}
-	
-	public void insertRows(Collection<? extends HTMLTableListRow> rows, int beforeIndex) {
-		m_rows.addAll(beforeIndex, rows);
-		Element index = m_tbody.getFirstChildElement();
-		if(index != null) index = index.getNextSiblingElement();
-		while(index != null && beforeIndex>0) {
-			index = index.getNextSiblingElement();
-			beforeIndex--;
-		}
-		if(index == null) {
-			for(HTMLTableListRow row : rows) {
-				m_tbody.appendChild(trForRow(row));
-			}
-		}
-		else {
-			for(HTMLTableListRow row : rows) {
-				m_tbody.insertBefore(trForRow(row), index);
-			}
-		}
-	}
-	
-	public void setRowData(ArrayList<HTMLTableListRow> rows) {
-		m_rows = new ArrayList<HTMLTableListRow>(rows);
-		while(m_tbody.hasChildNodes()) {
-			m_tbody.removeChild(m_tbody.getFirstChild());
-		}
-		m_tbody.appendChild(m_header.generateHeaderRow());
-		for(HTMLTableListRow row : m_rows) {
-			m_tbody.appendChild(trForRow(row));
-		}
-	}
-	
-	public void removeRowData(HTMLTableListRow row) {
-		int r = m_rows.indexOf(row);
-		m_rows.remove(r);
-		Element n = m_tbody.getNextSiblingElement();
-		r++;
-		while(r!=0&&n!=null) {
-			r--;
-			n = n.getNextSiblingElement();
-		}
-		if(n!=null)
-			m_tbody.removeChild(n);
-	}
-	
+
 	public void clear() {
+		for(HTMLTableListRow row : m_rows) {
+			row.detach();
+			m_tbody.removeChild(row.getElement());
+		}
 		m_rows.clear();
-		while(m_tbody.hasChildNodes()) {
-			m_tbody.removeChild(m_tbody.getFirstChild());
+	}
+
+	public boolean contains(Object o) {
+		return m_rows.contains(o);
+	}
+
+	public boolean containsAll(Collection<?> c) {
+		return m_rows.containsAll(c);
+	}
+
+	public HTMLTableListRow get(int index) {
+		return m_rows.get(index);
+	}
+
+	public int indexOf(Object o) {
+		return m_rows.indexOf(o);
+	}
+
+	public boolean isEmpty() {
+		return m_rows.isEmpty();
+	}
+
+	public Iterator<HTMLTableListRow> iterator() {
+		return m_rows.iterator();
+	}
+
+	public int lastIndexOf(Object o) {
+		return m_rows.lastIndexOf(o);
+	}
+
+	public ListIterator<HTMLTableListRow> listIterator() {
+		return m_rows.listIterator();
+	}
+
+	public ListIterator<HTMLTableListRow> listIterator(int index) {
+		return m_rows.listIterator(index);
+	}
+
+	public boolean remove(Object o) {
+		return m_rows.remove(o);
+	}
+
+	public HTMLTableListRow remove(int index) {
+		return m_rows.remove(index);
+	}
+
+	public boolean removeAll(Collection<?> c) {
+		return m_rows.removeAll(c);
+	}
+
+	public boolean retainAll(Collection<?> c) {
+		return m_rows.retainAll(c);
+	}
+
+	public HTMLTableListRow set(int index, HTMLTableListRow element) {
+		return m_rows.set(index, element);
+	}
+
+	public int size() {
+		return m_rows.size();
+	}
+
+	public List<HTMLTableListRow> subList(int fromIndex, int toIndex) {
+		return m_rows.subList(fromIndex, toIndex);
+	}
+
+	public Object[] toArray() {
+		return m_rows.toArray();
+	}
+
+	public <T> T[] toArray(T[] a) {
+		return m_rows.toArray(a);
+	}
+
+	public HandlerRegistration addMouseOutHandler(MouseOutHandler arg0) {
+		return addDomHandler(arg0, MouseOutEvent.getType());
+	}
+
+	public HandlerRegistration addMouseOverHandler(MouseOverHandler arg0) {
+		return addDomHandler(arg0, MouseOverEvent.getType());
+	}
+
+	public HandlerRegistration addClickHandler(ClickHandler arg0) {
+		return addDomHandler(arg0, ClickEvent.getType());
+	}
+	
+	@Override
+	protected void doAttachChildren() {
+		for(HTMLTableListRow r : m_rows) {
+			r.attach();
 		}
-		m_tbody.appendChild(m_header.generateHeaderRow());
 	}
 	
-	private class ClickContainer {
-		public ClickHandler handler=null;
-		public int row=-1,col=-1;
-	}
-	
-	private ArrayList<ClickContainer> m_clickHandlers = new ArrayList<ClickContainer>();
-	
-	public void addClickHandler(ClickHandler h) {
-		ClickContainer cc = new ClickContainer();
-		cc.handler = h;
-		addClickHandler(cc);
-	}
-	
-	public void addClickHandler(ClickHandler h, int row) {
-		ClickContainer cc = new ClickContainer();
-		cc.handler = h;
-		cc.row = row;
-		addClickHandler(cc);
-	}
-	
-	public void addClickHandler(ClickHandler h, int row, int col) {
-		ClickContainer cc = new ClickContainer();
-		cc.handler = h;
-		cc.row = row;
-		cc.col = col;
-		addClickHandler(cc);
-	}
-	
-	private void addClickHandler(ClickContainer cc) {
-		m_clickHandlers.add(cc);
-		if(cc.row < 0) {
-			
-		}
-		else if(cc.col < 0) {
-			
-		}
-		else {
-			
+	@Override
+	protected void doDetachChildren() {
+		for(HTMLTableListRow r : m_rows) {
+			r.detach();
 		}
 	}
-	public void onBrowserEvent(Event event) {
-		if(DOM.eventGetType(event) == Event.ONCLICK) {
-			Element target = DOM.eventGetTarget(event);
-			if("td".equals(target.getNodeName())) {
-				
+	
+	public void attach() {
+		onAttach();
+	}
+	
+	public void detach() {
+		onDetach();
+	}
+
+	public void clearEverythingButHeader() {
+		HTMLTableListRow r = m_rows.get(0);
+		for(HTMLTableListRow row : m_rows) {
+			if(r == row) continue;
+			row.detach();
+			m_tbody.removeChild(row.getElement());
+		}
+		m_rows.clear();
+		m_rows.add(r);
+	}
+
+	public int indexOfElement(Element e) {
+		// TODO Auto-generated method stub
+		for(int i=0;i<m_rows.size();i++) {
+			if(m_rows.get(i).getElement()==e) {
+				return i;
 			}
-			else if("tr".equals(target.getNodeName())) {
-				
-			}
-			else if("tbody".equals(target.getNodeName())) {
-				
-			}
-			else if("table".equals(target.getNodeName())) {
-				
-			}
 		}
-		else if(DOM.eventGetType(event) == Event.ONDBLCLICK) {
-			Element target = DOM.eventGetTarget(event);
-		}
-		else if(DOM.eventGetType(event) == Event.ONMOUSEOVER) {
-			Element target = DOM.eventGetTarget(event);
-		}
-		else if(DOM.eventGetType(event) == Event.ONMOUSEOUT) {
-			Element target = DOM.eventGetTarget(event);
-		}
-		super.onBrowserEvent(event);
+		return -1;
 	}
 }

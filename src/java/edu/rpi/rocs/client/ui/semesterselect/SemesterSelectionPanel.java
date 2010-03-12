@@ -91,7 +91,7 @@ public class SemesterSelectionPanel extends VerticalPanel {
 				for(SemesterDescription desc : result) {
 					semesterList.addItem(desc.getDescription(), desc.getSemesterId().toString());
 				}
-
+				Log.debug("Requesting the current semester description...");
 				CourseDBService.Singleton.getInstance().getCurrentSemester(currentSemesterCallback);
 			}
 	};
@@ -100,10 +100,12 @@ public class SemesterSelectionPanel extends VerticalPanel {
 		new AsyncCallback<SemesterDescription>() {
 
 			public void onFailure(Throwable caught) {
+				Log.debug("Request failed.");
 				title.setText("Semester: unavailable");
 			}
 
 			public void onSuccess(SemesterDescription result) {
+				Log.debug("Semester description retrieved.");
 				title.setText("Semester: ");
 				layout.setWidget(0, 1, semesterList);
 				selectedSemester = result;
@@ -160,8 +162,9 @@ public class SemesterSelectionPanel extends VerticalPanel {
 	};
 
 	public void selectedSemesterDidChange() {
+		Log.debug("Semester changed. Retrieving contents of new semester...");
 		SemesterManager.getInstance().retrieveCourseDB(selectedSemester.getSemesterId());
-		javascriptThread(selectedSemester);
+		//javascriptThread(selectedSemester);
 	}
 
 	private void javaThread(SemesterDescription SD)

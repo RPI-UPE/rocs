@@ -108,9 +108,9 @@ public class SemesterManager {
 	 * @param semesterId Identifier for the semester to retrieve
 	 */
 	public void retrieveCourseDB(Integer semesterId) {
-		/*
+		
 		CourseDBService.Singleton.getInstance().getSemesterData(semesterId, retrieveCallback);
-		*/
+		
 	}
 
 	/**

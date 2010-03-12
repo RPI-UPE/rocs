@@ -106,7 +106,10 @@ public class SelectableTableWidget extends Widget {
 					}
 				}
 			}
-			document.addEventListener('mouseup', stopDrag, false);
+			if(document.addEventListener)
+				document.addEventListener('mouseup', stopDrag, false);
+			else if(document.attachEvent)
+				document.attachEvent("onmouseup", stopDrag);
 		}
 	}-*/;
 	

@@ -6,7 +6,7 @@
              id="edu.rpi.rocs.Scheduler.0">
 	<portlet>
 		<portlet-name>rocs</portlet-name>
-		<display-name>Rensselaer Open Course Scheduler</display-name>
+		<display-name>Rensselaer Open Course Scheduler [BETA]</display-name>
 		<portlet-class>edu.rpi.rocs.Scheduler</portlet-class>
 		<init-param>
 			<name>wps.markup</name>
@@ -27,8 +27,8 @@
 		</supports>
 		<supported-locale>en</supported-locale>
 		<portlet-info>
-			<title>Rensselaer Open Course Scheduler</title>
-			<short-title>RPI Scheduler</short-title>
+			<title>Rensselaer Open Course Scheduler [BETA]</title>
+			<short-title>RPI Scheduler [BETA]</short-title>
 			<keywords>rensselaer rpi course scheduler rocs</keywords>
 		</portlet-info>
 		<security-role-ref>

@@ -12,11 +12,9 @@ import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
-import edu.rpi.rocs.client.ImageManager;
 import edu.rpi.rocs.client.filters.schedule.ScheduleFilter;
 import edu.rpi.rocs.client.objectmodel.Course;
 import edu.rpi.rocs.client.objectmodel.Period;
@@ -28,23 +26,24 @@ import edu.rpi.rocs.client.objectmodel.SemesterManager.SemesterManagerCallback;
 import edu.rpi.rocs.client.objectmodel.Section;
 import edu.rpi.rocs.client.objectmodel.Semester;
 import edu.rpi.rocs.client.objectmodel.Course.CourseComparator;
-import edu.rpi.rocs.client.ui.ListBoxHTML;
-import edu.rpi.rocs.client.ui.ROCSInterface;
-import edu.rpi.rocs.client.ui.classview.ClassViewPanel;
+import edu.rpi.rocs.client.ui.HTMLTableList;
 import edu.rpi.rocs.client.ui.scheduler.SchedulerFilterDisplayPanel;
 
 public class CourseSearchPanel extends VerticalPanel {
 
+	/*
 	private static final String CHECK = IMG("check.png"),
 										 BADCHECK = IMG("badcheck.png"),
 										 CONFLICT = IMG("cross.png"),
 										 CLOSED = IMG("closed.png"),
 										 SPACE = IMG("space.png");
+										 
 	private static final String IMG(String name) {
 		return "<img src=\"" + ImageManager.getPathForImage(name) + "\" width=12 heigth=12>";
 	}
-
+*/
 	// 1 = selected, 2 = closed, 4 = conflicts
+	/*
 	private static final String[] LIST_HEAD =
 	{
 		SPACE+SPACE+SPACE+"&nbsp;&nbsp;&nbsp;&nbsp;",
@@ -67,6 +66,12 @@ public class CourseSearchPanel extends VerticalPanel {
 		"",
 		"</font></b>",
 	};
+	*/
+	public static class State {
+		public static final int CHOSEN=1;
+		public static final int CLOSED=2;
+		public static final int CONFLICT=4;
+	};
 
 	FlexTable layout = new FlexTable();
 	Label deptLabel = new Label("Department:");
@@ -78,9 +83,12 @@ public class CourseSearchPanel extends VerticalPanel {
 	Label nameLabel = new Label("Name:");
 	TextBox nameTextbox = new TextBox();
 	Anchor searchButton = new Anchor("Search");
+	/*
 	ListBoxHTML resultsListBox = new ListBoxHTML(true);
 	Anchor resultAdd = new Anchor("Add");
 	SimplePanel resultsWrapper = new SimplePanel();
+	*/
+	HTMLTableList resultsList = CourseResultList.getInstance().getTable();
 	private SemesterManagerCallback semesterChangeCallback =
 		new SemesterManagerCallback() {
 
@@ -143,11 +151,13 @@ public class CourseSearchPanel extends VerticalPanel {
 
 		});
 
+		/*
 		resultsListBox.addStyleName("search_results");
 
 		resultAdd.addStyleName("greenbutton");
 		resultAdd.addStyleName("linkbutton");
 		resultAdd.addClickHandler(new ClickHandler() {
+		
 
 			public void onClick(ClickEvent event) {
 				// TODO Auto-generated method stub
@@ -168,10 +178,11 @@ public class CourseSearchPanel extends VerticalPanel {
 
 		resultsWrapper.addStyleName("search_results");
 		resultsWrapper.add(resultsListBox);
-
+*/
 		this.add(layout);
-		this.add(resultsWrapper);
-		this.add(resultAdd);
+		//this.add(resultsWrapper);
+		this.add(resultsList);
+		//this.add(resultAdd);
 		/*
 		CourseFilterEnum filters[] = CourseFilterEnum.values();
 		for(int i = 0; i < filters.length; i++) {
@@ -227,7 +238,8 @@ public class CourseSearchPanel extends VerticalPanel {
 		}
 		Collections.sort(theResults, new CourseComparator());
 
-		resultsListBox.clear();
+		//resultsListBox.clear();
+		CourseResultList.getInstance().clear();
 		for(Course course : theResults) {
 			boolean chosen = false;
 			for (Course C : ReqList) if ((new CourseComparator()).compare(C, course) == 0) {
@@ -239,11 +251,12 @@ public class CourseSearchPanel extends VerticalPanel {
 			if (chosen) bits += 1;
 			if (!chosen && !hasSpace(course, posSchedules)) bits += 4;
 			if (course.isClosed()) bits += 2;
-			Log.debug("Hello there?");
-			resultsListBox.addHTML(LIST_HEAD[bits]+course.getListDescription()+LIST_TAIL[bits], course.getDept()+course.getNum());
+			//resultsListBox.addHTML(LIST_HEAD[bits]+course.getListDescription()+LIST_TAIL[bits], course.getDept()+course.getNum());
+			CourseResultList.getInstance().add(course, bits);
 		}
 	}
 
+	@SuppressWarnings("unused")
 	private Section combineSections(Section S1, Section S2) {
 		Section retVal = new Section();
 		for (Period P : S1.getPeriods()) retVal.addPeriod(P);

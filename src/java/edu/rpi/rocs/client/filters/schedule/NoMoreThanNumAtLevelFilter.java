@@ -26,7 +26,7 @@ public class NoMoreThanNumAtLevelFilter implements ScheduleFilter, NoMoreThanNum
 	 * The unique identifier for serialization
 	 */
 	private static final long serialVersionUID = -8071519178249185461L;
-	private static NoMoreThanNumAtLevelFilterWidget widget = null;
+	private static transient NoMoreThanNumAtLevelFilterWidget widget = null;
 	
 	/**
 	 * The level to check against

@@ -166,4 +166,12 @@ public class ROCSInterface extends HTMLPanel {
 			thePanel.showStack(index);
 		}
 	}
+	
+	public static native String getUserAgent()/*-{
+		return navigator.userAgent.toLowerCase();
+	}-*/;
+	
+	public static boolean isMSIE() {
+		return getUserAgent().contains("msie");
+	}
 }

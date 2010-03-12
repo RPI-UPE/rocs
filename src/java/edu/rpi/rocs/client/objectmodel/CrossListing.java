@@ -154,4 +154,12 @@ public class CrossListing extends MajorMinorRevisionObject {
 	public Long getDbid() {
 		return dbid;
 	}
+
+	public int getNumberOfStudents() {
+		int count = 0;
+		for(Section s : sections) {
+			count += s.getStudents();
+		}
+		return count;
+	}
 }

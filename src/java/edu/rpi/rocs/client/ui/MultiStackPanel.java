@@ -4,6 +4,7 @@ import java.util.HashSet;
 
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.StackPanel;
 import com.google.gwt.user.client.ui.UIObject;
 import com.google.gwt.user.client.ui.Widget;
@@ -260,5 +261,32 @@ public class MultiStackPanel extends StackPanel {
 	public boolean isVisible(int index) {
 		if(index < 0 || index >= getWidgetCount()) return false;
 		return m_selected.contains(new Integer(index));
+	}
+	
+	public void onBrowserEvent(Event event) {
+		if(DOM.eventGetType(event) == Event.ONCLICK) {
+			Element target = DOM.eventGetTarget(event);
+			int index = findDividerIndex(target);
+			if(index != -1) {
+				showStack(index);
+			}
+		}
+	}
+	
+	private int findDividerIndex(Element elem) {
+		while(elem != null && elem != getElement()) {
+			String expando = DOM.getElementProperty(elem, "__index");
+			if(expando != null) {
+				int ownerHash = DOM.getElementPropertyInt(elem, "__owner");
+				if(ownerHash == hashCode()) {
+					return Integer.parseInt(expando);
+				}
+				else {
+					return -1;
+				}
+			}
+			elem = DOM.getParent(elem);
+		}
+		return -1;
 	}
 }

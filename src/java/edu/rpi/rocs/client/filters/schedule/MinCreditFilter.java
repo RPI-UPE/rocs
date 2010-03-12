@@ -32,7 +32,7 @@ public class MinCreditFilter implements ScheduleFilter, MinCreditValueChanged {
 	 * The unique identifier for serialization
 	 */
 	private static final long serialVersionUID = -682106636533161302L;
-	private MinCreditFilterWidget widget = null;
+	private transient MinCreditFilterWidget widget = null;
 	
 	/**
 	 * The credit specifier for this filter

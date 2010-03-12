@@ -38,7 +38,8 @@
 		<pathelement path="${lib.dir}/portlet.jar"/>
 		<!-- Select the correct element for your platform, this will 
 			hopefully be automatic in the future -->
-		<pathelement path="${lib.dir}/gwt-dev-linux.jar"/>
+		<pathelement path="${lib.dir}/gwt-dev.jar"/>
+		<!-- <pathelement path="${lib.dir}/gwt-dev-linux.jar"/>-->
 		<!-- <pathelement path="${lib.dir}/gwt-dev-windows.jar"/> -->
 		<!-- <pathelement path="${lib.dir}/gwt-dev-mac.jar"/> -->
 		<!-- Element for generating Factories -->
@@ -96,7 +97,7 @@
 	</target>
 	
 
-	<target name="gwtc" description="GWT compile to JavaScript">
+	<target name="gwtc" depends="javac" description="GWT compile to JavaScript">
 		<java failonerror="true" fork="true" classname="com.google.gwt.dev.Compiler">
 			<classpath>
 				<pathelement location="${src.java.dir}"/>

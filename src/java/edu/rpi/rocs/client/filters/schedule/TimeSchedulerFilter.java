@@ -26,7 +26,7 @@ public class TimeSchedulerFilter implements ScheduleFilter {
 	 * 
 	 */
 	private static final long serialVersionUID = -7735119145993404979L;
-	private ScheduleTimeBlockFilterWidget widget=null;
+	private transient ScheduleTimeBlockFilterWidget widget=null;
 	
 	public HashMap<Integer, ArrayList<Time>> getTimes() {
 		return widget.getBlockedTimes();

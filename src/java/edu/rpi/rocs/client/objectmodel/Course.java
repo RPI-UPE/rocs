@@ -266,4 +266,48 @@ public class Course extends MajorMinorRevisionObject implements Comparable<Cours
 	public void setSections(List<Section> list) {
 		sections = new ArrayList<Section>(list);
 	}
+
+	public int getFilledSeats() {
+		int count = 0;
+		for(Section s : sections) {
+			if(s.getCrossListing()!=null) {
+				int cldiff = s.getCrossListing().getNumberOfSeats()-s.getCrossListing().getNumberOfStudents();
+				int sdiff = s.getSeats()-s.getStudents();
+				if(cldiff<sdiff) {
+					count += s.getCrossListing().getNumberOfStudents();
+				}
+				else {
+					count += s.getStudents();
+				}
+			}
+			else {
+				count += s.getStudents();
+			}
+		}
+		return count;
+	}
+
+	public int getTotalSeats() {
+		int count = 0;
+		for(Section s : sections) {
+			if(s.getCrossListing()!=null) {
+				int cldiff = s.getCrossListing().getNumberOfSeats()-s.getCrossListing().getNumberOfStudents();
+				int sdiff = s.getSeats()-s.getStudents();
+				if(cldiff<sdiff) {
+					count += s.getCrossListing().getNumberOfSeats();
+				}
+				else {
+					count += s.getSeats();
+				}
+			}
+			else {
+				count += s.getSeats();
+			}
+		}
+		return count;
+	}
+
+	public String getInstructorString() {
+		return getProfessors();
+	}
 }

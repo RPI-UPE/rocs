@@ -30,7 +30,7 @@ public class MaxCreditFilter implements ScheduleFilter {
 	 * The unique identifier for serialization
 	 */
 	private static final long serialVersionUID = 2097081252969945097L;
-	private MaxCreditFilterWidget widget = null;
+	private transient MaxCreditFilterWidget widget = null;
 	
 	/**
 	 * The credit limit imposed by this filter

@@ -44,12 +44,14 @@ public class SemesterParser {
     	Semester parsedSemester;
     	try {
     		parsedSemester = SemesterParser.LoadCourseDB(xmlFile, changeTime);
+    		/*
     		Session session = HibernateUtil.getSessionFactory().getCurrentSession();
     		session.beginTransaction();
     		SemesterWriter sw = new SemesterWriter();
     		sw.setSession(session);
     		sw.visit(parsedSemester);
     		session.getTransaction().commit();
+    		*/
     		SemesterDB.putInstance(parsedSemester.getSemesterId(), parsedSemester);
     	}
     	catch(Exception e) {
