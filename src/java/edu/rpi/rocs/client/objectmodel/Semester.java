@@ -154,6 +154,10 @@ public class Semester implements Serializable, Comparable<Semester> {
     		crnmap.put(new Integer(s.getCrn()), s);
     	}
     }
+    
+    public Course getCourse(String id) {
+    	return courses.get(id);
+    }
 
 	public int compareTo(Semester o) {
 		// This will sort semesters in reverse order, i.e., newest semester first.
@@ -170,6 +174,10 @@ public class Semester implements Serializable, Comparable<Semester> {
 	public void setCrossListings(List<CrossListing> list) {
 		crosslistings = new HashMap<Integer, CrossListing>();
 		for(CrossListing c : list) {
+			if(c==null) {
+				System.out.println("Found null CrossListing in semester.");
+				continue;
+			}
 			crosslistings.put(c.getUID(), c);
 		}
 	}
@@ -180,5 +188,48 @@ public class Semester implements Serializable, Comparable<Semester> {
 	}
 	public void setDbid(Long id) {
 		dbid = id;
+	}
+
+	public void setLastChangeTime(String changeTime) {
+		lastChangeTime = changeTime;
+	}
+
+	public void clearCrossListings() {
+		crosslistings.clear();
+	}
+	
+	public void examineNewVersion(Semester parsedSemester) {
+		for(Course c : getCourses()) {
+			Course d = parsedSemester.getCourse(c.getId());
+			if(d==null) c.delete();
+			else {
+				c.examineNewVersion(d);
+			}
+		}
+		for(Course c : parsedSemester.getCourses()) {
+			if(null == getCourse(c.getId())) {
+				addCourse(c);
+			}
+		}
+		List<CrossListing> parsed = parsedSemester.getCrossListings();
+		List<CrossListing> mine = getCrossListings();
+		for(CrossListing c : mine) {
+			if(!parsed.contains(c)) {
+				c.delete();
+				for(Section s : c.getSections()) {
+					s.updateMinorRevision();
+				}
+			}
+		}
+		for(CrossListing c : parsed) {
+			if(!mine.contains(c)) {
+				c.setSemester(this);
+				c.processCRNs();
+				addCrosslisting(c);
+				for(Section s : c.getSections()) {
+					s.updateMinorRevision();
+				}
+			}
+		}
 	}
 }

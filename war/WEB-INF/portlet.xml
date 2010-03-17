@@ -13,6 +13,10 @@
 			<value>html</value>
 		</init-param>
 		<init-param>
+			<name>edu.rpi.rocs.Scheduler.hibernate.config.path</name>
+			<value>/Liferay/current/tomcat-6.0.18/webapps/rocs/xml/hibernate.cfg.xml</value>
+		</init-param>
+		<init-param>
 			<name>edu.rpi.rocs.Scheduler.xmlPath</name>
 			<value>http://sis.rpi.edu/reg/rocs/</value>
 		</init-param>

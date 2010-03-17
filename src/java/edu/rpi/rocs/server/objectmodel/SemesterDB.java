@@ -6,8 +6,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.hibernate.Session;
+
+import edu.rpi.rocs.client.objectmodel.Course;
+import edu.rpi.rocs.client.objectmodel.CrossListing;
+import edu.rpi.rocs.client.objectmodel.Period;
+import edu.rpi.rocs.client.objectmodel.Section;
 import edu.rpi.rocs.client.objectmodel.Semester;
 import edu.rpi.rocs.client.objectmodel.SemesterDescription;
+import edu.rpi.rocs.server.hibernate.util.HibernateUtil;
 
 public class SemesterDB {
 	/** The latest course database by semester */
@@ -49,5 +56,49 @@ public class SemesterDB {
     	else
     		return null;
     }
+    
+	@SuppressWarnings("unchecked")
+	public static void restoreSemesters() {
+		Session session = HibernateUtil.getSessionFactory().getCurrentSession();
+		session.beginTransaction();
+		
+		List<Semester> x = session.createQuery("from Semester").list();
+		for(Semester s : x) {
+			semesters.put(s.getSemesterId(), s);
+			touch(s);
+		}
+		
+		session.getTransaction().commit();
+	}
 
+	private static void touch(Semester s) {
+		for(Course c : s.getCourses()) {
+			touch(c);
+		}
+		for(CrossListing cl : s.getCrossListings()) {
+			touch(cl);
+		}
+	}
+
+	private static void touch(CrossListing cl) {
+		for(Section s : cl.getSections()) {
+			touch(s);
+		}
+	}
+
+	private static void touch(Course c) {
+		for(Section s : c.getSections()) {
+			touch(s);
+		}
+	}
+
+	private static void touch(Section s) {
+		for(Period p : s.getPeriods()) {
+			touch(p);
+		}
+	}
+
+	private static void touch(Period p) {
+		p.getDays();
+	}
 }

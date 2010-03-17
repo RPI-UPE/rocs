@@ -1,5 +1,7 @@
 package edu.rpi.rocs.client.objectmodel;
 
+import java.io.Serializable;
+
 /**
  * This is a helper class which stores whether a course is required or optional for inclusion
  * in generated schedules.
@@ -7,7 +9,11 @@ package edu.rpi.rocs.client.objectmodel;
  * @author ewpatton
  *
  */
-public class CourseStatusObject {
+public class CourseStatusObject implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7548924475872625796L;
 	/**
 	 * The course to store status about
 	 */

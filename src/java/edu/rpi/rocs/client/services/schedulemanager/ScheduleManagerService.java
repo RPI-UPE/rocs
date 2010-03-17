@@ -6,11 +6,11 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
 
-import edu.rpi.rocs.client.objectmodel.Schedule;
+import edu.rpi.rocs.client.objectmodel.SchedulerManager;
 
 public interface ScheduleManagerService extends RemoteService {
-	public List<String> getScheduleList();
-	public void saveSchedule(String name, Schedule schedule);
+	public List<String> getScheduleList(String user);
+	public void saveSchedule(String name, SchedulerManager schedule);
 	
 	public static class Singleton {
 		private static ScheduleManagerServiceAsync instance = null;

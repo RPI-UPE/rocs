@@ -2,6 +2,7 @@ package edu.rpi.rocs.client.objectmodel;
 
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -136,7 +137,13 @@ public class CrossListing extends MajorMinorRevisionObject {
 	}
 	
 	public void setSections(List<Section> list) {
-		sections = new ArrayList<Section>(list);
+		sections = new ArrayList<Section>();
+		Iterator<Section> i = list.iterator();
+		while(i.hasNext()) {
+			Section s = i.next();
+			if(s!=null) sections.add(s);
+			else System.out.println("CrossListing "+dbid+ " has a null section.");
+		}
 	}
 	
 	public List<Section> getSections() {
@@ -161,5 +168,17 @@ public class CrossListing extends MajorMinorRevisionObject {
 			count += s.getStudents();
 		}
 		return count;
+	}
+	
+	public boolean equals(Object o) {
+		if(o instanceof CrossListing) {
+			CrossListing x = (CrossListing)o;
+			List<Section> c = x.getSections();
+			for(Section s : sections) {
+				if(!c.contains(s)) return false;
+			}
+			return true;
+		}
+		else return false;
 	}
 }

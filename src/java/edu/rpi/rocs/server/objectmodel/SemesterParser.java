@@ -1,6 +1,5 @@
 package edu.rpi.rocs.server.objectmodel;
 
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -44,14 +43,22 @@ public class SemesterParser {
     	Semester parsedSemester;
     	try {
     		parsedSemester = SemesterParser.LoadCourseDB(xmlFile, changeTime);
-    		/*
+    		
+    		Semester lastSemester = SemesterDB.getInstance(parsedSemester.getSemesterId());
+    		if(lastSemester != null) {
+    			lastSemester.examineNewVersion(parsedSemester);
+    		}
+    		
     		Session session = HibernateUtil.getSessionFactory().getCurrentSession();
     		session.beginTransaction();
     		SemesterWriter sw = new SemesterWriter();
     		sw.setSession(session);
-    		sw.visit(parsedSemester);
+    		if(lastSemester==null)
+    			sw.visit(parsedSemester);
+    		else
+    			sw.visit(lastSemester);
     		session.getTransaction().commit();
-    		*/
+    		
     		SemesterDB.putInstance(parsedSemester.getSemesterId(), parsedSemester);
     	}
     	catch(Exception e) {

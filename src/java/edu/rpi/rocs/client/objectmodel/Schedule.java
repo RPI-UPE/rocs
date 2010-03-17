@@ -26,14 +26,14 @@ public class Schedule implements Serializable {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -7594397052857927655L;
+	private transient static final long serialVersionUID = -7594397052857927655L;
 
-	protected ArrayList<Section> sections = new ArrayList<Section>();
+	protected transient ArrayList<Section> sections = new ArrayList<Section>();
 	protected String name = "";
 	protected String owner = "";
 	protected int creditMin = 0;
 	protected int creditMax = 0;
-	protected ArrayList<ArrayList<TimeBlockType>> times=null;
+	protected transient ArrayList<ArrayList<TimeBlockType>> times=null;
 	
 	protected enum TimeBlockType {
 		Available(0),
@@ -341,12 +341,11 @@ public class Schedule implements Serializable {
 		return owner;
 	}
 	
-	private SchedulerManager mgrInstance=null;
+	private transient SchedulerManager mgrInstance=null;
 	public void setManager(SchedulerManager mgr) {
 		mgrInstance = mgr;
 	}
 	public SchedulerManager getManager() {
 		return mgrInstance;
 	}
-
 }

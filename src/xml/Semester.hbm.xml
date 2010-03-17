@@ -2,7 +2,7 @@
 <!DOCTYPE hibernate-mapping PUBLIC
 	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
-<hibernate-mapping package="edu.rpi.rocs.client.objectmodel">
+<hibernate-mapping package="edu.rpi.rocs.client.objectmodel" default-lazy="false">
   <class name="Semester">
   	<id name="dbid">
   		<generator class="native"/>
@@ -10,6 +10,7 @@
   	<property name="TimeStamp" column="SEMESTER_TS"/>
   	<property name="SemesterId" column="SEMESTER_ID"/>
   	<property name="SemesterDesc"/>
+  	<property name="LastChangeTime"/>
   	<list name="Courses">
   		<key column="SEMESTER_ID"/>
   		<index column="INDEX_COL"/>

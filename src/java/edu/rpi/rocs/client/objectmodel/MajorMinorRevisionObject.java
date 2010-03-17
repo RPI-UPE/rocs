@@ -15,6 +15,20 @@ public class MajorMinorRevisionObject implements Serializable {
 	 */
 	private static final long serialVersionUID = -8119493118175868900L;
 	
+	private boolean deleted=false;
+	
+	public boolean wasDeleted() {
+		return deleted;
+	}
+	
+	public void delete() {
+		deleted = true;
+	}
+	
+	public void undelete() {
+		deleted = false;
+	}
+	
 	/** The major and minor revisions for this object */
 	private Long majRevision;
 	private Long minRevision;
@@ -122,5 +136,9 @@ public class MajorMinorRevisionObject implements Serializable {
 	 */
 	public Long getMinorRevision() {
 		return minRevision;
+	}
+	
+	public Long getLastRevision() {
+		return majRevision > minRevision ? majRevision : minRevision;
 	}
 }

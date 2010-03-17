@@ -1,20 +1,35 @@
 package edu.rpi.rocs.server.hibernate.util;
 
-import java.io.File;
+import java.net.URL;
 
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
 public class HibernateUtil {
-	private static final SessionFactory sessionFactory = buildSessionFactory();
+	private static SessionFactory sessionFactory = null;
 	
-	private static SessionFactory buildSessionFactory() {
+	public static void init(URL confpath) {
+		if(sessionFactory==null) sessionFactory = buildSessionFactory(confpath);
+	}
+	
+	private static SessionFactory buildSessionFactory(URL confpath) {
 		try {
-			File f = new File("src/xml/hibernate.cfg.xml");
+			Class.forName("com.mysql.jdbc.Driver");
+			/*
 			if(!f.exists()) {
-				throw new ExceptionInInitializerError(new Exception("Unable to locate hibernate configuration file for ROCS."));
+				throw new ExceptionInInitializerError(new Exception("Unable to locate hibernate configuration file for ROCS at "+f.getAbsolutePath()+"."));
 			}
-			return new Configuration().configure(f).buildSessionFactory();
+			*/
+			return new Configuration().configure(confpath)
+						.addURL(new URL("jndi:/localhost/rocs/xml/Period.hbm.xml"))
+						.addURL(new URL("jndi:/localhost/rocs/xml/Section.hbm.xml"))
+						.addURL(new URL("jndi:/localhost/rocs/xml/Course.hbm.xml"))
+						.addURL(new URL("jndi:/localhost/rocs/xml/CourseStatusObject.hbm.xml"))
+						.addURL(new URL("jndi:/localhost/rocs/xml/SchedulerManager.hbm.xml"))
+						.addURL(new URL("jndi:/localhost/rocs/xml/Schedule.hbm.xml"))
+						.addURL(new URL("jndi:/localhost/rocs/xml/Semester.hbm.xml"))
+						.addURL(new URL("jndi:/localhost/rocs/xml/CrossListing.hbm.xml"))
+						.buildSessionFactory();
 		}
 		catch(Throwable ex) {
 			System.err.println("Initial SessionFactory creation failed. "+ex);

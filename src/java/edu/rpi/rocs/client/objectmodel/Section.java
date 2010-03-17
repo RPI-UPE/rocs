@@ -3,6 +3,7 @@ package edu.rpi.rocs.client.objectmodel;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -28,6 +29,20 @@ public class Section extends MajorMinorRevisionObject {
     protected ArrayList<String> notes;
     protected Course parent;
     protected CrossListing cross;
+    
+    @Override
+    public void updateMajorRevision() {
+    	super.updateMajorRevision();
+    	if(parent!=null) parent.updateMajorRevision();
+    	if(cross!=null) cross.updateMajorRevision();
+    }
+    
+    @Override
+    public void updateMinorRevision() {
+    	super.updateMinorRevision();
+    	if(parent!=null) parent.updateMinorRevision();
+    	if(cross!=null) cross.updateMinorRevision();
+    }
 
     /**
      * Default constructor needed for Serializable
@@ -96,7 +111,13 @@ public class Section extends MajorMinorRevisionObject {
     }
     
     public void setPeriods(List<Period> list) {
-    	periods = new ArrayList<Period>(list);
+    	periods = new ArrayList<Period>();
+    	Iterator<Period> i = list.iterator();
+    	while(i.hasNext()) {
+    		Period p = i.next();
+    		if(p!=null) periods.add(p);
+    		else System.out.println("Warning: found a period in section "+crn+" that is null.");
+    	}
     }
 
     public List<String> getNotes() {
@@ -110,7 +131,6 @@ public class Section extends MajorMinorRevisionObject {
     public Course getParent() {
     	return parent;
     }
-
 
     public void setCrn(int newValue){
         crn = newValue;
@@ -193,5 +213,64 @@ public class Section extends MajorMinorRevisionObject {
 	
 	public void setDbid(Long id) {
 		dbid = id;
+	}
+	
+	public boolean equal(Object o) {
+		if(o instanceof Section) {
+			Section s = (Section)o;
+			return s.crn == this.crn;
+		}
+		return false;
+	}
+
+	public void examineNewVersion(Section t) {
+		if(students != t.students) {
+			students = t.students;
+			updateMinorRevision();
+		}
+		if(seats != t.seats){
+			seats = t.seats;
+			updateMinorRevision();
+		}
+		if(!number.equals(t.number)) {
+			number = t.number;
+			updateMajorRevision();
+		}
+		for(Period p : periods) {
+			int pos=-1;
+			if((pos=t.periods.lastIndexOf(p))>=0) {
+				p.examineNewVersion(t.periods.get(pos));
+				if(p.outOfDateMajor()) {
+					updateMajorRevision();
+				}
+				else if(p.outOfDateMinor()) {
+					updateMinorRevision();
+				}
+			}
+			else {
+				p.delete();
+				updateMajorRevision();
+			}
+		}
+		for(Period p : t.periods) {
+			if(!periods.contains(p)) {
+				periods.add(p);
+				updateMajorRevision();
+			}
+		}
+		for(String s : notes) {
+			if(!t.notes.contains(s)) {
+				updateMajorRevision();
+				notes = t.notes;
+				break;
+			}
+		}
+		for(String s : t.notes) {
+			if(!notes.contains(s)) {
+				updateMajorRevision();
+				notes = t.notes;
+				break;
+			}
+		}
 	}
 }

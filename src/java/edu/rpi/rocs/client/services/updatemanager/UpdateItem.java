@@ -1,7 +1,5 @@
 package edu.rpi.rocs.client.services.updatemanager;
 
-import edu.rpi.rocs.client.objectmodel.Course;
-import edu.rpi.rocs.client.objectmodel.CrossListing;
 import edu.rpi.rocs.client.objectmodel.MajorMinorRevisionObject;
 
 public class UpdateItem

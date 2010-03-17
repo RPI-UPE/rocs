@@ -4,6 +4,7 @@ package edu.rpi.rocs.client.objectmodel;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -153,49 +154,58 @@ public class Course extends MajorMinorRevisionObject implements Comparable<Cours
     }
 
 	public int getLevel() {
-		// TODO Auto-generated method stub
 		return num / 1000;
 	}
 
 	   //accesssor functions
     public void setName(String newValue){
         name = newValue;
+        updateMajorRevision();
     }
 
     public void setDept(String newValue){
         dept = newValue;
+        updateMajorRevision();
     }
 
     public void setNum(int newValue){
         num = newValue;
+        updateMajorRevision();
     }
 
     public void setCredmin(int newValue){
         credmin = newValue;
+        updateMajorRevision();
     }
 
     public void setCredmax(int newValue){
         credmax = newValue;
+        updateMajorRevision();
     }
 
     public void setGradetype(String newValue){
         gradetype = newValue;
+        updateMajorRevision();
     }
 
     public void addNote(String newValue) {
     	notes.add(newValue);
+    	updateMajorRevision();
     }
 
     public void removeNote(String note) {
     	notes.remove(note);
+    	updateMajorRevision();
     }
 
     public void addSection(Section s) {
     	sections.add(s);
+    	updateMajorRevision();
     }
 
     public void removeSection(Section s) {
     	sections.remove(s);
+    	updateMajorRevision();
     }
 
     public boolean isClosed()
@@ -249,8 +259,9 @@ public class Course extends MajorMinorRevisionObject implements Comparable<Cours
 	}
 
 	public int compareTo(Course o) {
-		// TODO Auto-generated method stub
-		return 0;
+		int res = dept.compareTo(o.dept);
+		if(res!=0) return res;
+		return num-o.num;
 	}
 	
 	private Long dbid;
@@ -264,7 +275,13 @@ public class Course extends MajorMinorRevisionObject implements Comparable<Cours
 	}
 	
 	public void setSections(List<Section> list) {
-		sections = new ArrayList<Section>(list);
+		sections = new ArrayList<Section>();
+		Iterator<Section> i = list.iterator();
+		while(i.hasNext()) {
+			Section s = i.next();
+			if(s!=null) sections.add(s);
+			else System.out.println("Course " + getId() + " has a null section.");
+		}
 	}
 
 	public int getFilledSeats() {
@@ -309,5 +326,71 @@ public class Course extends MajorMinorRevisionObject implements Comparable<Cours
 
 	public String getInstructorString() {
 		return getProfessors();
+	}
+
+	public String getId() {
+		return dept+Integer.toString(num);
+	}
+
+	public void examineNewVersion(Course new_course) {
+		if(!new_course.getName().equals(name)) {
+			setName(new_course.getName());
+		}
+		else if(new_course.getNum() != num) {
+			setNum(new_course.getNum());
+		}
+		else if(!new_course.getDept().equals(dept)) {
+			setDept(new_course.getDept());
+		}
+		else if(new_course.getCredmax() != credmax) {
+			setCredmax(new_course.getCredmax());
+		}
+		else if(new_course.getCredmin() != credmin) {
+			setCredmin(new_course.getCredmin());
+		}
+		else if(!new_course.getGradetype().equals(gradetype)) {
+			setGradetype(new_course.getGradetype());
+		}
+		List<Section> others = new_course.getSections();
+		for(Section s : sections) {
+			int pos=-1;
+			if((pos=others.lastIndexOf(s))>=0) {
+				Section t = others.get(pos);
+				s.examineNewVersion(t);
+			}
+			else {
+				s.delete();
+				updateMajorRevision();
+			}
+		}
+		for(Section s : others) {
+			if(!sections.contains(s)) {
+				sections.add(s);
+				s.setParent(this);
+				updateMajorRevision();
+			}
+		}
+		ArrayList<String> temp = new_course.getNotes();
+		ArrayList<String> copy = new ArrayList<String>(notes);
+		for(String s : notes) {
+			if(!temp.contains(s)) {
+				copy.remove(s);
+				updateMajorRevision();
+			}
+		}
+		for(String s : temp) {
+			if(!copy.contains(s)) {
+				copy.add(s);
+				updateMajorRevision();
+			}
+		}
+	}
+	
+	@Override
+	public void delete() {
+		super.delete();
+		for(Section s : sections) {
+			s.delete();
+		}
 	}
 }

@@ -8,6 +8,7 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.FlexTable;
@@ -58,13 +59,21 @@ public class SemesterSelectionPanel extends VerticalPanel {
 
 			public void onClick(ClickEvent event) {
 				// TODO Auto-generated method stub
-				SchedulerManager.getInstance().getScheduleList(getScheduleListCallback);
+				SchedulerManager.getInstance().getScheduleList(getScheduleListCallbackLoad);
 			}
 
 		});
 
 		saveFile.addStyleName("greybutton");
 		saveFile.addStyleName("linkbutton");
+		saveFile.addClickHandler(new ClickHandler() {
+			public void onClick(ClickEvent event) {
+				if(SchedulerManager.getInstance().getCurrentSchedule()==null) {
+					Window.alert("You must generate a schedule before you can save your session");
+				}
+				else SchedulerManager.getInstance().getScheduleList(getScheduleListCallbackSave);
+			}
+		});
 
 		buttons.setWidget(0, 0, newFile);
 		buttons.setWidget(0, 1, loadFile);
@@ -128,7 +137,7 @@ public class SemesterSelectionPanel extends VerticalPanel {
 
 	};
 
-	private AsyncCallback<List<String>> getScheduleListCallback =
+	private AsyncCallback<List<String>> getScheduleListCallbackLoad =
 		new AsyncCallback<List<String>>() {
 
 			public void onFailure(Throwable caught) {
@@ -140,6 +149,22 @@ public class SemesterSelectionPanel extends VerticalPanel {
 				// TODO Auto-generated method stub
 				LoadScheduleDialogBox.get().setScheduleList(result);
 				LoadScheduleDialogBox.get().center();
+			}
+
+	};
+	
+	private AsyncCallback<List<String>> getScheduleListCallbackSave =
+		new AsyncCallback<List<String>>() {
+
+			public void onFailure(Throwable caught) {
+				// TODO Auto-generated method stub
+				Log.error("Failed to retrieve schedule list.", caught);
+			}
+
+			public void onSuccess(List<String> result) {
+				// TODO Auto-generated method stub
+				SaveScheduleDialogBox.get().setScheduleList(result);
+				SaveScheduleDialogBox.get().center();
 			}
 
 	};
@@ -167,6 +192,7 @@ public class SemesterSelectionPanel extends VerticalPanel {
 		//javascriptThread(selectedSemester);
 	}
 
+	@SuppressWarnings("unused")
 	private void javaThread(SemesterDescription SD)
 	{
 		if (selectedSemester.getSemesterId() == SD.getSemesterId())

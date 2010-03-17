@@ -231,6 +231,12 @@ public class HTMLTableList extends Widget implements List<HTMLTableList.HTMLTabl
 	public boolean add(HTMLTableListRow e) {
 		m_tbody.appendChild(e.getElement());
 		if(isAttached()) e.attach();
+		if((m_rows.size()+1) % 2 == 0) {
+			e.addStyleName("even");
+		}
+		else {
+			e.addStyleName("odd");
+		}
 		return m_rows.add(e);
 	}
 

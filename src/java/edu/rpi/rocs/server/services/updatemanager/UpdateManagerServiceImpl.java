@@ -1,7 +1,5 @@
 package edu.rpi.rocs.server.services.updatemanager;
 
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Set;
 import java.util.TreeMap;
 
@@ -9,9 +7,7 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 import edu.rpi.rocs.client.objectmodel.Course;
 import edu.rpi.rocs.client.objectmodel.CrossListing;
-import edu.rpi.rocs.client.objectmodel.Semester;
 import edu.rpi.rocs.client.services.updatemanager.UpdateType;
-import edu.rpi.rocs.server.objectmodel.SemesterDB;
 
 // OBSOLETE: New model implemented in CourseDBServiceImpl getUpdateData()
 public class UpdateManagerServiceImpl extends RemoteServiceServlet
@@ -21,8 +17,6 @@ public class UpdateManagerServiceImpl extends RemoteServiceServlet
 	 *
 	 */
 	private static final long serialVersionUID = -1758535463021522411L;
-
-	private static HashMap<Thread, Set<UpdateType>> connections=new HashMap<Thread, Set<UpdateType>>();
 
 	public Set<UpdateType> checkForUpdates(Integer semesterID, long last) {
 		// TODO Auto-generated method stub

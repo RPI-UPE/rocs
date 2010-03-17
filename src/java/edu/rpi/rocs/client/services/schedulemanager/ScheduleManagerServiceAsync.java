@@ -4,9 +4,9 @@ import java.util.List;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
-import edu.rpi.rocs.client.objectmodel.Schedule;
+import edu.rpi.rocs.client.objectmodel.SchedulerManager;
 
 public interface ScheduleManagerServiceAsync {
-	public void getScheduleList(AsyncCallback<List<String>> callback);
-	public void saveSchedule(String name, Schedule schedule, AsyncCallback<Void> callback);
+	public void getScheduleList(String user, AsyncCallback<List<String>> callback);
+	public void saveSchedule(String name, SchedulerManager schedule, AsyncCallback<Void> callback);
 }

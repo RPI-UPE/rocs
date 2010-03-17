@@ -141,7 +141,7 @@ public class SemesterManager {
 		{
 			// TODO: notifications for major changes
 			currentSemester.removeCourse(C2);
-			if (C.getCurrentRevision().longValue() != Long.MAX_VALUE) currentSemester.addCourse(C);
+			if (C.getLastRevision().longValue() != Long.MAX_VALUE) currentSemester.addCourse(C);
 			break;
 		}
 
@@ -150,7 +150,7 @@ public class SemesterManager {
 		{
 			// TODO: notifications for major changes
 			currentSemester.removeCrosslisting(CL.getUID());
-			if (CL2.getCurrentRevision().longValue() != Long.MAX_VALUE) currentSemester.addCrosslisting(CL2);
+			if (CL2.getLastRevision().longValue() != Long.MAX_VALUE) currentSemester.addCrosslisting(CL2);
 			break;
 		}
 

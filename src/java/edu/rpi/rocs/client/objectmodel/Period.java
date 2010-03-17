@@ -177,4 +177,35 @@ public class Period extends MajorMinorRevisionObject {
     public String toString() {
     	return "{days:"+days.toString()+",start:"+start.getHour()+""+start.getMinute()+",end:"+end.getHour()+""+end.getMinute()+"}";
     }
+    
+    public boolean equals(Object o) {
+    	if(o instanceof Period) {
+    		Period p = (Period)o;
+    		if(!p.start.equals(start)) return false;
+    		if(!p.end.equals(end)) return false;
+    		for(Integer i : days) {
+    			if(!p.days.contains(i)) return false;
+    		}
+    		return true;
+    	}
+    	else return false;
+    }
+
+	public void examineNewVersion(Period p) {
+		if(!start.equals(p.start)) {
+			start = p.start;
+			updateMajorRevision();
+		}
+		if(!end.equals(p.end)) {
+			end = p.end;
+			updateMajorRevision();
+		}
+		for(Integer i : days) {
+			if(!p.days.contains(i)) {
+				days = p.days;
+				updateMajorRevision();
+				break;
+			}
+		}
+	}
 }

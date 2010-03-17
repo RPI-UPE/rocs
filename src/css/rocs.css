@@ -73,12 +73,12 @@ div#rocs_PORTLET_rocs_root_view h4 {
 }
 
 div#rocs_PORTLET_rocs_semester_pane {
-    width:990px;
+    width:1000px;
     height:76px;
 }
 
 div#rocs_PORTLET_rocs_courses_pane {
-    width:990px;
+    width:1000px;
     height:150px;
     overflow:hidden;
 }
@@ -106,7 +106,7 @@ div#rocs_PORTLET_rocs_courses_pane table td {
 }
 
 div#rocs_PORTLET_rocs_search_pane {
-    width:990px;
+    width:1000px;
     height:500px;
     overflow:hidden;
 }
@@ -116,7 +116,7 @@ div#rocs_PORTLET_rocs_search_pane table {
 }
 
 div#rocs_PORTLET_rocs_search_pane table td {
-    padding: 4px;
+    padding: 0px;
 }
 
 div#rocs_PORTLET_rocs_search_pane table td select {
@@ -152,7 +152,7 @@ div#rocs_PORTLET_rocs_search_pane select.search_results option.conflict {
 }
 
 div#rocs_PORTLET_rocs_scheduler_pane {
-    width:990px;
+    width:1000px;
     height:426px;
     overflow:hidden;
 }
@@ -237,5 +237,151 @@ div#rocs_PORTLET_rocs_root_view .gwt-MultiStackPanelItem-selected, .gwt-MultiSta
 }
 
 div#rocs_PORTLET_rocs_root_view .gwt-MultiStackPanel {
-    width: 990px;
+    width: 1000px;
+}
+
+div#rocs_PORTLET_rocs_root_view table.schedule {
+	border-collapse: collapse;
+}
+
+div#rocs_PORTLET_rocs_root_view table.schedule tr.t00 td {
+	border-bottom: 2px dashed #ccc;
+	border-top: 2px solid black;
+	border-left: 2px solid black;
+	border-right: 2px solid black;
+	width: 90px;
+	height: 6px;
+	line-height: 6px;
+}
+
+div#rocs_PORTLET_rocs_root_view table.schedule tr.t30 td {
+	border-bottom: 2px solid black;
+	border-top: 2px dashed #ccc;
+	border-left: 2px solid black;
+	border-right: 2px solid black;
+	width: 90px;
+	height: 6px;
+	line-height: 6px;
+}
+
+div#rocs_PORTLET_rocs_root_view table.schedule th {
+	line-height: 12px;
+	height: 12px;
+	font-size: 12px;
+}
+
+div#rocs_PORTLET_rocs_root_view table.schedule th.firstcol {
+	width: 22px;
+}
+
+div#rocs_PORTLET_rocs_root_view div.schedule-wrapper {
+	position: relative;
+}
+
+div#rocs_PORTLET_rocs_root_view table.schedule {
+	position: relative;
+	top: 0px;
+	left: 0px;
+}
+
+div#rocs_PORTLET_rocs_root_view div.minischedule {
+	width: 80px;
+	height: 94px;
+	border: 1px solid black;
+}
+
+div#rocs_PORTLET_rocs_root_view .course-search-list .odd {
+	background-color: #f6f6ff;
+}
+
+
+div#rocs_PORTLET_rocs_root_view .course-search-list tr.course-selected {
+	background-color: #88ff88;
+}
+
+div#rocs_PORTLET_rocs_root_view .course-search-list tr.course-conflict {
+	background-color: #ff8888;
+}
+
+div#rocs_PORTLET_rocs_root_view .course-search-list tr.course-closed {
+	background-color: #cccccc;
+}
+
+div#rocs_PORTLET_rocs_root_view .course-search-list {
+	position: relative;
+	width: 1000px;
+	height: 320px;
+	overflow: scroll;
+}
+
+div#rocs_PORTLET_rocs_root_view .course-search-list table {
+	width: 100%;
+}
+
+div#rocs_PORTLET_rocs_root_view .course-search-list table th {
+	background-color: #bbccdd;
+}
+
+div#rocs_PORTLET_rocs_root_view .course-search-list table th,
+div#rocs_PORTLET_rocs_root_view .course-search-list table td {
+	padding: 4pt;
+}
+
+div#rocs_PORTLET_rocs_root_view .course-search-list table td.dept,
+div#rocs_PORTLET_rocs_root_view .course-search-list table td.num {
+	width: 50px;
+}
+
+div#rocs_PORTLET_rocs_root_view .course-search-list table td.seats {
+	width: 75px;
+}
+
+div#rocs_PORTLET_rocs_root_view .course-search-list table td.title {
+	width: 300px;
+}
+
+div#rocs_PORTLET_rocs_root_view .course-search-list tr.course-selectable {
+	cursor: pointer;
+}
+
+div#rocs_PORTLET_rocs_root_view .course-search-list tr.course-selectable:hover {
+	background-color: #E0F8FF;
+}
+
+.rocs-dialog .dialogTop td,
+.rocs-dialog .dialogBottom td
+{
+	height: 12pt;
+}
+
+.rocs-dialog .dialogTopLeft,
+.rocs-dialog .dialogTopRight,
+.rocs-dialog .dialogMiddleLeft,
+.rocs-dialog .dialogMiddleRight,
+.rocs-dialog .dialogBottomLeft,
+.rocs-dialog .dialogBottomRight
+{
+	width: 12pt;
+}
+
+.rocs-dialog .dialogTop td {
+	border-top: 2px outset blue;
+}
+
+.rocs-dialog .dialogBottom td {
+	border-bottom: 2px outset blue;
+}
+
+.rocs-dialog .dialogTopLeft,
+.rocs-dialog .dialogMiddleLeft,
+.rocs-dialog .dialogBottomLeft
+{
+	border-left: 2px outset blue;
+}
+
+.rocs-dialog .dialogTopRight,
+.rocs-dialog .dialogMiddleRight,
+.rocs-dialog .dialogBottomRight
+{
+	border-right: 2px outset blue;
 }

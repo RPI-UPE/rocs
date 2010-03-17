@@ -2,7 +2,7 @@
 <!DOCTYPE hibernate-mapping PUBLIC
 	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
-<hibernate-mapping package="edu.rpi.rocs.client.objectmodel">
+<hibernate-mapping package="edu.rpi.rocs.client.objectmodel" default-lazy="false">
   <class name="SchedulerManager">
   	<id name="dbid" column="STATE_ID">
   		<generator class="native"/>
@@ -13,6 +13,8 @@
   		<index-many-to-many column="COURSE_ID" class="Course"/>
   		<one-to-many class="CourseStatusObject"/>
   	</map>
+  	<property name="Name" column="schedule_name"/>
+  	<property name="UserId"/>
   	
   </class>
 </hibernate-mapping>
