@@ -76,18 +76,21 @@ public class SemesterDB {
 			touch(c);
 		}
 		for(CrossListing cl : s.getCrossListings()) {
+			cl.setSemester(s);
 			touch(cl);
 		}
 	}
 
 	private static void touch(CrossListing cl) {
 		for(Section s : cl.getSections()) {
+			s.setCrossListing(cl);
 			touch(s);
 		}
 	}
 
 	private static void touch(Course c) {
 		for(Section s : c.getSections()) {
+			s.setParent(c);
 			touch(s);
 		}
 	}

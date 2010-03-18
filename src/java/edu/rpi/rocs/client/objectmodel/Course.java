@@ -200,6 +200,7 @@ public class Course extends MajorMinorRevisionObject implements Comparable<Cours
 
     public void addSection(Section s) {
     	sections.add(s);
+    	s.setParent(this);
     	updateMajorRevision();
     }
 
@@ -356,15 +357,18 @@ public class Course extends MajorMinorRevisionObject implements Comparable<Cours
 			int pos=-1;
 			if((pos=others.lastIndexOf(s))>=0) {
 				Section t = others.get(pos);
+				//System.out.println("Examining old section...");
 				s.examineNewVersion(t);
 			}
 			else {
+				//System.out.println("Deleting old section...");
 				s.delete();
 				updateMajorRevision();
 			}
 		}
 		for(Section s : others) {
 			if(!sections.contains(s)) {
+				//System.out.println("Found new section...");
 				sections.add(s);
 				s.setParent(this);
 				updateMajorRevision();

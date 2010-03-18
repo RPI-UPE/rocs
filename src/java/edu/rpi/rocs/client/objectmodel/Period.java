@@ -178,6 +178,7 @@ public class Period extends MajorMinorRevisionObject {
     	return "{days:"+days.toString()+",start:"+start.getHour()+""+start.getMinute()+",end:"+end.getHour()+""+end.getMinute()+"}";
     }
     
+    @Override
     public boolean equals(Object o) {
     	if(o instanceof Period) {
     		Period p = (Period)o;

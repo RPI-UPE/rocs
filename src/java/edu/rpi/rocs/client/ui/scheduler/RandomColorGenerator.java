@@ -46,7 +46,7 @@ public class RandomColorGenerator {
 		return colors[i];
 	}
 
-	String randomlySelectColor(Course toMap) {
+	public String randomlySelectColor(Course toMap) {
 		Collection<Course> keys = m_mappedColors.keySet();
 		Comparator<Course> compare = new Course.CourseComparator();
 		for (Course C : keys.toArray(new Course[1]))

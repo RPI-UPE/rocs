@@ -71,6 +71,14 @@ public class HTMLTableList extends Widget implements List<HTMLTableList.HTMLTabl
 		public void detach() {
 			onDetach();
 		}
+		
+		public void setColSpan(int i) {
+			m_td.setAttribute("colspan", Integer.toString(i));
+		}
+
+		public void setRowSpan(int i) {
+			m_td.setAttribute("rowspan", Integer.toString(i));
+		}
 	}
 	
 	public class HTMLTableListRow extends Widget implements List<HTMLTableListCell>, HasClickHandlers, HasMouseOverHandlers, HasMouseOutHandlers {

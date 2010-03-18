@@ -33,15 +33,15 @@ public class Section extends MajorMinorRevisionObject {
     @Override
     public void updateMajorRevision() {
     	super.updateMajorRevision();
-    	if(parent!=null) parent.updateMajorRevision();
-    	if(cross!=null) cross.updateMajorRevision();
+    	if(parent!=null && parent.getMajorRevision()!=getMajorRevision()) parent.updateMajorRevision();
+    	if(cross!=null && cross.getMajorRevision()!=getMajorRevision()) cross.updateMajorRevision();
     }
     
     @Override
     public void updateMinorRevision() {
     	super.updateMinorRevision();
-    	if(parent!=null) parent.updateMinorRevision();
-    	if(cross!=null) cross.updateMinorRevision();
+    	if(parent!=null && parent.getMinorRevision()!=getMinorRevision()) parent.updateMinorRevision();
+    	if(cross!=null && cross.getMinorRevision()!=getMinorRevision()) cross.updateMinorRevision(true);
     }
 
     /**
@@ -215,7 +215,8 @@ public class Section extends MajorMinorRevisionObject {
 		dbid = id;
 	}
 	
-	public boolean equal(Object o) {
+	@Override
+	public boolean equals(Object o) {
 		if(o instanceof Section) {
 			Section s = (Section)o;
 			return s.crn == this.crn;

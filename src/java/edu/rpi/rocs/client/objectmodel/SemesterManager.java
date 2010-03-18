@@ -96,8 +96,10 @@ public class SemesterManager {
 		 */
 		public void onSuccess(Semester result) {
 			currentSemester = result;
-			for(SemesterManagerCallback caller : callbacks) {
-				caller.semesterLoaded(currentSemester);
+			if(result != null) {
+				for(SemesterManagerCallback caller : callbacks) {
+					caller.semesterLoaded(currentSemester);
+				}
 			}
 		}
 

@@ -120,8 +120,10 @@ public class Scheduler extends GenericPortlet {
 				
 				Scheduler.documents = parseHTML(data);
 				for(Document file : Scheduler.documents) {
+					long start = System.currentTimeMillis();
 					String newPath = Scheduler.xmlPath + file.path;
 					SemesterParser.parse(newPath, file.changeTime);
+					System.out.println("Parsed "+file.path+" in "+(System.currentTimeMillis()-start)+" ms");
 				}
 			}
 			catch(Exception e) {
@@ -218,7 +220,7 @@ public class Scheduler extends GenericPortlet {
 		out.println("<link rel=\"stylesheet\" type=\"text/css\" href=\"" + aRequest.getContextPath() + "/css/rocs.css\"/>");
 		out.println("<div id=\"rocs_PORTLET_rocs_root_view\" class=\"rocs-style\">");
 		out.println("<div style=\"background-color: red; width:100%; text-align: center;\">This is beta software. If you experience problems please contact <a href=\"mailto:pattoe@rpi.edu\">Evan Patton</a> with details.</div>");
-		out.println("<div style=\"background-color: yellow; width:100%; text-align: center;\">If you have problems with course content (e.g. two required courses conflict), please contact <a href=\"conrom@rpi.edu\">Michael Conroy</a> in the Registrar's Office with details.</div>");
+		out.println("<div style=\"background-color: yellow; width:100%; text-align: center;\">If you have problems with course content (e.g. two required courses conflict),<br/> please contact <a href=\"conrom@rpi.edu\">Michael Conroy</a> in the Registrar's Office with details.</div>");
 		out.println("</div>");
 	}
 	

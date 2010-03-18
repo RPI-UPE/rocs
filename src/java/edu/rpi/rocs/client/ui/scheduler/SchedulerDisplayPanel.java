@@ -8,17 +8,22 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.VerticalPanel;
 
 import edu.rpi.rocs.client.objectmodel.Schedule;
 import edu.rpi.rocs.client.objectmodel.Section;
 
-public class SchedulerDisplayPanel extends HorizontalPanel {
+public class SchedulerDisplayPanel extends VerticalPanel {
 	ArrayList<Schedule> m_schedules=null;
 	static SchedulerDisplayPanel theInstance=null;
 	Schedule m_current;
 	ScheduleViewWidget m_view;
 	FlowPanel m_summary;
 	RandomColorGenerator m_genMap = new RandomColorGenerator();
+	HorizontalPanel crn_pane = new HorizontalPanel();
+	HorizontalPanel content = new HorizontalPanel();
+	Label crnsLbl = new Label("Schedule CRNs:");
 
 	private void setActiveSchedule(Schedule s) {
 		m_current = s;
@@ -46,7 +51,14 @@ public class SchedulerDisplayPanel extends HorizontalPanel {
 		m_summary = new FlowPanel();
 		m_summary.addStyleName("rocs-style");
 		m_summary.addStyleName("schedule-list");
-		add(m_summary);
+		
+		content.add(m_summary);
+		
+		crn_pane.add(crnsLbl);
+		crn_pane.addStyleName("crn-pane");
+		
+		add(content);
+		add(crn_pane);
 	}
 
 	public static SchedulerDisplayPanel getInstance() {
@@ -73,13 +85,21 @@ public class SchedulerDisplayPanel extends HorizontalPanel {
 
 	private void updateSchedulePanel() {
 		if(m_view!=null) {
-			remove(m_view);
+			content.remove(m_view);
+			crn_pane.clear();
+			crn_pane.add(crnsLbl);
 		}
 		if(m_current==null) {
 			Window.alert("Unable to compute at least one valid schedule.");
 			return;
 		}
 		m_view = new ScheduleViewWidget(m_current, m_genMap);
-		this.insert(m_view, 0);
+		content.insert(m_view, 0);
+		if(m_current!=null) {
+			for(Section s : m_current.getSections()) {
+				Label x = new Label(Integer.toString(s.getCrn()));
+				crn_pane.add(x);
+			}
+		}
 	}
 }

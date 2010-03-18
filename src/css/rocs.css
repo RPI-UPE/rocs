@@ -1,5 +1,5 @@
 div#rocs_PORTLET_rocs_root_view {
-    width: 1000px;
+    width: 800px;
     font-size: 10pt;
     position: relative;
     left: 0;
@@ -73,18 +73,18 @@ div#rocs_PORTLET_rocs_root_view h4 {
 }
 
 div#rocs_PORTLET_rocs_semester_pane {
-    width:1000px;
+    width:800px;
     height:76px;
 }
 
 div#rocs_PORTLET_rocs_courses_pane {
-    width:1000px;
+    width:800px;
     height:150px;
     overflow:hidden;
 }
 
 div#rocs_PORTLET_rocs_courses_pane select.class_view {    
-    width: 800px;
+    width: 640px;
     height: 90px;
     overflow-x: scroll;
 }
@@ -106,7 +106,7 @@ div#rocs_PORTLET_rocs_courses_pane table td {
 }
 
 div#rocs_PORTLET_rocs_search_pane {
-    width:1000px;
+    width:800px;
     height:500px;
     overflow:hidden;
 }
@@ -137,7 +137,7 @@ div#rocs_PORTLET_rocs_search_pane div.search_results {
 }
 
 div#rocs_PORTLET_rocs_search_pane select.search_results {
-    min-width: 792px;
+    min-width: 800px;
     height: 245px;
     font-family: Courier New;
     width: auto;
@@ -152,7 +152,7 @@ div#rocs_PORTLET_rocs_search_pane select.search_results option.conflict {
 }
 
 div#rocs_PORTLET_rocs_scheduler_pane {
-    width:1000px;
+    width:800px;
     height:426px;
     overflow:hidden;
 }
@@ -237,7 +237,7 @@ div#rocs_PORTLET_rocs_root_view .gwt-MultiStackPanelItem-selected, .gwt-MultiSta
 }
 
 div#rocs_PORTLET_rocs_root_view .gwt-MultiStackPanel {
-    width: 1000px;
+    width: 800px;
 }
 
 div#rocs_PORTLET_rocs_root_view table.schedule {
@@ -309,7 +309,7 @@ div#rocs_PORTLET_rocs_root_view .course-search-list tr.course-closed {
 
 div#rocs_PORTLET_rocs_root_view .course-search-list {
 	position: relative;
-	width: 1000px;
+	width: 800px;
 	height: 320px;
 	overflow: scroll;
 }
@@ -384,4 +384,9 @@ div#rocs_PORTLET_rocs_root_view .course-search-list tr.course-selectable:hover {
 .rocs-dialog .dialogBottomRight
 {
 	border-right: 2px outset blue;
+}
+
+.rocs-style .crn-pane td {
+	padding-left: 3pt;
+	padding-right: 3pt;
 }

@@ -216,13 +216,17 @@ public class Semester implements Serializable, Comparable<Semester> {
 		for(CrossListing c : mine) {
 			if(!parsed.contains(c)) {
 				c.delete();
-				for(Section s : c.getSections()) {
-					s.updateMinorRevision();
-				}
 			}
 		}
 		for(CrossListing c : parsed) {
-			if(!mine.contains(c)) {
+			int pos = -1;
+			if((pos = mine.lastIndexOf(c))>=0) {
+				CrossListing m = mine.get(pos);
+				if(m.getNumberOfSeats()!=c.getNumberOfSeats()) {
+					m.setNumberOfSeats(c.getNumberOfSeats());
+				}
+			}
+			else {
 				c.setSemester(this);
 				c.processCRNs();
 				addCrosslisting(c);

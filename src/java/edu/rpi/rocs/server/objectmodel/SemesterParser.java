@@ -42,13 +42,18 @@ public class SemesterParser {
     	MajorMinorRevisionObject.setCurrentRevision(System.currentTimeMillis()/1000);
     	Semester parsedSemester;
     	try {
+    		long start = System.currentTimeMillis();
     		parsedSemester = SemesterParser.LoadCourseDB(xmlFile, changeTime);
+    		System.out.println("Time to parse semester XML: " + (System.currentTimeMillis()-start) + " ms");
     		
+    		start = System.currentTimeMillis();
     		Semester lastSemester = SemesterDB.getInstance(parsedSemester.getSemesterId());
     		if(lastSemester != null) {
     			lastSemester.examineNewVersion(parsedSemester);
     		}
+    		System.out.println("Time to merge semesters: "+(System.currentTimeMillis()-start)+" ms");
     		
+    		start = System.currentTimeMillis();
     		Session session = HibernateUtil.getSessionFactory().getCurrentSession();
     		session.beginTransaction();
     		SemesterWriter sw = new SemesterWriter();
@@ -58,8 +63,10 @@ public class SemesterParser {
     		else
     			sw.visit(lastSemester);
     		session.getTransaction().commit();
+    		System.out.println("Time to commit transaction: "+(System.currentTimeMillis()-start)+" ms");
     		
-    		SemesterDB.putInstance(parsedSemester.getSemesterId(), parsedSemester);
+    		if(lastSemester==null)
+    			SemesterDB.putInstance(parsedSemester.getSemesterId(), parsedSemester);
     	}
     	catch(Exception e) {
     		MajorMinorRevisionObject.setCurrentRevision(oldrev);
@@ -90,8 +97,8 @@ public class SemesterParser {
     		for(Node n = doc.getDocumentElement().getFirstChild(); n.getNextSibling() != null; n = n.getNextSibling()) {
     			if(n.getNodeName().equalsIgnoreCase("CrossListing")) {
     				CrossListing c = CrossListingParser.parse(n);
-    				semester.addCrosslisting(c);
     				c.setSemester(semester);
+    				semester.addCrosslisting(c);
     			}
     			else if(n.getNodeName().equalsIgnoreCase("Course")) {
     				Course c = CourseParser.parse(n);
@@ -110,6 +117,7 @@ public class SemesterParser {
     	if(semester!=null) {
     		List<CrossListing> cls = semester.getCrossListings();
     		for(CrossListing cl : cls) {
+    			cl.setSemester(semester);
     			cl.processCRNs();
     		}
     	}

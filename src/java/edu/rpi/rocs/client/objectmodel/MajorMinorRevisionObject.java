@@ -70,7 +70,8 @@ public class MajorMinorRevisionObject implements Serializable {
 	 * @return true if out of date, false if not
 	 */
 	public boolean outOfDateMajor() {
-		return majRevision != MajorMinorRevisionObject.currentRevision;
+		if(majRevision==null) return true;
+		return majRevision.longValue() != MajorMinorRevisionObject.currentRevision;
 	}
 	
 	/**
@@ -80,7 +81,8 @@ public class MajorMinorRevisionObject implements Serializable {
 	 * @return true if out of date, false if not
 	 */
 	public boolean outOfDateMinor() {
-		return minRevision != MajorMinorRevisionObject.currentRevision;
+		if(minRevision==null) return true;
+		return minRevision.longValue() != MajorMinorRevisionObject.currentRevision;
 	}
 	
 	/**

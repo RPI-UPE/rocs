@@ -64,6 +64,15 @@ public class CrossListing extends MajorMinorRevisionObject {
 
 	public void setNumberOfSeats(int numberOfSeats) {
 		this.numberOfSeats = numberOfSeats;
+		//updateMinorRevision();
+	}
+	
+	@Override
+	public void updateMinorRevision() {
+		super.updateMinorRevision();
+		for(Section s : sections) {
+			if(s.getMinorRevision()!=getMinorRevision()) s.updateMinorRevision();
+		}
 	}
 
 	/**
@@ -106,6 +115,7 @@ public class CrossListing extends MajorMinorRevisionObject {
 	}
 	
 	public void processCRNs() {
+		if(semester==null) return;
 		for(Section s : sections)
 			s.removeCrossListing();
 		sections.clear();
@@ -121,6 +131,7 @@ public class CrossListing extends MajorMinorRevisionObject {
 	
 	public void setSemester(Semester s) {
 		semester = s;
+		processed = false;
 	}
 	
 	public Semester getSemester() {
@@ -141,7 +152,10 @@ public class CrossListing extends MajorMinorRevisionObject {
 		Iterator<Section> i = list.iterator();
 		while(i.hasNext()) {
 			Section s = i.next();
-			if(s!=null) sections.add(s);
+			if(s!=null) {
+				sections.add(s);
+				s.setCrossListing(this);
+			}
 			else System.out.println("CrossListing "+dbid+ " has a null section.");
 		}
 	}
@@ -170,6 +184,7 @@ public class CrossListing extends MajorMinorRevisionObject {
 		return count;
 	}
 	
+	@Override
 	public boolean equals(Object o) {
 		if(o instanceof CrossListing) {
 			CrossListing x = (CrossListing)o;
@@ -180,5 +195,21 @@ public class CrossListing extends MajorMinorRevisionObject {
 			return true;
 		}
 		else return false;
+	}
+	
+	@Override
+	public void delete() {
+		super.delete();
+		for(Section s : sections) {
+			s.setCrossListing(null);
+			if(s.getMinorRevision()!=this.getMinorRevision())
+				s.updateMinorRevision();
+		}
+	}
+
+	public void updateMinorRevision(boolean b) {
+		// TODO Auto-generated method stub
+		if(b==false) updateMinorRevision();
+		else setMinorRevision(MajorMinorRevisionObject.getCurrentRevision());
 	}
 }
