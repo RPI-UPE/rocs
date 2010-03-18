@@ -310,7 +310,7 @@ div#rocs_PORTLET_rocs_root_view .course-search-list tr.course-closed {
 div#rocs_PORTLET_rocs_root_view .course-search-list {
 	position: relative;
 	width: 800px;
-	height: 320px;
+	height: 360px;
 	overflow: scroll;
 }
 

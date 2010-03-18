@@ -28,7 +28,7 @@ public class Schedule implements Serializable {
 	 */
 	private transient static final long serialVersionUID = -7594397052857927655L;
 
-	protected transient ArrayList<Section> sections = new ArrayList<Section>();
+	protected ArrayList<Section> sections = new ArrayList<Section>();
 	protected String name = "";
 	protected String owner = "";
 	protected int creditMin = 0;

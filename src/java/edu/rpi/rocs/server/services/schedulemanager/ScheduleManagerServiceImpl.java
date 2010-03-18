@@ -20,16 +20,22 @@ public class ScheduleManagerServiceImpl extends RemoteServiceServlet implements
 	private static final long serialVersionUID = 943641426558410281L;
 	
 	public void saveSchedule(String name, SchedulerManager state) {
-		Session session = HibernateUtil.getSessionFactory().getCurrentSession();
-		session.beginTransaction();
-		
-		state.setName(name);
-		state.setDbid(null);
-		SchedulerManagerWriter smw = new SchedulerManagerWriter();
-		smw.setSession(session);
-		smw.visit(state);
-
-		session.getTransaction().commit();
+		try {
+			Session session = HibernateUtil.getSessionFactory().getCurrentSession();
+			session.beginTransaction();
+			
+			state.setName(name);
+			state.setDbid(null);
+			SchedulerManagerWriter smw = new SchedulerManagerWriter();
+			smw.setSession(session);
+			smw.visit(state);
+	
+			session.getTransaction().commit();
+		}
+		catch(Throwable ex) {
+			System.out.print("Caught exception: ");
+			ex.printStackTrace();
+		}
 	}
 
 	@SuppressWarnings("unchecked")

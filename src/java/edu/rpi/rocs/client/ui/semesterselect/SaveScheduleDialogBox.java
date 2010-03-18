@@ -38,12 +38,13 @@ public class SaveScheduleDialogBox extends DialogBox {
 	private AsyncCallback<Void> result = new AsyncCallback<Void>() {
 
 		public void onFailure(Throwable arg0) {
-			Window.alert("Service failure when attempting to save scheduler state to server.");
+			Window.alert("Service failure when attempting to save scheduler state to server. \nPlease check your internet connection or report this as a bug.");
 			Log.debug(arg0.toString());
 			arg0.printStackTrace();
 		}
 
 		public void onSuccess(Void arg0) {
+			Window.alert("Your schedule was saved successfully.");
 			SaveScheduleDialogBox.get().hide();
 		}
 		

@@ -279,7 +279,7 @@ public class SchedulerManager implements IsSerializable {
 			Log.trace("Generated " + generatedSchedules.size() + " schedules");
 		if(generatedSchedules != null && generatedSchedules.size()>0) {
 			currentSchedule = generatedSchedules.get(0);
-			currentSchedule.setOwner(User.getUserID());
+			currentSchedule.setOwner(getUserId());
 		}
 		m_changed = false;
 		
