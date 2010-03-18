@@ -4,6 +4,7 @@
 	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <hibernate-mapping package="edu.rpi.rocs.client.objectmodel" default-lazy="false">
   <class name="CourseStatusObject">
+    <cache usage="read-write"/>
   	<id name="dbid">
   	  <generator class="native"></generator>
   	</id>

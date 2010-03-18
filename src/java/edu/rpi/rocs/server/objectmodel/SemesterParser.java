@@ -11,6 +11,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.hibernate.Session;
+import org.hibernate.Transaction;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
@@ -52,25 +53,36 @@ public class SemesterParser {
     			lastSemester.examineNewVersion(parsedSemester);
     		}
     		System.out.println("Time to merge semesters: "+(System.currentTimeMillis()-start)+" ms");
-    		
-    		start = System.currentTimeMillis();
-    		Session session = HibernateUtil.getSessionFactory().getCurrentSession();
-    		session.beginTransaction();
-    		SemesterWriter sw = new SemesterWriter();
-    		sw.setSession(session);
-    		if(lastSemester==null)
-    			sw.visit(parsedSemester);
-    		else
-    			sw.visit(lastSemester);
-    		session.getTransaction().commit();
-    		System.out.println("Time to commit transaction: "+(System.currentTimeMillis()-start)+" ms");
-    		
+
     		if(lastSemester==null)
     			SemesterDB.putInstance(parsedSemester.getSemesterId(), parsedSemester);
+
+    		start = System.currentTimeMillis();
+    		Session session=null;
+    		Transaction tx=null;
+    		try {
+    			session = HibernateUtil.getSessionFactory().getCurrentSession();
+	    		tx = session.beginTransaction();
+	    		SemesterWriter sw = new SemesterWriter();
+	    		sw.setSession(session);
+	    		if(lastSemester==null)
+	    			sw.visit(parsedSemester);
+	    		else
+	    			sw.visit(lastSemester);
+	    		tx.commit();
+    		}
+    		catch(Exception ex) {
+    			if(tx!=null) tx.rollback();
+    			ex.printStackTrace();
+    		}
+    		finally {
+    			if(session.isOpen()) session.close();
+    		}
+    		System.out.println("Time to commit transaction: "+(System.currentTimeMillis()-start)+" ms");
     	}
-    	catch(Exception e) {
+    	catch(Throwable t) {
     		MajorMinorRevisionObject.setCurrentRevision(oldrev);
-    		throw e;
+    		t.printStackTrace();
     	}
     }
 

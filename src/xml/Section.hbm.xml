@@ -4,6 +4,7 @@
 	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <hibernate-mapping package="edu.rpi.rocs.client.objectmodel" default-lazy="false">
   <class name="Section">
+    <cache usage="read-write"/>
   	<id name="dbid" column="SECTION_ID">
   		<generator class="native"/>
   	</id>
@@ -12,11 +13,13 @@
   	<property name="students"/>
   	<property name="number"/>
   	<list name="notes" table="SECTION_NOTES">
+  		<cache usage="read-write"/>
   		<key column="SECTION_ID"/>
   		<index column="INDEX_COL"/>
   		<element column="SECTION_NOTE" type="string"/>
   	</list>
   	<list name="periods" table="SECTION_PERIODS">
+  		<cache usage="read-write"/>
   		<key column="SECTION_ID"/>
   		<index column="INDEX_COL"/>
   		<one-to-many class="Period"/>

@@ -4,12 +4,14 @@
 	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <hibernate-mapping package="edu.rpi.rocs.client.objectmodel" default-lazy="false">
   <class name="Schedule">
+    <cache usage="read-write"/>
   	<id name="dbid" column="SCHEDULE_ID">
   		<generator class="native"/>
   	</id>
   	<property name="name" column="SCHEDULE_NAME"/>
   	<property name="owner" column="SCHEDULE_OWNER"/>
   	<list name="sections">
+  		<cache usage="read-write"/>
   		<key column="SCHEDULE_ID"/>
   		<index column="INDEX_COL"/>
   		<one-to-many class="Section"/>

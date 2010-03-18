@@ -4,6 +4,7 @@
 	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <hibernate-mapping package="edu.rpi.rocs.client.objectmodel" default-lazy="false">
   <class name="Period">
+    <cache usage="read-write"/>
   	<id name="dbid" column="PERIOD_ID">
   		<generator class="native"/>
   	</id>
@@ -13,6 +14,7 @@
   	<property name="endInt"/>
   	<property name="type"/>
   	<list name="days" table="PERIOD_DAYS">
+  		<cache usage="read-write"/>
   		<key column="PERIOD_ID"/>
   		<index column="INDEX_COL"/>
   		<element column="PERIOD_DAY" type="integer"/>

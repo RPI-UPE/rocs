@@ -4,6 +4,7 @@
 	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <hibernate-mapping package="edu.rpi.rocs.client.objectmodel" default-lazy="false">
   <class name="Semester">
+    <cache usage="read-write"/>
   	<id name="dbid">
   		<generator class="native"/>
   	</id>
@@ -12,11 +13,13 @@
   	<property name="SemesterDesc"/>
   	<property name="LastChangeTime"/>
   	<list name="Courses">
+  		<cache usage="read-write"/>
   		<key column="SEMESTER_ID"/>
   		<index column="INDEX_COL"/>
   		<one-to-many class="Course"/>
   	</list>
   	<list name="CrossListings">
+  		<cache usage="read-write"/>
   		<key column="SEMESTER_ID"/>
   		<index column="INDEX_COL"/>
   		<one-to-many class="CrossListing"/>
