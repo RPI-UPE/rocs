@@ -35,8 +35,19 @@ import edu.rpi.rocs.server.objectmodel.SemesterParser;
  */
 public class Scheduler extends GenericPortlet {
 	
+	/**
+	 * Represents an XML Document stored on remote server.
+	 * @author ewpatton
+	 *
+	 */
 	public static class Document {
+		/**
+		 * URL path of the document.
+		 */
 		public String path;
+		/**
+		 * Date modified as reported by Apache server
+		 */
 		public String changeTime;
 	}
 	
@@ -83,8 +94,6 @@ public class Scheduler extends GenericPortlet {
 				found++;
 				String path = m.group(1);
 				String date = m.group(3)+" "+m.group(4);
-				//System.out.println("path = "+path);
-				//System.out.println("date = "+date);
 				if(path!=null) {
 					path = path.replaceAll("\"", "");
 					path = path.replace("href=", "");
@@ -97,7 +106,6 @@ public class Scheduler extends GenericPortlet {
 					}
 				}
 			}
-			//System.out.println("Found "+found+" semester files.");
 			return results;
 		}
 		
@@ -132,14 +140,27 @@ public class Scheduler extends GenericPortlet {
 		}
 	}
 	
+	/**
+	 * Stores initialization state of the porlet (mostly for deployment purposes).
+	 */
 	private boolean initialized=false;
 	
+	/**
+	 * Returns whether or not the portlet has been initialized
+	 * @return boolean, true if initialized, false otherwise
+	 */
 	public boolean isInitialized() {
 		return initialized;
 	}
 	
+	/**
+	 * Stored portlet configuration information in the event first initialization fails.
+	 */
 	PortletConfig theConfig=null;
 	
+	/**
+	 * Initializes the portlet. Loads the hibernate configuration files and restores any data stored in the database.
+	 */
 	public void initialize() {
 		URL temp=null;
 		try {

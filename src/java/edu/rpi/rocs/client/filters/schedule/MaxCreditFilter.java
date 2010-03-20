@@ -17,10 +17,19 @@ import edu.rpi.rocs.client.ui.filters.MaxCreditFilterWidget;
  *
  */
 public class MaxCreditFilter implements ScheduleFilter {
-	
+	/**
+	 * Display name within the Scheduler application.
+	 */
 	private static String DISPLAY_NAME="Maximum Credit Filter";
+	/**
+	 * Fully qualified name for the filter.
+	 */
 	private static String QUALIFIED_NAME="edu.rpi.rocs.client.filters.schedule.MaxCreditFilter";
 	
+	/**
+	 * Registers the filter with the filter manager.
+	 * @return true if successful, false otherwise
+	 */
 	public static boolean register() {
 		ScheduleFilterManager.getInstance().registerFilter(DISPLAY_NAME, QUALIFIED_NAME);
 		return true;
@@ -30,6 +39,10 @@ public class MaxCreditFilter implements ScheduleFilter {
 	 * The unique identifier for serialization
 	 */
 	private static final long serialVersionUID = 2097081252969945097L;
+	
+	/**
+	 * Widget to display the filter
+	 */
 	private transient MaxCreditFilterWidget widget = null;
 	
 	/**
@@ -77,7 +90,6 @@ public class MaxCreditFilter implements ScheduleFilter {
 	 * @return true if the schedule conforms, otherwise false
 	 */
 	public boolean doesScheduleSatisfyFilter(Schedule schedule) {
-		// TODO Auto-generated method stub
 		if(schedule.getMaxCredits() <= maxcreds) return true;
 		return false;
 	}
@@ -95,7 +107,6 @@ public class MaxCreditFilter implements ScheduleFilter {
 	 * @return the widget associated with this ScheduleFilter.
 	 */
 	public Widget getWidget() {
-		// TODO Auto-generated method stub
 		if(widget==null) widget = new MaxCreditFilterWidget(maxcreds);
 		return widget;
 	}
@@ -104,17 +115,18 @@ public class MaxCreditFilter implements ScheduleFilter {
 	 * @return the title to be displayed in the Filter list.
 	 */
 	public String getDisplayTitle() {
-		// TODO Auto-generated method stub
 		return DISPLAY_NAME;
 	}
-	
+
+	/**
+	 * Handlers to notify when the value of the filter changes.
+	 */
 	private HashSet<ChangeHandler> changeHandlers = new HashSet<ChangeHandler>();
 
 	/**
 	 * Adds a Handler to be called when the value of the MaxCreditFilter changes.
 	 */
 	public void addChangeHandler(ChangeHandler e) {
-		// TODO Auto-generated method stub
 		changeHandlers.add(e);
 	}
 
@@ -122,7 +134,6 @@ public class MaxCreditFilter implements ScheduleFilter {
 	 * Removes a Handler from the registered AddHandlers list.
 	 */
 	public void removeChangeHandler(ChangeHandler e) {
-		// TODO Auto-generated method stub
 		changeHandlers.remove(e);
 	}
 

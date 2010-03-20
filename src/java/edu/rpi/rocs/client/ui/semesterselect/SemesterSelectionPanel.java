@@ -189,7 +189,7 @@ public class SemesterSelectionPanel extends VerticalPanel {
 	public void selectedSemesterDidChange() {
 		Log.debug("Semester changed. Retrieving contents of new semester...");
 		SemesterManager.getInstance().retrieveCourseDB(selectedSemester.getSemesterId());
-		//javascriptThread(selectedSemester);
+		javascriptThread(selectedSemester);
 	}
 
 	@SuppressWarnings("unused")
@@ -197,6 +197,7 @@ public class SemesterSelectionPanel extends VerticalPanel {
 	{
 		if (selectedSemester.getSemesterId() == SD.getSemesterId())
 		{
+			Log.debug("Updating semester from server...");
 			CourseDBService.Singleton.getInstance().getUpdateList(SD.getSemesterId(),
 																 SemesterManager.getInstance().getCurrentSemester().getTimeStamp(),
 																 getUpdatedItems);
@@ -204,8 +205,12 @@ public class SemesterSelectionPanel extends VerticalPanel {
 		}
 	}
 	private native void javascriptThread(SemesterDescription SD)/*-{
-		globalSemesterDesc = SD;
-		window.setTimeout("this.@edu.rpi.rocs.client.ui.semesterselect.SemesterSelectionPanel::javaThread(globalSemesterDesc);", 310000);
+		$wnd.globalSemesterDesc = SD;
+		$wnd.rocs_ssp = this;
+		updateFunc = function() {
+			$wnd.rocs_ssp.@edu.rpi.rocs.client.ui.semesterselect.SemesterSelectionPanel::javaThread(Ledu/rpi/rocs/client/objectmodel/SemesterDescription;)($wnd.globalSemesterDesc);
+		}
+		$wnd.setTimeout(updateFunc, 305000);
 	}-*/;
 
 	private AsyncCallback<ArrayList<UpdateItem>> getUpdatedItems =

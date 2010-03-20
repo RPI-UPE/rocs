@@ -78,7 +78,6 @@ public class MinCreditFilter implements ScheduleFilter, MinCreditValueChanged {
 	 * @return true if the schedule has the minimum number of credits, otherwise false.
 	 */
 	public boolean doesScheduleSatisfyFilter(Schedule schedule) {
-		// TODO Auto-generated method stub
 		if(schedule.getMinCredits() >= mincreds) return true;
 		return false;
 	}
@@ -95,7 +94,6 @@ public class MinCreditFilter implements ScheduleFilter, MinCreditValueChanged {
 	 * @return the widget associated with the MinCreditFilter.
 	 */
 	public Widget getWidget() {
-		// TODO Auto-generated method stub
 		if(widget == null) {
 			widget = new MinCreditFilterWidget();
 			widget.addChangeHandler(this);
@@ -107,7 +105,6 @@ public class MinCreditFilter implements ScheduleFilter, MinCreditValueChanged {
 	 * @return the Title to be displayed in the Filter list.
 	 */
 	public String getDisplayTitle() {
-		// TODO Auto-generated method stub
 		return DISPLAY_NAME;
 	}
 	
@@ -117,7 +114,6 @@ public class MinCreditFilter implements ScheduleFilter, MinCreditValueChanged {
 	 * Adds a Handler to be called when the value of MinCreditFilter changes.
 	 */
 	public void addChangeHandler(ChangeHandler e) {
-		// TODO Auto-generated method stub
 		changeHandlers.add(e);
 	}
 
@@ -125,7 +121,6 @@ public class MinCreditFilter implements ScheduleFilter, MinCreditValueChanged {
 	 * Removes a Handler from the registered AddHandlers list.
 	 */
 	public void removeChangeHandler(ChangeHandler e) {
-		// TODO Auto-generated method stub
 		changeHandlers.remove(e);
 	}
 }
