@@ -37,7 +37,7 @@ public class CourseSearchPanel extends VerticalPanel {
 										 CONFLICT = IMG("cross.png"),
 										 CLOSED = IMG("closed.png"),
 										 SPACE = IMG("space.png");
-										 
+
 	private static final String IMG(String name) {
 		return "<img src=\"" + ImageManager.getPathForImage(name) + "\" width=12 heigth=12>";
 	}
@@ -157,7 +157,7 @@ public class CourseSearchPanel extends VerticalPanel {
 		resultAdd.addStyleName("greenbutton");
 		resultAdd.addStyleName("linkbutton");
 		resultAdd.addClickHandler(new ClickHandler() {
-		
+
 
 			public void onClick(ClickEvent event) {
 				// TODO Auto-generated method stub
@@ -253,6 +253,34 @@ public class CourseSearchPanel extends VerticalPanel {
 			if (course.isClosed()) bits += 2;
 			//resultsListBox.addHTML(LIST_HEAD[bits]+course.getListDescription()+LIST_TAIL[bits], course.getDept()+course.getNum());
 			CourseResultList.getInstance().add(course, bits);
+		}
+	}
+
+	public void redosearch()
+	{
+		List<CourseStatusObject> CSOlist = SchedulerManager.getInstance().getSelectedCourses();
+		ArrayList<Course> ReqList = new ArrayList<Course>(), OptList = new ArrayList<Course>();
+		for (CourseStatusObject CSO : CSOlist) if (CSO.getRequired()) ReqList.add(CSO.getCourse());
+															else OptList.add(CSO.getCourse());
+		ArrayList<ScheduleFilter> filter = new ArrayList<ScheduleFilter>();
+		filter.add(SchedulerFilterDisplayPanel.getInstance().getCurrentFilters().get(0));
+		ArrayList<Schedule> posSchedules = Schedule.buildAllSchedulesGivenCoursesAndFilters(ReqList,
+																  new ArrayList<Course>(), filter);
+
+		for (int i = 0; i < theResults.size(); i++)
+		{
+			Course course = theResults.get(i);
+			boolean chosen = false;
+			for (Course C : ReqList) if ((new CourseComparator()).compare(C, course) == 0) {
+				chosen = true;
+				break;
+			}
+			int bits = 0;
+			ArrayList<Course> cArr = new ArrayList<Course>(); cArr.add(course);
+			if (chosen) bits += 1;
+			if (!chosen && !hasSpace(course, posSchedules)) bits += 4;
+			if (course.isClosed()) bits += 2;
+			CourseResultList.getInstance().modifyBits(i, bits);
 		}
 	}
 

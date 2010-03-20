@@ -24,19 +24,19 @@ public class CourseResultList {
 	HTMLTableListRow m_header = m_table.new HTMLTableListRow();
 	ArrayList<Course> results = new ArrayList<Course>();
 	static CourseResultList theInstance = null;
-	
+
 	CourseAddedHandler addedHandler = new CourseAddedHandler() {
 		public void handleEvent(CourseStatusObject status) {
-			
+
 		}
 	};
-	
+
 	CourseRemovedHandler removedHandler = new CourseRemovedHandler() {
 		public void handleEvent(CourseStatusObject status) {
-			
+
 		}
 	};
-	
+
 	CourseResultList() {
 		m_table.setStyleName("course-search-list");
 		HTMLTableListCell c;
@@ -50,17 +50,17 @@ public class CourseResultList {
 		SchedulerManager.getInstance().addCourseAddedEventHandler(addedHandler);
 		SchedulerManager.getInstance().addCourseRemovedEventHandler(removedHandler);
 	}
-	
+
 	public static CourseResultList getInstance() {
 		if(theInstance == null) theInstance = new CourseResultList();
 		return theInstance;
 	}
-	
+
 	public void clear() {
 		results.clear();
 		m_table.clearEverythingButHeader();
 	}
-	
+
 	ClickHandler clickHandler = new ClickHandler() {
 
 		public void onClick(ClickEvent arg0) {
@@ -71,13 +71,15 @@ public class CourseResultList {
 			SchedulerManager.getInstance().addCourse(c);
 			if(!ROCSInterface.getInstance().isDisplaying(ClassViewPanel.getInstance()))
 				ROCSInterface.getInstance().show(ClassViewPanel.getInstance(), true);
-			CourseSearchPanel.getInstance().search();
+			CourseSearchPanel.getInstance().redosearch();
 		}
-		
+
 	};
-	
+
+	int prevstatus;
 	public void add(Course a, int status) {
 		results.add(a);
+		prevstatus = status;
 		HTMLTableListRow r=m_table.new HTMLTableListRow();
 		HTMLTableListCell c;
 		c = m_table.new HTMLTableListCell(); c.setStyleName("dept"); c.setText(a.getDept()); r.add(c);
@@ -104,7 +106,33 @@ public class CourseResultList {
 		}
 		m_table.add(r);
 	}
-	
+
+	public void modifyBits(int index, int status)
+	{
+		if (prevstatus == status) return;
+		else prevstatus = status;
+
+		HTMLTableListRow r = m_table.get(index);
+
+		if((status & State.CONFLICT) == State.CONFLICT) {
+			r.setStyleName("course-conflict");
+			r.setTitle("Conflicts with another course");
+		}
+		else if((status & State.CLOSED) == State.CLOSED) {
+			r.setStyleName("course-closed");
+			r.setTitle("Course closed to registration");
+		}
+		else if((status & State.CHOSEN) == State.CHOSEN) {
+			r.setStyleName("course-selected");
+			r.setTitle("Course selected for scheduling");
+		}
+		else {
+			r.setStyleName("course-selectable");
+			r.addClickHandler(clickHandler);
+			r.setTitle("Click to add this course");
+		}
+	}
+
 	public HTMLTableList getTable() {
 		return m_table;
 	}
