@@ -21,7 +21,7 @@ public class CourseStatusObject implements Serializable {
 	/**
 	 * Flag for whether a course is required or not
 	 */
-	private boolean isRequired;
+	private boolean isRequired=true;
 	
 	/**
 	 * Creates a course status given a course and whether it is required

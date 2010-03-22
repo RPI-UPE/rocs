@@ -95,13 +95,16 @@ public class SemesterParser {
     }
     
     static private Semester LoadCourseDB(InputStream stream, String changeTime) throws IOException, ParserConfigurationException, SAXException, InvalidCourseDatabaseException {
+    	Long start = System.currentTimeMillis();
     	DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
     	DocumentBuilder db = dbf.newDocumentBuilder();
     	Document doc = db.parse(stream);
+    	System.out.println("Time to retrieve document from SIS: "+(System.currentTimeMillis()-start)+" ms");
     	Semester semester=null;
     	if(doc.getDocumentElement().getNodeName() == "CourseDB") {
     		int time,num;
     		String desc;
+    		start = System.currentTimeMillis();
     		time = Integer.parseInt(doc.getDocumentElement().getAttribute("timestamp"));
     		num = Integer.parseInt(doc.getDocumentElement().getAttribute("semesternumber"));
     		desc = doc.getDocumentElement().getAttribute("semesterdesc");
@@ -122,16 +125,19 @@ public class SemesterParser {
     			else
     				throw new InvalidCourseDatabaseException("CourseDB contains node <" + n.getNodeName() + "> that is not a Course or CrossListing.");
     		}
+    		System.out.println("Time to process document: " + (System.currentTimeMillis()-start)+" ms");
     	}
     	else {
     		throw new InvalidCourseDatabaseException("Document does not contain a course database.");
     	}
     	if(semester!=null) {
+    		start = System.currentTimeMillis();
     		List<CrossListing> cls = semester.getCrossListings();
     		for(CrossListing cl : cls) {
     			cl.setSemester(semester);
     			cl.processCRNs();
     		}
+    		System.out.println("Time to prepare crosslistings: "+(System.currentTimeMillis()-start)+" ms");
     	}
     	return semester;
     }

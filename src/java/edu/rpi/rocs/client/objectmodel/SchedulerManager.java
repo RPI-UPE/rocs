@@ -8,11 +8,13 @@ import java.util.List;
 import java.util.Map;
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 import edu.rpi.rocs.client.filters.schedule.ScheduleFilter;
+import edu.rpi.rocs.client.objectmodel.SemesterManager.SemesterManagerCallback;
 import edu.rpi.rocs.client.services.schedulemanager.ScheduleManagerService;
 
 /**
@@ -41,6 +43,17 @@ public class SchedulerManager implements IsSerializable {
 	 * The schedule currently selected by the user
 	 */
 	private Schedule currentSchedule=null;
+	
+	private abstract class LocalSemesterManagerCallback implements SemesterManagerCallback {
+		public CrossListing cl;
+		public Course c;
+		public Section s;
+		public LocalSemesterManagerCallback(CrossListing cl, Course c, Section s) {
+			this.cl = cl; this.c = c; this.s = s;
+		}
+	}
+	
+	private transient ArrayList<LocalSemesterManagerCallback> changeEventCallbacks = new ArrayList<LocalSemesterManagerCallback>();
 
 	
 	/**
@@ -110,6 +123,8 @@ public class SchedulerManager implements IsSerializable {
 	 */
 	public static SchedulerManager getInstance() {
 		if(theInstance==null) theInstance = new SchedulerManager();
+		if(SemesterManager.getInstance().getCurrentSemester()!=null)
+			theInstance.setSemesterId(SemesterManager.getInstance().getCurrentSemester().getSemesterId());
 		return theInstance;
 	}
 	
@@ -305,10 +320,26 @@ public class SchedulerManager implements IsSerializable {
 	
 	public void setCurrentSchedule(Schedule s) {
 		currentSchedule = s;
-		currentSchedule.setOwner(User.getUserID());
-		m_uid = User.getUserID();
+		if(GWT.isClient()) setChangeHandlers();
 	}
 	
+	private void setChangeHandlers() {
+		for(LocalSemesterManagerCallback h : changeEventCallbacks) {
+			if(h.cl!=null)
+				SemesterManager.getInstance().removeCrossListChangeHandler(h.cl, h);
+			if(h.c!=null)
+				SemesterManager.getInstance().removeCourseChangeHandler(h.c, h);
+			if(h.s!=null)
+				SemesterManager.getInstance().removeSectionChangeHandler(h.s, h);
+		}
+		changeEventCallbacks.clear();
+		if(currentSchedule!=null) {
+			for(Section s : currentSchedule.getSections()) {
+				
+			}
+		}
+	}
+
 	private Long dbid=null;
 	public Long getDbid() {
 		return dbid;
@@ -323,5 +354,38 @@ public class SchedulerManager implements IsSerializable {
 	}
 	public String getName() {
 		return name;
+	}
+
+	private int semesterId;
+	public int getSemesterId() {
+		return semesterId;
+	}
+	
+	public void setSemesterId(int id) {
+		semesterId = id;
+	}
+	
+	public static interface RestorationEventHandler extends EventHandler {
+		public void restore();
+	}
+	
+	private transient static HashSet<RestorationEventHandler> restoreHandlers = new HashSet<RestorationEventHandler>();
+	
+	public void addRestorationEventHandler(RestorationEventHandler h) {
+		restoreHandlers.add(h);
+	}
+	
+	public void removeRestorationEventHandler(RestorationEventHandler h) {
+		restoreHandlers.remove(h);
+	}
+	
+	public void restoreSchedule(SchedulerManager mgr) {
+		theInstance = mgr;
+		mgr.generatedSchedules = new ArrayList<Schedule>();
+		mgr.generatedSchedules.add(mgr.currentSchedule);
+		setChangeHandlers();
+		for(RestorationEventHandler h : restoreHandlers) {
+			h.restore();
+		}
 	}
 }

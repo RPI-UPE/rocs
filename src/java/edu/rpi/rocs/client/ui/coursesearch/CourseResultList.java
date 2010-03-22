@@ -112,7 +112,7 @@ public class CourseResultList {
 		if (prevstatus == status) return;
 		else prevstatus = status;
 
-		HTMLTableListRow r = m_table.get(index);
+		HTMLTableListRow r = m_table.get(index+1);
 
 		if((status & State.CONFLICT) == State.CONFLICT) {
 			r.setStyleName("course-conflict");

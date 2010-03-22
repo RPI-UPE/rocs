@@ -223,6 +223,14 @@ public class HTMLTableList extends Widget implements List<HTMLTableList.HTMLTabl
 		public void detach() {
 			onDetach();
 		}
+		
+		private Object linkObject=null;
+		public void setLinkObject(Object o) {
+			linkObject = o;
+		}
+		public Object getLinkObject() {
+			return linkObject;
+		}
 	}
 	
 	public HTMLTableList() {

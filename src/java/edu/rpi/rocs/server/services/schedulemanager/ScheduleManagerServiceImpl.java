@@ -7,9 +7,13 @@ import org.hibernate.Session;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
+import edu.rpi.rocs.client.objectmodel.Schedule;
 import edu.rpi.rocs.client.objectmodel.SchedulerManager;
+import edu.rpi.rocs.client.objectmodel.Section;
+import edu.rpi.rocs.client.objectmodel.Semester;
 import edu.rpi.rocs.server.hibernate.util.HibernateUtil;
 import edu.rpi.rocs.server.objectmodel.SchedulerManagerWriter;
+import edu.rpi.rocs.server.objectmodel.SemesterDB;
 
 public class ScheduleManagerServiceImpl extends RemoteServiceServlet implements
 		edu.rpi.rocs.client.services.schedulemanager.ScheduleManagerService {
@@ -25,7 +29,6 @@ public class ScheduleManagerServiceImpl extends RemoteServiceServlet implements
 			session.beginTransaction();
 			
 			state.setName(name);
-			state.setDbid(null);
 			SchedulerManagerWriter smw = new SchedulerManagerWriter();
 			smw.setSession(session);
 			smw.visit(state);
@@ -36,6 +39,35 @@ public class ScheduleManagerServiceImpl extends RemoteServiceServlet implements
 			System.out.print("Caught exception: ");
 			ex.printStackTrace();
 		}
+	}
+	
+	public SchedulerManager loadSchedule(String user, String name, int semesterid) {
+		try {
+			Session session = HibernateUtil.getSessionFactory().getCurrentSession();
+			session.beginTransaction();
+			
+			SchedulerManager mgr = (SchedulerManager)session.createQuery(" from SchedulerManager where UserId = '"+
+					user+"' and Name = '"+name+"' and SemesterId="+semesterid).uniqueResult();
+			Schedule s = mgr.getCurrentSchedule();
+			ArrayList<Section> sections = s.getSections();
+			ArrayList<Section> newsections = new ArrayList<Section>();
+			Semester semester = SemesterDB.getInstance(semesterid);
+			for(Section section : sections) {
+				Section newsection = semester.getSectionByCRN(section.getCrn());
+				if(newsection != null)
+					newsections.add(newsection);
+			}
+			
+			session.getTransaction().rollback();
+			
+			s.setSections(newsections);
+			return mgr;
+		}
+		catch(Throwable ex) {
+			System.out.print("Caught exception: ");
+			ex.printStackTrace();
+		}
+		return null;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -49,7 +81,7 @@ public class ScheduleManagerServiceImpl extends RemoteServiceServlet implements
 			temp.add(s.getName());
 		}
 		
-		session.getTransaction().commit();
+		session.getTransaction().rollback();
 		return temp;
 	}
 

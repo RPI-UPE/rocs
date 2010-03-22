@@ -66,7 +66,7 @@ public class RandomColorGenerator {
 		}
 	}
 
-	RandomColorGenerator() {
+	public RandomColorGenerator() {
 		resetColorsAvailable();
 	}
 }

@@ -11,7 +11,7 @@
   	
   	<many-to-one name="Course"
   		class="Course"
-  		column="CROSSLIST_ID"
+  		column="COURSE_ID"
   		not-null="true"/>
   	
   	<property name="Required"/>

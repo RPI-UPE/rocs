@@ -11,6 +11,7 @@ import edu.rpi.rocs.client.objectmodel.SchedulerManager;
 public interface ScheduleManagerService extends RemoteService {
 	public List<String> getScheduleList(String user);
 	public void saveSchedule(String name, SchedulerManager schedule);
+	public SchedulerManager loadSchedule(String user, String name, int semesterid);
 	
 	public static class Singleton {
 		private static ScheduleManagerServiceAsync instance = null;

@@ -82,6 +82,7 @@ public class SemesterDB {
 	}
 
 	private static void touch(CrossListing cl) {
+		cl.processCRNs();
 		for(Section s : cl.getSections()) {
 			s.setCrossListing(cl);
 			touch(s);

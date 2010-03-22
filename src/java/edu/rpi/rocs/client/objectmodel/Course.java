@@ -221,6 +221,8 @@ public class Course extends MajorMinorRevisionObject implements Comparable<Cours
     	result += "&nbsp;&nbsp;";
     	result += num;
     	result += "&nbsp;&nbsp;";
+    	result += this.getFilledSeats()+"/"+this.getTotalSeats();
+    	result += "&nbsp;&nbsp;";
     	result += name;
     	int size = 40 - name.length();
     	size = (size > 1 ? size : 1);
@@ -278,11 +280,18 @@ public class Course extends MajorMinorRevisionObject implements Comparable<Cours
 	public void setSections(List<Section> list) {
 		sections = new ArrayList<Section>();
 		Iterator<Section> i = list.iterator();
+		boolean wasnull=false;
+		int count=0;
 		while(i.hasNext()) {
 			Section s = i.next();
 			if(s!=null) sections.add(s);
-			else System.out.println("Course " + getId() + " has a null section.");
+			else {
+				wasnull=true;
+				System.out.println("Course " + getId() + " has a null section.");
+			}
+			count++;
 		}
+		if(wasnull) System.out.println("Course " + getId() + " has " + count + " sections.");
 	}
 
 	public int getFilledSeats() {
@@ -393,6 +402,8 @@ public class Course extends MajorMinorRevisionObject implements Comparable<Cours
 	@Override
 	public void delete() {
 		super.delete();
+		this.setMajorRevision(Long.MAX_VALUE);
+		this.setMinorRevision(Long.MAX_VALUE);
 		for(Section s : sections) {
 			s.delete();
 		}

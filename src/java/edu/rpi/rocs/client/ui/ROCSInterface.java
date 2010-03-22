@@ -5,6 +5,9 @@ import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 import edu.rpi.rocs.client.ImageManager;
+import edu.rpi.rocs.client.objectmodel.Course;
+import edu.rpi.rocs.client.objectmodel.CrossListing;
+import edu.rpi.rocs.client.objectmodel.Section;
 import edu.rpi.rocs.client.objectmodel.Semester;
 import edu.rpi.rocs.client.objectmodel.SemesterManager;
 import edu.rpi.rocs.client.ui.coursesearch.CourseSearchPanel;
@@ -21,6 +24,7 @@ public class ROCSInterface extends HTMLPanel {
 	ClassViewPanel viewPanel;
 	SchedulerFilterDisplayPanel filterPanel;
 	SchedulerDisplayPanel schedulerDisplayPanel;
+	edu.rpi.rocs.client.ui.scheduler.ie.SchedulerDisplayPanel ieDisplayPanel;
 	MultiStackPanel thePanel;
 
 	static ROCSInterface theInstance;
@@ -90,7 +94,20 @@ public class ROCSInterface extends HTMLPanel {
 		SemesterManager.getInstance().addSemesterChangeListener(new SemesterManager.SemesterManagerCallback() {
 			
 			public void semesterLoaded(Semester semester) {
-				// TODO Auto-generated method stub
+				thePanel.setStackText(0, createHeaderText("<span>Semester - "+semester.getSemesterDesc()+"</span><span style=\"font-weight: normal; float:right;\"><i>Last updated:</i> "+SemesterManager.getInstance().getCurrentSemester().getLastChangeTime()+"&nbsp;&nbsp;</span>",thePanel.isVisible(0)),true);
+				Log.debug("Semester - "+semester.getSemesterDesc());
+			}
+
+			public void didChangeCourse(Course c) {
+			}
+
+			public void didChangeCrosslisting(CrossListing cl) {
+			}
+
+			public void didChangeSection(Section s) {
+			}
+
+			public void semesterUpdated(Semester semester) {
 				thePanel.setStackText(0, createHeaderText("<span>Semester - "+semester.getSemesterDesc()+"</span><span style=\"font-weight: normal; float:right;\"><i>Last updated:</i> "+SemesterManager.getInstance().getCurrentSemester().getLastChangeTime()+"&nbsp;&nbsp;</span>",thePanel.isVisible(0)),true);
 				Log.debug("Semester - "+semester.getSemesterDesc());
 			}
@@ -121,10 +138,18 @@ public class ROCSInterface extends HTMLPanel {
 		thePanel.add(temp,"Scheduler",false);
 		*/
 		Log.debug("Adding scheduler panel");
-		schedulerDisplayPanel = SchedulerDisplayPanel.getInstance();
-		temp = new HTMLPanel("<div id=\"rocs_PORTLET_rocs_scheduler_pane\"></div>");
-		temp.add(schedulerDisplayPanel, "rocs_PORTLET_rocs_scheduler_pane");
-		thePanel.add(temp,createHeaderText("Schedules",false),true);
+		if(isMSIE()) {
+			ieDisplayPanel = edu.rpi.rocs.client.ui.scheduler.ie.SchedulerDisplayPanel.getInstance();
+			temp = new HTMLPanel("<div id=\"rocs_PORTLET_rocs_scheduler_pane\"></div>");
+			temp.add(schedulerDisplayPanel, "rocs_PORTLET_rocs_scheduler_pane");
+			thePanel.add(temp,createHeaderText("Schedules",false),true);
+		}
+		else {
+			schedulerDisplayPanel = SchedulerDisplayPanel.getInstance();
+			temp = new HTMLPanel("<div id=\"rocs_PORTLET_rocs_scheduler_pane\"></div>");
+			temp.add(schedulerDisplayPanel, "rocs_PORTLET_rocs_scheduler_pane");
+			thePanel.add(temp,createHeaderText("Schedules",false),true);
+		}
 		thePanel.showStack(0);   // Shown by default, this hides it
 		thePanel.getWidget(0).setHeight("0px");
 		thePanel.showStack(1);   // Shows the search pane
@@ -149,6 +174,7 @@ public class ROCSInterface extends HTMLPanel {
 		if(w==ClassViewPanel.getInstance()) index=2;
 		if(w==SchedulerFilterDisplayPanel.getInstance()) index=3;
 		if(w==SchedulerPanel.getInstance()) index=4;
+		if(w==edu.rpi.rocs.client.ui.scheduler.ie.SchedulerDisplayPanel.getInstance()) index=4;
 		if(index>-1) {
 			result = thePanel.isVisible(index);
 		}
@@ -162,6 +188,7 @@ public class ROCSInterface extends HTMLPanel {
 		if(w==ClassViewPanel.getInstance()) index=2;
 		if(w==SchedulerFilterDisplayPanel.getInstance()) index=3;
 		if(w==SchedulerPanel.getInstance()) index=4;
+		if(w==edu.rpi.rocs.client.ui.scheduler.ie.SchedulerDisplayPanel.getInstance()) index=4;
 		if(index>-1&&isDisplaying(w)!=visible) {
 			thePanel.showStack(index);
 		}

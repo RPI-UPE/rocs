@@ -129,12 +129,22 @@ public class SchedulerFilterDisplayPanel extends VerticalPanel implements Schedu
 				if(schedules==null || schedules.size()==0) {
 					return;
 				}
-				SchedulerDisplayPanel.getInstance().setSchedules(schedules);
+				if(ROCSInterface.isMSIE()) {
+					edu.rpi.rocs.client.ui.scheduler.ie.SchedulerDisplayPanel.getInstance().setSchedules(schedules);
+				}
+				else {
+					SchedulerDisplayPanel.getInstance().setSchedules(schedules);
+				}
 				ROCSInterface.getInstance().show(SemesterSelectionPanel.getInstance(), false);
 				ROCSInterface.getInstance().show(CourseSearchPanel.getInstance(), false);
 				ROCSInterface.getInstance().show(ClassViewPanel.getInstance(), false);
 				ROCSInterface.getInstance().show(this, false);
-				ROCSInterface.getInstance().show(SchedulerPanel.getInstance(), true);
+				if(ROCSInterface.isMSIE()) {
+					ROCSInterface.getInstance().show(edu.rpi.rocs.client.ui.scheduler.ie.SchedulerDisplayPanel.getInstance(), true);
+				}
+				else {
+					ROCSInterface.getInstance().show(SchedulerPanel.getInstance(), true);
+				}
 			}
 		}
 	}

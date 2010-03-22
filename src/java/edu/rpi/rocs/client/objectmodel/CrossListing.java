@@ -149,11 +149,13 @@ public class CrossListing extends MajorMinorRevisionObject {
 	
 	public void setSections(List<Section> list) {
 		sections = new ArrayList<Section>();
+		crns = new ArrayList<Integer>();
 		Iterator<Section> i = list.iterator();
 		while(i.hasNext()) {
 			Section s = i.next();
 			if(s!=null) {
 				sections.add(s);
+				crns.add(s.getCrn());
 				s.setCrossListing(this);
 			}
 			else System.out.println("CrossListing "+dbid+ " has a null section.");
@@ -200,6 +202,8 @@ public class CrossListing extends MajorMinorRevisionObject {
 	@Override
 	public void delete() {
 		super.delete();
+		this.setMajorRevision(Long.MAX_VALUE);
+		this.setMinorRevision(Long.MAX_VALUE);
 		for(Section s : sections) {
 			s.setCrossListing(null);
 			if(s.getMinorRevision()!=this.getMinorRevision())
@@ -208,7 +212,6 @@ public class CrossListing extends MajorMinorRevisionObject {
 	}
 
 	public void updateMinorRevision(boolean b) {
-		// TODO Auto-generated method stub
 		if(b==false) updateMinorRevision();
 		else setMinorRevision(MajorMinorRevisionObject.getCurrentRevision());
 	}

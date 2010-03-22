@@ -1,10 +1,12 @@
 package edu.rpi.rocs.client.objectmodel;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 import edu.rpi.rocs.client.objectmodel.Course;
@@ -51,6 +53,10 @@ public class SemesterManager {
 	 */
 	public interface SemesterManagerCallback {
 		public void semesterLoaded(Semester semester);
+		public void semesterUpdated(Semester semester);
+		public void didChangeCrosslisting(CrossListing cl);
+		public void didChangeCourse(Course c);
+		public void didChangeSection(Section s);
 	}
 
 	/**
@@ -129,6 +135,7 @@ public class SemesterManager {
 	 */
 	public void manageUpdates(ArrayList<UpdateItem> updates)
 	{
+		Log.debug("Parsing updates...");
 		ArrayList<Course> modifiedCRS = new ArrayList<Course>();
 		ArrayList<CrossListing> modifiedCL = new ArrayList<CrossListing>();
 
@@ -139,11 +146,27 @@ public class SemesterManager {
 		}
 
 		List<Course> getCourses = currentSemester.getCourses();
-		for (Course C : modifiedCRS) for (Course C2 : getCourses) if (C.getNum() == C2.getNum())
+		for (Course C : modifiedCRS) for (Course C2 : getCourses) if (C.getId().equals(C2.getId()))
 		{
 			// TODO: notifications for major changes
 			currentSemester.removeCourse(C2);
 			if (C.getLastRevision().longValue() != Long.MAX_VALUE) currentSemester.addCourse(C);
+			HashSet<SemesterManagerCallback> handlers = courseHandlers.get(C.getId());
+			if(handlers != null) {
+				handlers = new HashSet<SemesterManagerCallback>(handlers);
+				for(SemesterManagerCallback h : handlers) {
+					h.didChangeCourse(C);
+				}
+				for(Section s : C.getSections()) {
+					handlers = sectionHandlers.get(s.getCrn());
+					if(handlers != null) {
+						handlers = new HashSet<SemesterManagerCallback>(handlers);
+						for(SemesterManagerCallback h : handlers) {
+							h.didChangeSection(s);
+						}
+					}
+				}
+			}
 			break;
 		}
 
@@ -151,14 +174,78 @@ public class SemesterManager {
 		for (CrossListing CL : modifiedCL) for (CrossListing CL2 : getCrossLists) if (CL.getUID() == CL2.getUID())
 		{
 			// TODO: notifications for major changes
-			currentSemester.removeCrosslisting(CL.getUID());
-			if (CL2.getLastRevision().longValue() != Long.MAX_VALUE) currentSemester.addCrosslisting(CL2);
+			currentSemester.removeCrosslisting(CL2.getUID());
+			if (CL.getLastRevision().longValue() != Long.MAX_VALUE) currentSemester.addCrosslisting(CL);
+			HashSet<SemesterManagerCallback> handlers = crosslistHandlers.get(CL.getUID());
+			if(handlers != null) {
+				handlers = new HashSet<SemesterManagerCallback>(handlers);
+				for(SemesterManagerCallback h : handlers) {
+					h.didChangeCrosslisting(CL);
+				}
+				for(Section s : CL.getSections()) {
+					handlers = sectionHandlers.get(s.getCrn());
+					if(handlers != null) {
+						handlers = new HashSet<SemesterManagerCallback>(handlers);
+						for(SemesterManagerCallback h : handlers) {
+							h.didChangeSection(s);
+						}
+					}
+				}
+			}
 			break;
 		}
 
 		for(SemesterManagerCallback caller : callbacks) {
-			caller.semesterLoaded(currentSemester);
+			caller.semesterUpdated(currentSemester);
 		}
 	}
-
+	
+	private transient HashMap<Integer, HashSet<SemesterManagerCallback>> crosslistHandlers = new HashMap<Integer, HashSet<SemesterManagerCallback>>();
+	private transient HashMap<String, HashSet<SemesterManagerCallback>> courseHandlers = new HashMap<String, HashSet<SemesterManagerCallback>>();
+	private transient HashMap<Integer, HashSet<SemesterManagerCallback>> sectionHandlers = new HashMap<Integer, HashSet<SemesterManagerCallback>>();
+	
+	public void addCrossListingChangeHandler(CrossListing cl, SemesterManagerCallback h) {
+		HashSet<SemesterManagerCallback> handlers = crosslistHandlers.get(cl.getUID());
+		if(handlers==null) {
+			handlers = new HashSet<SemesterManagerCallback>();
+			crosslistHandlers.put(cl.getUID(), handlers);
+		}
+		handlers.add(h);
+	}
+	
+	public void addCourseChangeHandler(Course c, SemesterManagerCallback h) {
+		HashSet<SemesterManagerCallback> handlers = courseHandlers.get(c.getId());
+		if(handlers==null) {
+			handlers = new HashSet<SemesterManagerCallback>();
+			courseHandlers.put(c.getId(), handlers);
+		}
+		handlers.add(h);
+	}
+	
+	public void addSectionChangeHandler(Section s, SemesterManagerCallback h) {
+		HashSet<SemesterManagerCallback> handlers = sectionHandlers.get(s.getCrn());
+		if(handlers==null) {
+			handlers = new HashSet<SemesterManagerCallback>();
+			sectionHandlers.put(s.getCrn(), handlers);
+		}
+		handlers.add(h);
+	}
+	
+	public void removeCrossListChangeHandler(CrossListing cl, SemesterManagerCallback h) {
+		HashSet<SemesterManagerCallback> handlers = crosslistHandlers.get(cl.getUID());
+		if(handlers==null) return;
+		handlers.remove(h);
+	}
+	
+	public void removeCourseChangeHandler(Course c, SemesterManagerCallback h) {
+		HashSet<SemesterManagerCallback> handlers = courseHandlers.get(c.getId());
+		if(handlers==null) return;
+		handlers.remove(h);
+	}
+	
+	public void removeSectionChangeHandler(Section s, SemesterManagerCallback h) {
+		HashSet<SemesterManagerCallback> handlers = sectionHandlers.get(s.getCrn());
+		if(handlers==null) return;
+		handlers.remove(h);
+	}
 }

@@ -16,9 +16,11 @@ public class ScheduleWriter implements DatabaseWriterVisitor<Schedule> {
 		for(Section s : object.getSections()) {
 			sw.visit(s);
 		}
+		/*
 		SchedulerManagerWriter smw = new SchedulerManagerWriter();
 		smw.setSession(session);
 		smw.visit(object.getManager());
+		*/
 		session.save(object);
 	}
 

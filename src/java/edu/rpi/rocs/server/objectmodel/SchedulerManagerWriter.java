@@ -23,6 +23,9 @@ public class SchedulerManagerWriter implements DatabaseWriterVisitor<SchedulerMa
 		for(Map.Entry<Course, CourseStatusObject> entry : map.entrySet()) {
 			csow.visit(entry.getValue());
 		}
+		ScheduleWriter sw = new ScheduleWriter();
+		sw.setSession(session);
+		sw.visit(object.getCurrentSchedule());
 	}
 
 	public void setSession(Session session) {

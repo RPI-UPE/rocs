@@ -17,6 +17,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 
 import edu.rpi.rocs.client.filters.schedule.ScheduleFilter;
 import edu.rpi.rocs.client.objectmodel.Course;
+import edu.rpi.rocs.client.objectmodel.CrossListing;
 import edu.rpi.rocs.client.objectmodel.Period;
 import edu.rpi.rocs.client.objectmodel.Schedule;
 import edu.rpi.rocs.client.objectmodel.SchedulerManager;
@@ -93,7 +94,6 @@ public class CourseSearchPanel extends VerticalPanel {
 		new SemesterManagerCallback() {
 
 			public void semesterLoaded(Semester semester) {
-				// TODO Auto-generated method stub
 				//Log.trace("In CourseSearchPanel.semesterChangeCallback.semesterLoaded");
 				deptList.clear();
 				deptList.addItem("Any");
@@ -107,6 +107,35 @@ public class CourseSearchPanel extends VerticalPanel {
 				for(String str : depts) {
 					deptList.addItem(str);
 				}
+			}
+
+			public void didChangeCourse(Course c) {
+			}
+
+			public void didChangeCrosslisting(CrossListing cl) {
+			}
+
+			public void didChangeSection(Section s) {
+			}
+
+			public void semesterUpdated(Semester semester) {
+				String lastDept = deptList.getItemText(deptList.getSelectedIndex());
+				deptList.clear();
+				deptList.addItem("Any");
+				List<Course> courses = semester.getCourses();
+				TreeSet<String> depts = new TreeSet<String>();
+				for(Course course : courses) {
+					String a = course.getDept();
+					depts.add(a);
+				}
+				int index=0;
+				int i=1;
+				for(String str : depts) {
+					deptList.addItem(str);
+					if(str.equals(lastDept)) index = i;
+					i++;
+				}
+				deptList.setItemSelected(index, true);
 			}
 
 	};
