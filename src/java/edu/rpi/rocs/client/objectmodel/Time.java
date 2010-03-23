@@ -9,8 +9,8 @@ public class Time implements Serializable, Cloneable {
 	 */
 	private static final long serialVersionUID = 4616578540464471267L;
 	
-	private int hour;
-	private int minute;
+	private int hour=0;
+	private int minute=0;
 	
 	public Time() {
 		hour = 0;

@@ -166,8 +166,12 @@ public class Semester implements Serializable, Comparable<Semester> {
 	
 	public void setCourses(List<Course> list) {
 		courses = new HashMap<String, Course>();
+		crnmap = new HashMap<Integer, Section>();
 		for(Course c : list) {
 			courses.put(c.getDept() + Integer.toString(c.getNum()), c);
+			for(Section s : c.getSections()) {
+				crnmap.put(s.getCrn(), s);
+			}
 		}
 	}
 	
@@ -199,6 +203,7 @@ public class Semester implements Serializable, Comparable<Semester> {
 	}
 	
 	public void examineNewVersion(Semester parsedSemester) {
+		timestamp = parsedSemester.timestamp;
 		for(Course c : getCourses()) {
 			Course d = parsedSemester.getCourse(c.getId());
 			if(d==null) c.delete();

@@ -240,7 +240,7 @@ public class Scheduler extends GenericPortlet {
 		out.println("<script language=\"javascript\" src=\"" + aRequest.getContextPath() + "/rocs.gwt/rocs.gwt.nocache.js\"></script>");
 		out.println("<link rel=\"stylesheet\" type=\"text/css\" href=\"" + aRequest.getContextPath() + "/css/rocs.css\"/>");
 		out.println("<div id=\"rocs_PORTLET_rocs_root_view\" class=\"rocs-style\">");
-		out.println("<div style=\"background-color: red; width:100%; text-align: center;\">This is beta software. If you experience problems please contact <a href=\"mailto:pattoe@rpi.edu\">Evan Patton</a> with details.</div>");
+		out.println("<div style=\"background-color: red; width:100%; text-align: center;\">This is beta software. If you experience problems please contact <a href=\"mailto:UPE-ROCS-USER-L@lists.rpi.edu\">Evan Patton</a> with details.</div>");
 		out.println("<div style=\"background-color: yellow; width:100%; text-align: center;\">If you have problems with course content (e.g. two required courses conflict),<br/> please contact <a href=\"conrom@rpi.edu\">Michael Conroy</a> in the Registrar's Office with details.</div>");
 		out.println("</div>");
 	}

@@ -30,8 +30,8 @@ public class MajorMinorRevisionObject implements Serializable {
 	}
 	
 	/** The major and minor revisions for this object */
-	private Long majRevision;
-	private Long minRevision;
+	private Long majRevision=null;
+	private Long minRevision=null;
 	
 	/** Global current revision */
 	static private long currentRevision=0;

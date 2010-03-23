@@ -10,6 +10,7 @@ import java.util.Map;
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
@@ -44,14 +45,54 @@ public class SchedulerManager implements IsSerializable {
 	 */
 	private Schedule currentSchedule=null;
 	
-	private abstract class LocalSemesterManagerCallback implements SemesterManagerCallback {
+	private class LocalSemesterManagerCallback implements SemesterManagerCallback {
 		public CrossListing cl;
 		public Course c;
 		public Section s;
 		public LocalSemesterManagerCallback(CrossListing cl, Course c, Section s) {
 			this.cl = cl; this.c = c; this.s = s;
 		}
+		public void didChangeCourse(Course c) {
+			mgrCallback.didChangeCourse(c);
+		}
+		public void didChangeCrosslisting(CrossListing cl) {
+			mgrCallback.didChangeCrosslisting(cl);
+		}
+		public void didChangeSection(Section s) {
+			mgrCallback.didChangeSection(s);
+		}
+		public void semesterLoaded(Semester semester) {
+			mgrCallback.semesterLoaded(semester);
+		}
+		public void semesterUpdated(Semester semester) {
+			mgrCallback.semesterUpdated(semester);
+		}
 	}
+	
+	private transient SemesterManagerCallback mgrCallback = new SemesterManagerCallback() {
+
+		public void didChangeCourse(Course c) {
+			
+		}
+
+		public void didChangeCrosslisting(CrossListing cl) {
+			
+		}
+
+		public void didChangeSection(Section s) {
+			if(s.isClosed()) {
+				Window.alert("Section "+s.getNumber()+" of course "+s.getParent().getName()+" has closed. Please revise your schedule.");
+			}
+		}
+
+		public void semesterLoaded(Semester semester) {
+			
+		}
+
+		public void semesterUpdated(Semester semester) {
+			
+		}
+	};
 	
 	private transient ArrayList<LocalSemesterManagerCallback> changeEventCallbacks = new ArrayList<LocalSemesterManagerCallback>();
 
@@ -64,7 +105,7 @@ public class SchedulerManager implements IsSerializable {
 	/**
 	 * The ScheduleManager instance
 	 */
-	private transient static SchedulerManager theInstance;
+	private transient static SchedulerManager theInstance=null;
 	
 	/**
 	 * Listeners for when a course is added
@@ -241,7 +282,7 @@ public class SchedulerManager implements IsSerializable {
 	
 	/**
 	 * Returns the current Schedule selected by the user.
-	 * @return
+	 * @return The current schedule being displayed by the scheduler
 	 */
 	public Schedule getCurrentSchedule() {
 		return currentSchedule;
@@ -335,7 +376,9 @@ public class SchedulerManager implements IsSerializable {
 		changeEventCallbacks.clear();
 		if(currentSchedule!=null) {
 			for(Section s : currentSchedule.getSections()) {
-				
+				LocalSemesterManagerCallback h = new LocalSemesterManagerCallback(null, null, s);
+				SemesterManager.getInstance().addSectionChangeHandler(s, h);
+				changeEventCallbacks.add(h);
 			}
 		}
 	}
@@ -365,7 +408,7 @@ public class SchedulerManager implements IsSerializable {
 		semesterId = id;
 	}
 	
-	public static interface RestorationEventHandler extends EventHandler {
+	public static interface RestorationEventHandler {
 		public void restore();
 	}
 	

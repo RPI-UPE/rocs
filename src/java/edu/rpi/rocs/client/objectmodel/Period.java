@@ -20,12 +20,12 @@ public class Period extends MajorMinorRevisionObject {
 	private static final long serialVersionUID = 9074143218077988582L;
 	
 	/** Protected data members set by @see edu.rpi.rocs.server.objectmodel.PeriodImpl */
-    protected String type;
-    protected String instructor;
-    protected ArrayList<Integer> days;
-    protected Time start;
-    protected Time end;
-    protected String location;
+    protected String type=null;
+    protected String instructor=null;
+    protected ArrayList<Integer> days=null;
+    protected Time start=null;
+    protected Time end=null;
+    protected String location=null;
     
     /**
      * Default constructor needed for Serializable interface
@@ -164,7 +164,7 @@ public class Period extends MajorMinorRevisionObject {
         location = newValue;
     }
     
-    private Long dbid;
+    private Long dbid=null;
     
     public Long getDbid() {
     	return dbid;

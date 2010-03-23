@@ -16,12 +16,12 @@ import edu.rpi.rocs.client.ui.scheduler.RandomColorGenerator;
 
 public class ScheduleViewWidget extends FlowPanel {
 
-	Schedule m_schedule;
-	ScheduleBackgroundWidget m_background;
+	Schedule m_schedule=null;
+	ScheduleBackgroundWidget m_background=null;
 	private static final int MAJOR_Y_DISTANCE=26;
 	private static final int MAJOR_X_DISTANCE=75;
 	//private static final int MINOR_Y_DISTANCE=13;
-	RandomColorGenerator m_generator;
+	RandomColorGenerator m_generator=null;
 	
 	private class CustomFlowPanel extends FlowPanel {
 		private native void setColorJS(Element e, String color)/*-{
@@ -50,10 +50,11 @@ public class ScheduleViewWidget extends FlowPanel {
 	}
 
 	private class ScheduleBackgroundWidget extends HTMLTableList {
-		HTMLTableListRow m_header;
+		HTMLTableListRow m_header=null;
 
 		private void createBackground() {
 			setStyleName("schedule");
+			m_header = new HTMLTableListRow();
 			{
 				HTMLTableListCell temp = new HTMLTableListCell(true);
 				temp.addStyleName("firstcol");

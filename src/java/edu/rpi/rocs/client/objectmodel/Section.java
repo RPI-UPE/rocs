@@ -21,14 +21,14 @@ public class Section extends MajorMinorRevisionObject {
 	private static final long serialVersionUID = 4374452349065230201L;
 
 	/** Protected members populated by @see edu.rpi.rocs.server.objectmodel.SectionImpl */
-    protected int crn;
-    protected String number;
-    protected int students;
-    protected int seats;
-    protected ArrayList<Period> periods;
-    protected ArrayList<String> notes;
-    protected Course parent;
-    protected CrossListing cross;
+    protected int crn=0;
+    protected String number=null;
+    protected int students=0;
+    protected int seats=0;
+    protected ArrayList<Period> periods=null;
+    protected ArrayList<String> notes=null;
+    protected Course parent=null;
+    protected CrossListing cross=null;
     
     @Override
     public void updateMajorRevision() {
@@ -36,12 +36,32 @@ public class Section extends MajorMinorRevisionObject {
     	if(parent!=null && parent.getMajorRevision()!=getMajorRevision()) parent.updateMajorRevision();
     	if(cross!=null && cross.getMajorRevision()!=getMajorRevision()) cross.updateMajorRevision();
     }
+
+    public void updateMinorRevision(boolean b) {
+    	super.updateMinorRevision();
+    	if(parent!=null && parent.getMinorRevision()!=getMinorRevision()) {
+    		parent.updateMinorRevision();
+    	}
+    	else if(parent==null) {
+    		System.out.println("Parent null for section "+crn);
+    	}
+    }
     
     @Override
     public void updateMinorRevision() {
     	super.updateMinorRevision();
-    	if(parent!=null && parent.getMinorRevision()!=getMinorRevision()) parent.updateMinorRevision();
-    	if(cross!=null && cross.getMinorRevision()!=getMinorRevision()) cross.updateMinorRevision(true);
+    	if(parent!=null && parent.getMinorRevision()!=getMinorRevision()) {
+    		parent.updateMinorRevision();
+    	}
+    	else if(parent==null) {
+    		System.out.println("Parent null for section "+crn);
+    	}
+    	if(cross!=null && cross.getMinorRevision()!=getMinorRevision()) {
+    		cross.updateMinorRevision(true);
+    	}
+    	else if(cross==null) {
+    		System.out.println("Crosslisting null for section "+crn);
+    	}
     }
 
     /**
@@ -205,13 +225,14 @@ public class Section extends MajorMinorRevisionObject {
 		return profs;
 	}
 	
-	private Long dbid;
+	private Long dbid=null;
 	
 	public Long getDbid() {
 		return dbid;
 	}
 	
 	public void setDbid(Long id) {
+		if(dbid!=null) System.out.println("Setting dbid to "+id+" from "+dbid);
 		dbid = id;
 	}
 	
@@ -226,10 +247,12 @@ public class Section extends MajorMinorRevisionObject {
 
 	public void examineNewVersion(Section t) {
 		if(students != t.students) {
+			System.out.println("Updated CRN "+crn+" from students = "+students+" to students = "+t.students);
 			students = t.students;
 			updateMinorRevision();
 		}
 		if(seats != t.seats){
+			System.out.println("Updated CRN "+crn+" from students = "+seats+" to students = "+t.seats);
 			seats = t.seats;
 			updateMinorRevision();
 		}

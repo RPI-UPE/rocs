@@ -89,7 +89,7 @@ public class SemesterManager {
 	 * Callback for when the client completes the loading of a semester from the server.
 	 */
 	
-	private AsyncCallback<Semester> retrieveCallback = new AsyncCallback<Semester>(){
+	private transient AsyncCallback<Semester> retrieveCallback = new AsyncCallback<Semester>(){
 
 		public void onFailure(Throwable caught) {
 

@@ -53,11 +53,12 @@ public class ListBoxHTML extends ListBox {
 		option.setValue(value);
 		
 		if((index == -1) || (index == select.getLength())) {
-			select.add(option, null);
+			//select.add(option, null);
+			select.appendChild(option);
 		}
 		else {
 			OptionElement before = select.getOptions().getItem(index);
-			select.add(option, before);
+			select.insertBefore(option, before);
 		}
 	}
 	

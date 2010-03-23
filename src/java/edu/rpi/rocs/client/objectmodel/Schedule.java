@@ -325,7 +325,7 @@ public class Schedule implements Serializable {
 		return (t == TimeBlockType.Blocked);
 	}
 	
-	private Long dbid;
+	private Long dbid=null;
 	public void setDbid(Long id) {
 		dbid = id;
 	}

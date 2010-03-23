@@ -189,18 +189,21 @@ public class SemesterSelectionPanel extends VerticalPanel {
 	public void selectedSemesterDidChange() {
 		Log.debug("Semester changed. Retrieving contents of new semester...");
 		SemesterManager.getInstance().retrieveCourseDB(selectedSemester.getSemesterId());
+		Log.debug("Sleeping...");
 		javascriptThread(selectedSemester);
 	}
 
 	@SuppressWarnings("unused")
 	private void javaThread(SemesterDescription SD)
 	{
+		Log.debug("Waking...");
 		if (selectedSemester.getSemesterId() == SD.getSemesterId())
 		{
 			Log.debug("Updating semester from server...");
 			CourseDBService.Singleton.getInstance().getUpdateList(SD.getSemesterId(),
 																 SemesterManager.getInstance().getCurrentSemester().getTimeStamp(),
 																 getUpdatedItems);
+			Log.debug("Sleeping...");
 			javascriptThread(SD);
 		}
 	}

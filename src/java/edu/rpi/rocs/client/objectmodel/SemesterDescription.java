@@ -17,8 +17,8 @@ public class SemesterDescription implements Serializable, Comparable<SemesterDes
 	private static final long serialVersionUID = -8278743455161603450L;
 	
 	/** Human-readable description and internal semester id number */
-	private String description;
-	private Integer semesterId;
+	private String description=null;
+	private Integer semesterId=null;
 	
 	/**
 	 * Default constructor needed for Serializable interface

@@ -18,9 +18,9 @@ import edu.rpi.rocs.client.ui.scheduler.RandomColorGenerator;
 public class SchedulerDisplayPanel extends VerticalPanel {
 	ArrayList<Schedule> m_schedules=null;
 	static SchedulerDisplayPanel theInstance=null;
-	Schedule m_current;
-	ScheduleViewWidget m_view;
-	FlowPanel m_summary;
+	Schedule m_current=null;
+	ScheduleViewWidget m_view=null;
+	FlowPanel m_summary=null;
 	RandomColorGenerator m_genMap = new RandomColorGenerator();
 	HorizontalPanel crn_pane = new HorizontalPanel();
 	HorizontalPanel content = new HorizontalPanel();

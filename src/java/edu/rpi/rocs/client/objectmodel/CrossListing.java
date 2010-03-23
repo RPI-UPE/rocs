@@ -19,12 +19,12 @@ public class CrossListing extends MajorMinorRevisionObject {
 	private static final long serialVersionUID = 3406898058852760862L;
 	
 	/** Protected members set by @see edu.rpi.rocs.server.objectmodel.CrossListing */
-	protected ArrayList<Integer> crns;
-	protected ArrayList<Section> sections;
+	protected ArrayList<Integer> crns=null;
+	protected ArrayList<Section> sections=null;
 	protected boolean processed=false;
-	protected int numberOfSeats;
-	protected int uid;
-	protected Semester semester;
+	protected int numberOfSeats=0;
+	protected int uid=0;
+	protected Semester semester=null;
 	
 	/**
 	 * Default constructor
@@ -67,14 +67,6 @@ public class CrossListing extends MajorMinorRevisionObject {
 		//updateMinorRevision();
 	}
 	
-	@Override
-	public void updateMinorRevision() {
-		super.updateMinorRevision();
-		for(Section s : sections) {
-			if(s.getMinorRevision()!=getMinorRevision()) s.updateMinorRevision();
-		}
-	}
-
 	/**
 	 * Gets the unique identifier of this cross listing
 	 * 
@@ -170,7 +162,7 @@ public class CrossListing extends MajorMinorRevisionObject {
 		crns = new ArrayList<Integer>(list);
 	}
 	
-	private Long dbid;
+	private Long dbid=null;
 	public void setDbid(Long id) {
 		dbid = id;
 	}
@@ -212,7 +204,9 @@ public class CrossListing extends MajorMinorRevisionObject {
 	}
 
 	public void updateMinorRevision(boolean b) {
-		if(b==false) updateMinorRevision();
-		else setMinorRevision(MajorMinorRevisionObject.getCurrentRevision());
+		super.updateMinorRevision();
+		for(Section s : sections) {
+			if(s.getMinorRevision()!=getMinorRevision()) s.updateMinorRevision(true);
+		}
 	}
 }

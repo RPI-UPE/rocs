@@ -75,6 +75,7 @@ div#rocs_PORTLET_rocs_root_view h4 {
 div#rocs_PORTLET_rocs_semester_pane {
     width:800px;
     height:76px;
+    overflow: hidden;
 }
 
 div#rocs_PORTLET_rocs_courses_pane {
@@ -389,4 +390,13 @@ div#rocs_PORTLET_rocs_root_view .course-search-list tr.course-selectable:hover {
 .rocs-style .crn-pane td {
 	padding-left: 3pt;
 	padding-right: 3pt;
+}
+
+.rocs-style .schedule-mini-view {
+	background-color: white;
+	border: 1px solid black;
+}
+
+.rocs-style .schedule-mini-view div {
+	border: 1px solid black;
 }

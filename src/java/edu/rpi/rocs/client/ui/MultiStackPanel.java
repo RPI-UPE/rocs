@@ -2,6 +2,7 @@ package edu.rpi.rocs.client.ui;
 
 import java.util.HashSet;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
@@ -178,12 +179,16 @@ public class MultiStackPanel extends StackPanel {
 	}
 
 	private native void animationHelper(Element tr, Element w, int index, boolean visible)/*-{
+		var foo=this;
+		$wnd.onAnimationFinished = function (tr, index, visible) {
+			foo.@edu.rpi.rocs.client.ui.MultiStackPanel::onAnimationFinished(Lcom/google/gwt/user/client/Element;IZ)(tr,index,visible);
+		}
 		if($wnd.helpGenerator === undefined) {
 			$wnd.helpGeneratorCounter = 0;
 			$wnd.helpGenerator = function() {
 				var temp = $wnd.helpGeneratorCounter++;
 				if($wnd.helpGeneratorCounter==10) $wnd.helpGeneratorCounter = 0;
-				var tempfunc = eval("(function () { var temp = "+temp+"; if(!$wnd.msp[temp]['visible']) $wnd.msp[temp]['this'].onAnimationFinished($wnd.msp[temp]['tr'], $wnd.msp[temp]['index'], $wnd.msp[temp]['visible']); })");
+				var tempfunc = eval("(function () { var temp = "+temp+"; $wnd.onAnimationFinished($wnd.msp[temp]['tr'], $wnd.msp[temp]['index'], $wnd.msp[temp]['visible']); })");
 				return { id: temp, func: tempfunc };
 			}
 		}
@@ -202,19 +207,36 @@ public class MultiStackPanel extends StackPanel {
 		var h = '0px';
 		if(visible) {
 			h = $wnd.jQuery(w.firstChild).css("height");
+			if(h=='auto') h = '100%';
 		}
 		$wnd.jQuery(w).animate({ height: h }, this.@edu.rpi.rocs.client.ui.MultiStackPanel::animate, "swing", helper.func);
+	}-*/;
+	
+	private native void setDisplay(Element e, boolean display)/*-{
+		var result = 'block';
+		if(display==false) {
+			result='none';
+		}
+		e.style.display = result;
 	}-*/;
 
 	private void onAnimationFinished(Element tr, int index, boolean visible) {
 		UIObject.setVisible(tr, visible);
 		getWidget(index).setVisible(visible);
+		setDisplay(tr, visible);
+		setDisplay(getWidget(index).getElement(),visible);
 	}
 
 	private void setStackContentVisible(int index, boolean visible) {
 		Element tr = DOM.getChild(m_tbody, (index * 2)+1);
-		if(visible) onAnimationFinished(tr, index, visible);
-		animationHelper(tr, getWidget(index).getElement(), index, visible);
+		if(GWT.isClient() && ROCSInterface.isMSIE()) {
+			animationHelper(tr, getWidget(index).getElement(), index, visible);
+			onAnimationFinished(tr, index, visible);
+		}
+		else {
+			if(visible) onAnimationFinished(tr, index, visible);
+			animationHelper(tr, getWidget(index).getElement(), index, visible);
+		}
 	}
 
 	private void setStackVisible(int index, boolean visible) {

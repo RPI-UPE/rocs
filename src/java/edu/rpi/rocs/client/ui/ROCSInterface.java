@@ -118,6 +118,7 @@ public class ROCSInterface extends HTMLPanel {
 		temp.add(semesterPanel, "rocs_PORTLET_rocs_semester_pane");
 		thePanel.add(temp,createHeaderText("<span>Semester - Loading...</span>",false),true);
 		
+		
 		searchPanel = CourseSearchPanel.getInstance();
 		temp = new HTMLPanel("<div id=\"rocs_PORTLET_rocs_search_pane\"></div>");
 		temp.add(searchPanel, "rocs_PORTLET_rocs_search_pane");
@@ -126,22 +127,18 @@ public class ROCSInterface extends HTMLPanel {
 		temp = new HTMLPanel("<div id=\"rocs_PORTLET_rocs_courses_pane\"></div>");
 		temp.add(viewPanel, "rocs_PORTLET_rocs_courses_pane");
 		thePanel.add(temp,createHeaderText("Selected Courses",false),true);
+		
 		Log.debug("Adding filter panel");
 		filterPanel = SchedulerFilterDisplayPanel.getInstance();
 		temp = new HTMLPanel("<div id=\"rocs_PORTLET_rocs_filters_pane\"></div>");
 		temp.add(filterPanel, "rocs_PORTLET_rocs_filters_pane");
 		thePanel.add(temp,createHeaderText("Schedule Filters",false),true);
-		/*
-		schedulerPanel = SchedulerPanel.get();
-		temp = new HTMLPanel("<div id=\"rocs_PORTLET_rocs_scheduler_pane\"></div>");
-		temp.add(schedulerPanel, "rocs_PORTLET_rocs_scheduler_pane");
-		thePanel.add(temp,"Scheduler",false);
-		*/
+		
 		Log.debug("Adding scheduler panel");
 		if(isMSIE()) {
 			ieDisplayPanel = edu.rpi.rocs.client.ui.scheduler.ie.SchedulerDisplayPanel.getInstance();
 			temp = new HTMLPanel("<div id=\"rocs_PORTLET_rocs_scheduler_pane\"></div>");
-			temp.add(schedulerDisplayPanel, "rocs_PORTLET_rocs_scheduler_pane");
+			temp.add(ieDisplayPanel, "rocs_PORTLET_rocs_scheduler_pane");
 			thePanel.add(temp,createHeaderText("Schedules",false),true);
 		}
 		else {
@@ -150,18 +147,23 @@ public class ROCSInterface extends HTMLPanel {
 			temp.add(schedulerDisplayPanel, "rocs_PORTLET_rocs_scheduler_pane");
 			thePanel.add(temp,createHeaderText("Schedules",false),true);
 		}
+		
 		thePanel.showStack(0);   // Shown by default, this hides it
 		thePanel.getWidget(0).setHeight("0px");
+		
 		thePanel.showStack(1);   // Shows the search pane
 		thePanel.getWidget(2).setHeight("0px");
 		thePanel.getWidget(3).setHeight("0px");
+		
 		thePanel.getWidget(4).setHeight("0px");
-		//thePanel.showStack(2);   // Shows the selected course pane
+		
 		thePanel.addChangeHandler(new SemesterImageHelper());
 		thePanel.addChangeHandler(new UpdateImageHelper(1, "Course Search"));
 		thePanel.addChangeHandler(new UpdateImageHelper(2, "Selected Courses"));
 		thePanel.addChangeHandler(new UpdateImageHelper(3, "Schedule Filters"));
+		
 		thePanel.addChangeHandler(new UpdateImageHelper(4, "Schedules"));
+		
 		this.add(thePanel, "rocs_PORTLET_rocs_stackbody");
 		thePanel.setAnimationTime(300);
 	}

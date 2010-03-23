@@ -34,14 +34,14 @@ public class Course extends MajorMinorRevisionObject implements Comparable<Cours
 	private static final long serialVersionUID = -4156341852068456290L;
 
 	/** Protected data set by @see edu.rpi.rocs.server.objectmodel.CourseImpl */
-    protected String name;
-    protected String dept;
-    protected int num;
-    protected int credmin;
-    protected int credmax;
-    protected String gradetype;
-    protected ArrayList<String> notes;
-    protected ArrayList<Section> sections;
+    protected String name=null;
+    protected String dept=null;
+    protected int num=0;
+    protected int credmin=0;
+    protected int credmax=0;
+    protected String gradetype=null;
+    protected ArrayList<String> notes=null;
+    protected ArrayList<Section> sections=null;
 
     /**
      * Empty constructor needed by interface Serializable
@@ -267,7 +267,7 @@ public class Course extends MajorMinorRevisionObject implements Comparable<Cours
 		return num-o.num;
 	}
 	
-	private Long dbid;
+	private Long dbid=null;
 	
 	public Long getDbid() {
 		return dbid;
@@ -281,17 +281,15 @@ public class Course extends MajorMinorRevisionObject implements Comparable<Cours
 		sections = new ArrayList<Section>();
 		Iterator<Section> i = list.iterator();
 		boolean wasnull=false;
-		int count=0;
 		while(i.hasNext()) {
 			Section s = i.next();
 			if(s!=null) sections.add(s);
 			else {
 				wasnull=true;
-				System.out.println("Course " + getId() + " has a null section.");
+				//System.out.println("Course " + getId() + " has a null section.");
 			}
-			count++;
 		}
-		if(wasnull) System.out.println("Course " + getId() + " has " + count + " sections.");
+		if(wasnull) System.out.println("Course " + getId() + " has " + sections.size() + " sections.");
 	}
 
 	public int getFilledSeats() {
@@ -407,5 +405,11 @@ public class Course extends MajorMinorRevisionObject implements Comparable<Cours
 		for(Section s : sections) {
 			s.delete();
 		}
+	}
+	
+	@Override
+	public void updateMinorRevision() {
+		super.updateMinorRevision();
+		System.out.println("Course "+getId()+" has a minor revision.");
 	}
 }

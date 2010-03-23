@@ -5,8 +5,13 @@ import edu.rpi.rocs.client.objectmodel.MajorMinorRevisionObject;
 public class UpdateItem
 {
 
-	private MajorMinorRevisionObject object;
-	private boolean isCourse, isMajor;
+	private MajorMinorRevisionObject object=null;
+	private boolean isCourse=false, isMajor=false;
+	
+	// Empty constructor for GWT
+	public UpdateItem() {
+		
+	}
 
 	public UpdateItem(MajorMinorRevisionObject obj, boolean isCrs, boolean isMjr)
 	{

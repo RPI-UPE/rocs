@@ -64,6 +64,7 @@ public class SemesterDB {
 		
 		List<Semester> x = session.createQuery("from Semester").list();
 		for(Semester s : x) {
+			System.out.println("Loading semester \""+s.getSemesterDesc()+"\"");
 			semesters.put(s.getSemesterId(), s);
 			touch(s);
 		}

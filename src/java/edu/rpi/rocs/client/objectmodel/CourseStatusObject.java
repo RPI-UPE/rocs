@@ -17,7 +17,7 @@ public class CourseStatusObject implements Serializable {
 	/**
 	 * The course to store status about
 	 */
-	private Course theCourse;
+	private Course theCourse=null;
 	/**
 	 * Flag for whether a course is required or not
 	 */
@@ -67,7 +67,7 @@ public class CourseStatusObject implements Serializable {
 		theCourse = c;
 	}
 	
-	private Long dbid;
+	private Long dbid=null;
 	public void setDbid(Long id) {
 		dbid = id;
 	}
