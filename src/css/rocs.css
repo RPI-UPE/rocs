@@ -156,6 +156,7 @@ div#rocs_PORTLET_rocs_scheduler_pane {
     width:800px;
     height:426px;
     overflow:hidden;
+    position: relative;
 }
 
 div#rocs_PORTLET_rocs_scheduler_pane div.filter-wrapper {
@@ -219,6 +220,7 @@ div.rocs-dialog {
     height: 390px;
     max-height: 390px;
     overflow: scroll;
+    position: relative;
 }
 
 .schedule-list svg {
@@ -241,37 +243,45 @@ div#rocs_PORTLET_rocs_root_view .gwt-MultiStackPanel {
     width: 800px;
 }
 
-div#rocs_PORTLET_rocs_root_view table.schedule {
+div#rocs_PORTLET_rocs_root_view .schedule table {
 	border-collapse: collapse;
 }
 
-div#rocs_PORTLET_rocs_root_view table.schedule tr.t00 td {
+div#rocs_PORTLET_rocs_root_view .schedule table tr.t00 td {
 	border-bottom: 2px dashed #ccc;
 	border-top: 2px solid black;
 	border-left: 2px solid black;
 	border-right: 2px solid black;
 	width: 90px;
-	height: 6px;
-	line-height: 6px;
+	height: 10px;
+	line-height: 10px;
+	font-size: 9px;
 }
 
-div#rocs_PORTLET_rocs_root_view table.schedule tr.t30 td {
+div#rocs_PORTLET_rocs_root_view .schedule table tr.t30 td {
 	border-bottom: 2px solid black;
 	border-top: 2px dashed #ccc;
 	border-left: 2px solid black;
 	border-right: 2px solid black;
 	width: 90px;
-	height: 6px;
-	line-height: 6px;
+	height: 10px;
+	line-height: 10px;
+	font-size: 9px;
 }
 
-div#rocs_PORTLET_rocs_root_view table.schedule th {
-	line-height: 12px;
-	height: 12px;
+div#rocs_PORTLET_rocs_root_view .schedule table th {
+	border-left: 1px solid black;
+	line-height: 10px;
+	height: 10px;
+	font-size: 9px;
+}
+
+div#rocs_PORTLET_rocs_root_view .schedule table tr.header th {
+	line-height: 14px;
 	font-size: 12px;
 }
 
-div#rocs_PORTLET_rocs_root_view table.schedule th.firstcol {
+div#rocs_PORTLET_rocs_root_view .schedule table th.firstcol {
 	width: 22px;
 }
 
@@ -279,7 +289,7 @@ div#rocs_PORTLET_rocs_root_view div.schedule-wrapper {
 	position: relative;
 }
 
-div#rocs_PORTLET_rocs_root_view table.schedule {
+div#rocs_PORTLET_rocs_root_view .schedule table {
 	position: relative;
 	top: 0px;
 	left: 0px;
@@ -392,11 +402,18 @@ div#rocs_PORTLET_rocs_root_view .course-search-list tr.course-selectable:hover {
 	padding-right: 3pt;
 }
 
-.rocs-style .schedule-mini-view {
+.rocs-style .schedule-mini-widget {
 	background-color: white;
+	border: 1px solid black;
+	position: relative;
+}
+
+.rocs-style .course-div {
+	position:absolute;
 	border: 1px solid black;
 }
 
-.rocs-style .schedule-mini-view div {
+.rocs-style .schedule-mini-widget div {
 	border: 1px solid black;
+	position: absolute;
 }

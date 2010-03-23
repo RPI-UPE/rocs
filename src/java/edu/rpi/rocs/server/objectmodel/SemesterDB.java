@@ -8,6 +8,7 @@ import java.util.Map;
 
 import org.hibernate.Session;
 
+import edu.rpi.rocs.Scheduler;
 import edu.rpi.rocs.client.objectmodel.Course;
 import edu.rpi.rocs.client.objectmodel.CrossListing;
 import edu.rpi.rocs.client.objectmodel.Period;
@@ -64,12 +65,13 @@ public class SemesterDB {
 		
 		List<Semester> x = session.createQuery("from Semester").list();
 		for(Semester s : x) {
-			System.out.println("Loading semester \""+s.getSemesterDesc()+"\"");
+			Scheduler.getInstance().getLogger().info("Loading semester \""+s.getSemesterDesc()+"\"");
 			semesters.put(s.getSemesterId(), s);
 			touch(s);
 		}
 		
 		session.getTransaction().commit();
+		System.gc();
 	}
 
 	private static void touch(Semester s) {

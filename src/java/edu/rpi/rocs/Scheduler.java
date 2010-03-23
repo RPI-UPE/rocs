@@ -23,6 +23,10 @@ import javax.portlet.PortletRequest;
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
 
+import org.apache.log4j.Logger;
+import org.apache.log4j.helpers.Loader;
+import org.apache.log4j.xml.DOMConfigurator;
+
 import edu.rpi.rocs.server.hibernate.util.HibernateUtil;
 import edu.rpi.rocs.server.objectmodel.SemesterDB;
 import edu.rpi.rocs.server.objectmodel.SemesterParser;
@@ -51,10 +55,12 @@ public class Scheduler extends GenericPortlet {
 		public String changeTime;
 	}
 	
+	Logger root = null;
+		
 	/**
 	 * Base path to where CourseDB XML files are stored
 	 */
-	public static String xmlPath;
+	public static String xmlPath = null;
 	/**
 	 * List of XML documents to be loaded by the scheduler
 	 */
@@ -115,7 +121,7 @@ public class Scheduler extends GenericPortlet {
 		 * 
 		 */
 		public void run() {
-			System.out.println("Looking for XML files...");
+			Scheduler.getInstance().getLogger().info("Looking for XML files...");
 			try {
 				URL url = new URL(xmlPath);
 				BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
@@ -131,8 +137,9 @@ public class Scheduler extends GenericPortlet {
 					long start = System.currentTimeMillis();
 					String newPath = Scheduler.xmlPath + file.path;
 					SemesterParser.parse(newPath, file.changeTime);
-					System.out.println("Parsed "+file.path+" in "+(System.currentTimeMillis()-start)+" ms");
+					root.info("Parsed "+file.path+" in "+(System.currentTimeMillis()-start)+" ms");
 				}
+				System.gc();
 			}
 			catch(Exception e) {
 				e.printStackTrace();
@@ -158,11 +165,18 @@ public class Scheduler extends GenericPortlet {
 	 */
 	PortletConfig theConfig=null;
 	
+	public Logger getLogger() {
+		return root;
+	}
+	
 	/**
 	 * Initializes the portlet. Loads the hibernate configuration files and restores any data stored in the database.
 	 */
 	public void initialize() {
 		URL temp=null;
+		temp = Loader.getResource("log4j.xml");
+		DOMConfigurator.configure(temp);
+		root = Logger.getRootLogger();
 		try {
 			temp = theConfig.getPortletContext().getResource("/xml/hibernate.cfg.xml");
 		} catch (MalformedURLException e) {
@@ -240,8 +254,12 @@ public class Scheduler extends GenericPortlet {
 		out.println("<script language=\"javascript\" src=\"" + aRequest.getContextPath() + "/rocs.gwt/rocs.gwt.nocache.js\"></script>");
 		out.println("<link rel=\"stylesheet\" type=\"text/css\" href=\"" + aRequest.getContextPath() + "/css/rocs.css\"/>");
 		out.println("<div id=\"rocs_PORTLET_rocs_root_view\" class=\"rocs-style\">");
-		out.println("<div style=\"background-color: red; width:100%; text-align: center;\">This is beta software. If you experience problems please contact <a href=\"mailto:UPE-ROCS-USER-L@lists.rpi.edu\">Evan Patton</a> with details.</div>");
-		out.println("<div style=\"background-color: yellow; width:100%; text-align: center;\">If you have problems with course content (e.g. two required courses conflict),<br/> please contact <a href=\"conrom@rpi.edu\">Michael Conroy</a> in the Registrar's Office with details.</div>");
+		out.println("<div style=\"background-color: red; width:100%; text-align: center;\">" + 
+				"This is beta software. If you experience problems please contact " +
+				"<a href=\"mailto:UPE-ROCS-USER-L@lists.rpi.edu\">the ROCS dev team</a> with details.</div>");
+		out.println("<div style=\"background-color: yellow; width:100%; text-align: center;\">" +
+				"If you have problems with course content (e.g. two required courses conflict),<br/> please contact " +
+				"<a href=\"registrar@rpi.edu\">the Registrar's office</a> with details.</div>");
 		out.println("</div>");
 	}
 	

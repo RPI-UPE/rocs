@@ -150,7 +150,7 @@ public class CrossListing extends MajorMinorRevisionObject {
 				crns.add(s.getCrn());
 				s.setCrossListing(this);
 			}
-			else System.out.println("CrossListing "+dbid+ " has a null section.");
+//			else Scheduler.getInstance().getLogger().debug("CrossListing "+dbid+ " has a null section.");
 		}
 	}
 	

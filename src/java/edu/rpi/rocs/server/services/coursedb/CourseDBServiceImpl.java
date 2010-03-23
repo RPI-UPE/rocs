@@ -42,12 +42,12 @@ public class CourseDBServiceImpl extends RemoteServiceServlet implements
 	// Update every 5 minutes
 	public ArrayList<UpdateItem> getUpdateList(Integer semesterID, Long timeStamp)
 	{
-		System.out.println("User requested updates for "+semesterID+" at timestamp "+timeStamp);
+		Scheduler.getInstance().getLogger().info("User requested updates for "+semesterID+" at timestamp "+timeStamp);
 		ArrayList<UpdateItem> retVal = new ArrayList<UpdateItem>();
 		long curRev = timeStamp.longValue();
 
 		Semester newSemester = SemesterDB.getInstance(semesterID);
-		System.out.println("latest = "+newSemester.getTimeStamp()+"; old = "+timeStamp);
+		Scheduler.getInstance().getLogger().debug("latest = "+newSemester.getTimeStamp()+"; old = "+timeStamp);
 		if (newSemester.getTimeStamp() > curRev) // TimeStamp diff!
 		{
 			System.out.println("User has outdated semester.");
@@ -62,7 +62,7 @@ public class CourseDBServiceImpl extends RemoteServiceServlet implements
 				else if (CL.getMinorRevision() > curRev) retVal.add(new UpdateItem(CL, false, false));
 			}
 		}
-		System.out.println("Sending back "+retVal.size()+" updates.");
+		Scheduler.getInstance().getLogger().debug("Sending back "+retVal.size()+" updates.");
 
 		return retVal;
 	}

@@ -3,6 +3,7 @@ package edu.rpi.rocs.client.ui.scheduler.ie;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.FlowPanel;
 
@@ -18,8 +19,10 @@ public class ScheduleViewWidget extends FlowPanel {
 
 	Schedule m_schedule=null;
 	ScheduleBackgroundWidget m_background=null;
-	private static final int MAJOR_Y_DISTANCE=26;
-	private static final int MAJOR_X_DISTANCE=75;
+	private static final int X_OFFSET=24;
+	private static final int Y_OFFSET=15;
+	private static final int MAJOR_Y_DISTANCE=24;
+	private static final int MAJOR_X_DISTANCE=80;
 	//private static final int MINOR_Y_DISTANCE=13;
 	RandomColorGenerator m_generator=null;
 	
@@ -55,6 +58,7 @@ public class ScheduleViewWidget extends FlowPanel {
 		private void createBackground() {
 			setStyleName("schedule");
 			m_header = new HTMLTableListRow();
+			m_header.setStyleName("header");
 			{
 				HTMLTableListCell temp = new HTMLTableListCell(true);
 				temp.addStyleName("firstcol");
@@ -79,6 +83,10 @@ public class ScheduleViewWidget extends FlowPanel {
 					entry.addStyleName("t00");
 				}
 				else {
+					HTMLTableListCell temp = new HTMLTableListCell(true);
+					temp.addStyleName("firstcol");
+					temp.setHTML("&nbsp;");
+					entry.add(temp);
 					entry.addStyleName("t30");
 				}
 				for(int col=0;col<7;col++) {
@@ -86,6 +94,7 @@ public class ScheduleViewWidget extends FlowPanel {
 					temp.setHTML("&nbsp;");
 					entry.add(temp);
 				}
+				add(entry);
 			}
 		}
 
@@ -113,8 +122,8 @@ public class ScheduleViewWidget extends FlowPanel {
 	}
 
 	private class SectionGroupWidget extends FlowPanel {
-		private ArrayList<CustomFlowPanel> m_divs;
-		private Section m_section;
+		private ArrayList<CustomFlowPanel> m_divs=null;
+		private Section m_section=null;
 
 		public SectionGroupWidget(Section s) {
 			m_section = s;
@@ -129,24 +138,27 @@ public class ScheduleViewWidget extends FlowPanel {
 				endPix += (end.getHour()-8)*MAJOR_Y_DISTANCE;
 
 				// Adjust for header row
-				startPix += MAJOR_Y_DISTANCE;
-				endPix += MAJOR_Y_DISTANCE;
+				startPix += Y_OFFSET;
+				endPix += Y_OFFSET;
 
 				for(Integer day : p.getDays()) {
 					int d = day.intValue();
-					int left = MAJOR_X_DISTANCE*d;
-					int right = MAJOR_X_DISTANCE*(d+1);
+					int left = (MAJOR_X_DISTANCE+2)*d;
+					int right = (MAJOR_X_DISTANCE+2)*(d+1);
 
 					// Adjust for header column
-					left += MAJOR_X_DISTANCE;
-					right += MAJOR_X_DISTANCE;
+					left += X_OFFSET;
+					right += X_OFFSET-2;
 
 					CustomFlowPanel w = new CustomFlowPanel();
-					w.setLeft(Integer.toString(left));
-					w.setTop(Integer.toString(startPix));
-					w.setWidth(Integer.toString(right-left));
-					w.setHeight(Integer.toString(endPix-startPix));
+					w.setLeft(Integer.toString(left)+"px");
+					w.setTop(Integer.toString(startPix)+"px");
+					w.setWidth(Integer.toString(right-left)+"px");
+					w.setHeight(Integer.toString(endPix-startPix)+"px");
 					w.addStyleName("course-div");
+					Label lbl = new Label(s.getParent().getId());
+					w.add(lbl);
+					m_divs.add(w);
 				}
 			}
 			for(CustomFlowPanel w : m_divs)
@@ -163,11 +175,16 @@ public class ScheduleViewWidget extends FlowPanel {
 				w.setColor(color);
 			}
 		}
+		
+		public ArrayList<CustomFlowPanel> getWidgets() {
+			return m_divs;
+		}
 	}
 
 	public ScheduleViewWidget(Schedule s, RandomColorGenerator g) {
 		setWidth("600");
 		setHeight("400");
+		setStyleName("schedule-wrapper");
 		m_schedule = s;
 		m_generator = g;
 		//ArrayList<Section> sections = s.getSections();
@@ -177,7 +194,9 @@ public class ScheduleViewWidget extends FlowPanel {
 		for(Section section : sections) {
 			SectionGroupWidget w = new SectionGroupWidget(section);
 			w.setFillColor(m_generator.randomlySelectColor(section.getParent()));
-			add(w);
+			ArrayList<CustomFlowPanel> widgets = w.getWidgets();
+			for(CustomFlowPanel widget : widgets)
+				add(widget);
 		}
 	}
 }

@@ -289,7 +289,7 @@ public class Course extends MajorMinorRevisionObject implements Comparable<Cours
 				//System.out.println("Course " + getId() + " has a null section.");
 			}
 		}
-		if(wasnull) System.out.println("Course " + getId() + " has " + sections.size() + " sections.");
+//		if(wasnull) Scheduler.getInstance().getLogger().debug("Course " + getId() + " has " + sections.size() + " sections.");
 	}
 
 	public int getFilledSeats() {
@@ -410,6 +410,6 @@ public class Course extends MajorMinorRevisionObject implements Comparable<Cours
 	@Override
 	public void updateMinorRevision() {
 		super.updateMinorRevision();
-		System.out.println("Course "+getId()+" has a minor revision.");
+//		Scheduler.getInstance().getLogger().debug("Course "+getId()+" has a minor revision.");
 	}
 }

@@ -16,6 +16,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
+import edu.rpi.rocs.Scheduler;
 import edu.rpi.rocs.client.objectmodel.Course;
 import edu.rpi.rocs.client.objectmodel.CrossListing;
 import edu.rpi.rocs.client.objectmodel.MajorMinorRevisionObject;
@@ -45,14 +46,14 @@ public class SemesterParser {
     	try {
     		long start = System.currentTimeMillis();
     		parsedSemester = SemesterParser.LoadCourseDB(xmlFile, changeTime);
-    		System.out.println("Time to parse semester XML: " + (System.currentTimeMillis()-start) + " ms");
+    		Scheduler.getInstance().getLogger().info("Time to parse semester XML: " + (System.currentTimeMillis()-start) + " ms");
     		
     		start = System.currentTimeMillis();
     		Semester lastSemester = SemesterDB.getInstance(parsedSemester.getSemesterId());
     		if(lastSemester != null) {
     			lastSemester.examineNewVersion(parsedSemester);
     		}
-    		System.out.println("Time to merge semesters: "+(System.currentTimeMillis()-start)+" ms");
+    		Scheduler.getInstance().getLogger().info("Time to merge semesters: "+(System.currentTimeMillis()-start)+" ms");
 
     		if(lastSemester==null)
     			SemesterDB.putInstance(parsedSemester.getSemesterId(), parsedSemester);
@@ -78,7 +79,7 @@ public class SemesterParser {
     		finally {
     			if(session.isOpen()) session.close();
     		}
-    		System.out.println("Time to commit transaction: "+(System.currentTimeMillis()-start)+" ms");
+    		Scheduler.getInstance().getLogger().info("Time to commit transaction: "+(System.currentTimeMillis()-start)+" ms");
     	}
     	catch(Throwable t) {
     		MajorMinorRevisionObject.setCurrentRevision(oldrev);
@@ -99,7 +100,7 @@ public class SemesterParser {
     	DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
     	DocumentBuilder db = dbf.newDocumentBuilder();
     	Document doc = db.parse(stream);
-    	System.out.println("Time to retrieve document from SIS: "+(System.currentTimeMillis()-start)+" ms");
+    	Scheduler.getInstance().getLogger().info("Time to retrieve document from SIS: "+(System.currentTimeMillis()-start)+" ms");
     	Semester semester=null;
     	if(doc.getDocumentElement().getNodeName() == "CourseDB") {
     		int time,num;
@@ -125,7 +126,7 @@ public class SemesterParser {
     			else
     				throw new InvalidCourseDatabaseException("CourseDB contains node <" + n.getNodeName() + "> that is not a Course or CrossListing.");
     		}
-    		System.out.println("Time to process document: " + (System.currentTimeMillis()-start)+" ms");
+    		Scheduler.getInstance().getLogger().info("Time to process document: " + (System.currentTimeMillis()-start)+" ms");
     	}
     	else {
     		throw new InvalidCourseDatabaseException("Document does not contain a course database.");
@@ -137,7 +138,7 @@ public class SemesterParser {
     			cl.setSemester(semester);
     			cl.processCRNs();
     		}
-    		System.out.println("Time to prepare crosslistings: "+(System.currentTimeMillis()-start)+" ms");
+    		Scheduler.getInstance().getLogger().info("Time to prepare crosslistings: "+(System.currentTimeMillis()-start)+" ms");
     	}
     	return semester;
     }

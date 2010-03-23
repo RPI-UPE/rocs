@@ -23,7 +23,7 @@ public class ScheduleMiniViewWidget extends FlowPanel implements HasClickHandler
 
 	public ScheduleMiniViewWidget(Schedule s, RandomColorGenerator g) {
 		setWidth("80px");
-		setHeight("94px");
+		setHeight("84px");
 		m_schedule = s;
 		m_generator = g;
 		setStyleName("schedule-mini-widget");
@@ -43,7 +43,7 @@ public class ScheduleMiniViewWidget extends FlowPanel implements HasClickHandler
 					int day = d.next().intValue();
 					CustomFlowPanel w = new CustomFlowPanel();
 					w.setPosition(Integer.toString(day*10+5)+"px", Integer.toString(start+5)+"px");
-					w.setSize("10px", Integer.toString(end)+"px");
+					w.setSize("8px", Integer.toString(end-start-2)+"px");
 					w.setBackgroundColor(color);
 					m_classes.add(w);
 				}
