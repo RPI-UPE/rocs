@@ -57,6 +57,8 @@ public class SemesterParser {
 
     		if(lastSemester==null)
     			SemesterDB.putInstance(parsedSemester.getSemesterId(), parsedSemester);
+    		else
+    			lastSemester.setLastChangeTime(changeTime);
 
     		start = System.currentTimeMillis();
     		Session session=null;

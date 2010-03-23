@@ -27,13 +27,13 @@ public class CourseResultList {
 
 	CourseAddedHandler addedHandler = new CourseAddedHandler() {
 		public void handleEvent(CourseStatusObject status) {
-
+			CourseSearchPanel.getInstance().redosearch();
 		}
 	};
 
 	CourseRemovedHandler removedHandler = new CourseRemovedHandler() {
 		public void handleEvent(CourseStatusObject status) {
-
+			CourseSearchPanel.getInstance().redosearch();
 		}
 	};
 
@@ -76,10 +76,8 @@ public class CourseResultList {
 
 	};
 
-	int prevstatus;
 	public void add(Course a, int status) {
 		results.add(a);
-		prevstatus = status;
 		HTMLTableListRow r=m_table.new HTMLTableListRow();
 		HTMLTableListCell c;
 		c = m_table.new HTMLTableListCell(); c.setStyleName("dept"); c.setText(a.getDept()); r.add(c);
@@ -109,9 +107,6 @@ public class CourseResultList {
 
 	public void modifyBits(int index, int status)
 	{
-		if (prevstatus == status) return;
-		else prevstatus = status;
-
 		HTMLTableListRow r = m_table.get(index+1);
 
 		if((status & State.CONFLICT) == State.CONFLICT) {

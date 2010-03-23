@@ -120,6 +120,19 @@ public class Schedule implements Serializable {
 			}
 			if(satisfies) {
 				results.add(start);
+				if(optionalCourses.size()>0) {
+					Map<Course, Set<Section>> copy = new HashMap<Course, Set<Section>>(optionalCourses);
+					for(Map.Entry<Course, Set<Section>> entry : optionalCourses.entrySet()) {
+						copy.remove(entry.getKey());
+						for(Section section : entry.getValue()) {
+							Schedule s=new Schedule(start);
+							if(!s.willConflict(section)) {
+								s.add(section);
+								results.addAll(buildSchedulesGivenStartingPoint(s, requiredCourses, copy, filters));
+							}
+						}
+					}
+				}
 			}
 		}
 		else {
