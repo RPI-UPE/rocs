@@ -280,12 +280,12 @@ public class Course extends MajorMinorRevisionObject implements Comparable<Cours
 	public void setSections(List<Section> list) {
 		sections = new ArrayList<Section>();
 		Iterator<Section> i = list.iterator();
-		boolean wasnull=false;
+		//boolean wasnull=false;
 		while(i.hasNext()) {
 			Section s = i.next();
 			if(s!=null) sections.add(s);
 			else {
-				wasnull=true;
+				//wasnull=true;
 				//System.out.println("Course " + getId() + " has a null section.");
 			}
 		}

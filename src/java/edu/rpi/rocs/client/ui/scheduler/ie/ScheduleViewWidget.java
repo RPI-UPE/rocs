@@ -19,7 +19,7 @@ public class ScheduleViewWidget extends FlowPanel {
 
 	Schedule m_schedule=null;
 	ScheduleBackgroundWidget m_background=null;
-	private static final int X_OFFSET=24;
+	private static final int X_OFFSET=23;
 	private static final int Y_OFFSET=15;
 	private static final int MAJOR_Y_DISTANCE=24;
 	private static final int MAJOR_X_DISTANCE=80;
@@ -143,12 +143,12 @@ public class ScheduleViewWidget extends FlowPanel {
 
 				for(Integer day : p.getDays()) {
 					int d = day.intValue();
-					int left = (MAJOR_X_DISTANCE+2)*d;
-					int right = (MAJOR_X_DISTANCE+2)*(d+1);
+					int left = (MAJOR_X_DISTANCE+3)*d;
+					int right = (MAJOR_X_DISTANCE+3)*(d+1);
 
 					// Adjust for header column
-					left += X_OFFSET;
-					right += X_OFFSET-2;
+					left += X_OFFSET-1;
+					right += X_OFFSET-3;
 
 					CustomFlowPanel w = new CustomFlowPanel();
 					w.setLeft(Integer.toString(left)+"px");

@@ -406,6 +406,7 @@ div#rocs_PORTLET_rocs_root_view .course-search-list tr.course-selectable:hover {
 	background-color: white;
 	border: 1px solid black;
 	position: relative;
+	cursor: pointer;
 }
 
 .rocs-style .course-div {
