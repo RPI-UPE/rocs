@@ -163,7 +163,11 @@ public class ClassViewPanel extends HorizontalPanel implements CourseAddedHandle
 				SchedulerManager.getInstance().setCourseOptional(c);
 			}
 		}
-		if (mod) CourseSearchPanel.getInstance().redosearch();
+		if (mod)
+		{
+			CourseSearchPanel.getInstance().rebuildFS();
+			CourseSearchPanel.getInstance().redosearch();
+		}
 	}
 
 	public void remove()
@@ -178,6 +182,10 @@ public class ClassViewPanel extends HorizontalPanel implements CourseAddedHandle
 				SchedulerManager.getInstance().removeCourse(c);
 			}
 		}
-		if (mod) CourseSearchPanel.getInstance().redosearch();
+		if (mod)
+		{
+			CourseSearchPanel.getInstance().rebuildFS();
+			CourseSearchPanel.getInstance().redosearch();
+		}
 	}
 }

@@ -217,6 +217,7 @@ public class SchedulerManager implements IsSerializable {
 		m_changed = true;
 		CourseStatusObject obj = currentCourses.get(c);
 		if(obj!=null) {
+			if (!obj.getRequired()) CourseSearchPanel.getInstance().addFS(c);
 			obj.setRequired(true);
 			
 			for(CourseRequiredHandler e : courseRequiredHandlers) {
