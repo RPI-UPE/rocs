@@ -17,6 +17,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 
 import edu.rpi.rocs.client.filters.schedule.ScheduleFilter;
 import edu.rpi.rocs.client.objectmodel.Course;
+import edu.rpi.rocs.client.objectmodel.FastSchedule;
 import edu.rpi.rocs.client.objectmodel.CrossListing;
 import edu.rpi.rocs.client.objectmodel.Period;
 import edu.rpi.rocs.client.objectmodel.Schedule;
@@ -222,6 +223,19 @@ public class CourseSearchPanel extends VerticalPanel {
 
 	private ArrayList<Course> theResults=null;
 
+	private FastSchedule FS = new FastSchedule();
+
+	public void rebuildFS()
+	{
+		FS = new FastSchedule();
+		List<CourseStatusObject> CSOlist = SchedulerManager.getInstance().getSelectedCourses();
+		for (CourseStatusObject CSO : CSOlist) if (CSO.getRequired()) FS.addCourse(CSO.getCourse());
+	}
+	public void addFS(Course C)
+	{
+		FS.addCourse(C);
+	}
+
 	public void search() {
 		Semester semester = SemesterManager.getInstance().getCurrentSemester();
 		List<Course> courses = semester.getCourses();
@@ -240,7 +254,8 @@ public class CourseSearchPanel extends VerticalPanel {
 		else if(num.equals("")) num = null;
 
 		int userCourseNum = -1;
-		if(num != null){
+		if(num != null)
+		{
 			userCourseNum = Integer.parseInt(num);
 		}
 
@@ -248,10 +263,6 @@ public class CourseSearchPanel extends VerticalPanel {
 		ArrayList<Course> ReqList = new ArrayList<Course>(), OptList = new ArrayList<Course>();
 		for (CourseStatusObject CSO : CSOlist) if (CSO.getRequired()) ReqList.add(CSO.getCourse());
 															else OptList.add(CSO.getCourse());
-		ArrayList<ScheduleFilter> filter = new ArrayList<ScheduleFilter>();
-		filter.add(SchedulerFilterDisplayPanel.getInstance().getCurrentFilters().get(0));
-		ArrayList<Schedule> posSchedules = Schedule.buildAllSchedulesGivenCoursesAndFilters(ReqList,
-																  new ArrayList<Course>(), filter);
 
 		theResults = new ArrayList<Course>();
 		for(Course course : courses) {
@@ -276,9 +287,8 @@ public class CourseSearchPanel extends VerticalPanel {
 				break;
 			}
 			int bits = 0;
-			ArrayList<Course> cArr = new ArrayList<Course>(); cArr.add(course);
 			if (chosen) bits += 1;
-			if (!chosen && !hasSpace(course, posSchedules)) bits += 4;
+			if (!chosen && FS.test(course)) bits += 4;
 			if (course.isClosed()) bits += 2;
 			//resultsListBox.addHTML(LIST_HEAD[bits]+course.getListDescription()+LIST_TAIL[bits], course.getDept()+course.getNum());
 			CourseResultList.getInstance().add(course, bits);
@@ -291,10 +301,6 @@ public class CourseSearchPanel extends VerticalPanel {
 		ArrayList<Course> ReqList = new ArrayList<Course>(), OptList = new ArrayList<Course>();
 		for (CourseStatusObject CSO : CSOlist) if (CSO.getRequired()) ReqList.add(CSO.getCourse());
 															else OptList.add(CSO.getCourse());
-		ArrayList<ScheduleFilter> filter = new ArrayList<ScheduleFilter>();
-		filter.add(SchedulerFilterDisplayPanel.getInstance().getCurrentFilters().get(0));
-		ArrayList<Schedule> posSchedules = Schedule.buildAllSchedulesGivenCoursesAndFilters(ReqList,
-																  new ArrayList<Course>(), filter);
 
 		for (int i = 0; i < theResults.size(); i++)
 		{
@@ -305,16 +311,16 @@ public class CourseSearchPanel extends VerticalPanel {
 				break;
 			}
 			int bits = 0;
-			ArrayList<Course> cArr = new ArrayList<Course>(); cArr.add(course);
 			if (chosen) bits += 1;
-			if (!chosen && !hasSpace(course, posSchedules)) bits += 4;
+			if (!chosen && FS.test(course)) bits += 4;
 			if (course.isClosed()) bits += 2;
+			//resultsListBox.addHTML(LIST_HEAD[bits]+course.getListDescription()+LIST_TAIL[bits], course.getDept()+course.getNum());
 			CourseResultList.getInstance().modifyBits(i, bits);
 		}
 	}
 
 	@SuppressWarnings("unused")
-	private Section combineSections(Section S1, Section S2) {
+	/*private Section combineSections(Section S1, Section S2) {
 		Section retVal = new Section();
 		for (Period P : S1.getPeriods()) retVal.addPeriod(P);
 		for (Period P : S2.getPeriods()) if (!addPeriod(retVal, P)) return null;
@@ -337,12 +343,11 @@ public class CourseSearchPanel extends VerticalPanel {
 	private boolean containsMatch(ArrayList<Section> list, Section section) {
 		for (Section S : list) if (match(S, section)) return true;
 	}
-	*/
 	private boolean hasSpace(Course CS, ArrayList<Schedule> schedules)
 	{
 		for (Schedule S : schedules) for (Section S2 : CS.getSections()) if (!S.willConflict(S2)) return true;
 		return false;
-	}
+	}*/
 
 	private String getSearchLevel() {
 		String level = levelList.getValue(levelList.getSelectedIndex());
