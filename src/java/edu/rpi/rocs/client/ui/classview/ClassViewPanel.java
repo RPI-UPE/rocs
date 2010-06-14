@@ -9,28 +9,30 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
-import com.google.gwt.user.client.ui.HorizontalPanel;
 import edu.rpi.rocs.client.ui.coursesearch.CourseSearchPanel;
+import edu.rpi.rocs.client.ui.scheduler.SchedulerFilterDisplayPanel;
 import edu.rpi.rocs.client.ui.ListBoxHTML;
+import edu.rpi.rocs.client.ui.ROCSInterface;
 import edu.rpi.rocs.client.objectmodel.SchedulerManager;
 import edu.rpi.rocs.client.objectmodel.CourseStatusObject;
 import edu.rpi.rocs.client.objectmodel.Course;
 import edu.rpi.rocs.client.objectmodel.SchedulerManager.*;
 
-public class ClassViewPanel extends HorizontalPanel implements CourseAddedHandler, CourseRemovedHandler, CourseRequiredHandler, CourseOptionalHandler
+public class ClassViewPanel extends VerticalPanel implements CourseAddedHandler, CourseRemovedHandler, CourseRequiredHandler, CourseOptionalHandler
 {
 	//UI Elements:
-	private FlexTable layout; //Table: One row, Two columns
-	private VerticalPanel listHolder; //Holds the classList
-	private VerticalPanel buttonHolder; //Holds the three buttons
-	private ListBoxHTML classList; //List of selected classes
-	private Label selectedTitle; //Label for the list of classes
-	private Anchor requiredButton; //Required Button
-	private Anchor optionalButton; //Optional Button
-	private Anchor removeButton; //Remove Button
+	private FlexTable layout=null; //Table: One row, Two columns
+	private VerticalPanel listHolder=null; //Holds the classList
+	private VerticalPanel buttonHolder=null; //Holds the three buttons
+	private ListBoxHTML classList=null; //List of selected classes
+	private Label selectedTitle=null; //Label for the list of classes
+	private Anchor requiredButton=null; //Required Button
+	private Anchor optionalButton=null; //Optional Button
+	private Anchor removeButton=null; //Remove Button
+	private Anchor continueButton=null;
 
 	//Data Members:
-	private List<CourseStatusObject> curCourses;
+	private List<CourseStatusObject> curCourses=null;
 
 	private static ClassViewPanel instance = null;
 	public static ClassViewPanel getInstance() {
@@ -45,7 +47,7 @@ public class ClassViewPanel extends HorizontalPanel implements CourseAddedHandle
 		SchedulerManager.getInstance().addCourseOptionalEventHandler(this);
 		SchedulerManager.getInstance().addCourseRequiredEventHandler(this);
 		SchedulerManager.getInstance().addCourseRemovedEventHandler(this);
-
+		
 		layout = new FlexTable();
 
 		listHolder = new VerticalPanel();
@@ -66,6 +68,7 @@ public class ClassViewPanel extends HorizontalPanel implements CourseAddedHandle
 		requiredButton = new Anchor("Mark Required");
 		optionalButton = new Anchor("Mark Optional");
 		removeButton = new Anchor("Remove");
+		continueButton = new Anchor("Continue");
 
 		buttonHolder.add(requiredButton);
 		buttonHolder.add(optionalButton);
@@ -100,8 +103,21 @@ public class ClassViewPanel extends HorizontalPanel implements CourseAddedHandle
 			}
 
 		});
+		
+		continueButton.addStyleName("greenbutton");
+		continueButton.addStyleName("linkbutton");
+		continueButton.addClickHandler(new ClickHandler() {
+
+			public void onClick(ClickEvent arg0) {
+				if(!ROCSInterface.getInstance().isDisplaying(SchedulerFilterDisplayPanel.getInstance())) {
+					ROCSInterface.getInstance().show(SchedulerFilterDisplayPanel.getInstance(), true);
+				}
+			}
+			
+		});
 
 		this.add(layout);
+		this.add(continueButton);
 	}
 
 	public void printMsg( String str )

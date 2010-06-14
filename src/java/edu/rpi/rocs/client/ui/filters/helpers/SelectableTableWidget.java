@@ -12,117 +12,148 @@ public class SelectableTableWidget extends Widget {
 	private Element m_tbody;
 	
 	private native void addDocumentHandlers()/*-{
-		if(window.rocs_mdown===undefined) {
-			window.rocs_mdown = false;
-			window.rocs_start_row = 0;
-			window.rocs_start_col = 0;
-			window.rocs_end_row = 0;
-			window.rocs_end_col = 0;
-			window.rocs_sc = 0;
-			window.rocs_sr = 0;
-			window.rocs_ec = 0;
-			window.rocs_er = 0;
-			window.min = function(x,y) { if(x>y) return y; return x; };
-			window.max = function(x,y) { if(y>x) return y; return x; };
-			window.startDrag = function(event) {
-				if(event.button==0) {
-					rocs_mdown=true;
-					rocs_end_col = rocs_start_col = event.target.cellIndex;
-					rocs_end_row = rocs_start_row = event.target.parentNode.rowIndex;
-					event.target.className = "rocs-table-cursor rocs-table-possible";
-					return false;
+		if($wnd._rocs_init===undefined) {
+			$wnd._rocs_init = true;
+			$wnd.callback = function(element,func) {
+				return function(e) {
+					return func.call(element,element,e);
+				};
+			}
+			$wnd.getParent = function(e) { return e.parentNode ? e.parentNode : e.parentElement; };
+			$wnd.min = function(x,y) { if(x>y) return y; return x; };
+			$wnd.max = function(x,y) { if(y>x) return y; return x; };
+			$wnd.startDrag = function(obj,event) {
+				var e = event || $wnd.event;
+				if(e.target == undefined)
+					e.target = e.srcElement;
+				if(e.button==1 && $wnd.event != null || e.button == 0) {
+					obj.mdown = true;
+					obj.end_col = obj.start_col = e.target.cellIndex;
+					obj.end_row = obj.start_row = $wnd.getParent(e.target).rowIndex;
+					e.target.className = "rocs-table-cursor rocs-table-possible";
+					obj.startValue = !obj.widget.@edu.rpi.rocs.client.ui.filters.helpers.SelectableTableWidget::isSelected(II)(obj.start_row-1,obj.start_col-1);
+					if($wnd.addEventListener) return false;
 				}
 			}
-			window.stopDrag = function(event) {
-				if(event.button==0 && rocs_mdown == true) {
-					rocs_mdown = false;
-					rocs_sr = min(max(rocs_start_row,1), max(rocs_end_row,1));
-					rocs_sc = min(max(rocs_start_col,1), max(rocs_end_col,1));
-					rocs_er = max(max(rocs_start_row,1), max(rocs_end_row,1));
-					rocs_ec = max(max(rocs_start_col,1), max(rocs_end_col,1));
-					widget = theTable.widget;
-					for(row=rocs_sr;row<=rocs_er;row++) {
-						for(col=rocs_sc;col<=rocs_ec;col++) {
-							test = widget.@edu.rpi.rocs.client.ui.filters.helpers.SelectableTableWidget::isSelected(II)(row-1,col-1);
-							widget.@edu.rpi.rocs.client.ui.filters.helpers.SelectableTableWidget::setSelected(IIZ)(row-1,col-1,!test);
+			$wnd.stopDrag = function(obj,event) {
+				var e = $wnd.event || event;
+				if(e.target == undefined)
+					e.target = e.srcElement;
+				if(obj.mdown==true) {
+					obj.mdown = false;
+					var a = $wnd.max(obj.start_row,1);
+					var b = $wnd.max(obj.end_row,1);
+					var c = $wnd.max(obj.start_col,1);
+					var d = $wnd.max(obj.end_col,1);
+					obj.sr = $wnd.min(a,b);
+					obj.sc = $wnd.min(c,d);
+					obj.er = $wnd.max(a,b);
+					obj.ec = $wnd.max(c,d);
+					var widget = obj.widget;
+					var row, col;
+					for(row=obj.sr;row<=obj.er;row++) {
+						for(col=obj.sc;col<=obj.ec;col++) {
+							widget.@edu.rpi.rocs.client.ui.filters.helpers.SelectableTableWidget::setSelected(IIZ)(row-1,col-1,obj.startValue);
 						}
 					}
-					rocs_end_row = rocs_start_row = 0;
-					rocs_end_col = rocs_start_col = 0;
-					event.cancelBubble = true;
+					obj.sr = obj.sc = obj.er = obj.ec = 1;
+					e.cancelBubble = true;
 				}
 			}
-			window.continueDrag = function(event) {
-				if(rocs_mdown==true) {
-					rocs_end_col = event.target.cellIndex;
-					rocs_end_row = event.target.parentNode.rowIndex;
-					tsr = min(max(rocs_start_row,1),max(rocs_end_row,1));
-					tsc = min(max(rocs_start_col,1),max(rocs_end_col,1));
-					ter = max(max(rocs_start_row,1),max(rocs_end_row,1));
-					tec = max(max(rocs_start_col,1),max(rocs_end_col,1));
-					widget = theTable.widget;
-					if(tsr > rocs_sr) {
-						for(i=rocs_sc;i<=rocs_ec;i++) {
-							theCell = theTable.rows[rocs_sr].cells[i];
-							if(widget.@edu.rpi.rocs.client.ui.filters.helpers.SelectableTableWidget::isSelected(II)(rocs_sr-1,i-1))
+			$wnd.continueDrag = function(obj,event) {
+				var e = $wnd.event || event;
+				if(e.target == undefined)
+					e.target = e.srcElement;
+				if(obj.mdown==true) {
+					obj.end_col = e.target.cellIndex;
+					obj.end_row = $wnd.getParent(e.target).rowIndex;
+					var a = $wnd.max(obj.start_row,1);
+					var b = $wnd.max(obj.end_row,1);
+					var c = $wnd.max(obj.start_col,1);
+					var d = $wnd.max(obj.end_col,1);
+					var tsr = $wnd.min(a,b);
+					var tsc = $wnd.min(c,d);
+					var ter = $wnd.max(a,b);
+					var tec = $wnd.max(c,d);
+					var widget = this.widget;
+					var i, row, col;
+					if(tsr > obj.sr) {
+						for(i=obj.sc;i<=obj.ec;i++) {
+							var theCell = obj.rows[obj.sr].cells[i];
+							if(widget.@edu.rpi.rocs.client.ui.filters.helpers.SelectableTableWidget::isSelected(II)(obj.sr-1,i-1))
 								theCell.className = "rocs-table-cursor rocs-table-selected";
 							else
 								theCell.className = "rocs-table-cursor rocs-table-unselected";
 						}
 					}
-					if(tsc > rocs_sc) {
-						for(i=rocs_sr;i<=rocs_er;i++) {
-							theCell = theTable.rows[i].cells[rocs_sc];
-							if(widget.@edu.rpi.rocs.client.ui.filters.helpers.SelectableTableWidget::isSelected(II)(i-1,rocs_sc-1))
+					if(tsc > obj.sc) {
+						for(i=obj.sr;i<=obj.er;i++) {
+							var theCell = obj.rows[i].cells[obj.sc];
+							if(widget.@edu.rpi.rocs.client.ui.filters.helpers.SelectableTableWidget::isSelected(II)(i-1,obj.sc-1))
 								theCell.className = "rocs-table-cursor rocs-table-selected";
 							else
 								theCell.className = "rocs-table-cursor rocs-table-unselected";
 						}
 					}
-					if(ter < rocs_er) {
-						for(i=rocs_sc;i<=rocs_ec;i++) {
-							theCell = theTable.rows[rocs_er].cells[i];
-							if(widget.@edu.rpi.rocs.client.ui.filters.helpers.SelectableTableWidget::isSelected(II)(rocs_er-1,i-1))
+					if(ter < obj.er) {
+						for(i=obj.sc;i<=obj.ec;i++) {
+							var theCell = obj.rows[obj.er].cells[i];
+							if(widget.@edu.rpi.rocs.client.ui.filters.helpers.SelectableTableWidget::isSelected(II)(obj.er-1,i-1))
 								theCell.className = "rocs-table-cursor rocs-table-selected";
 							else
 								theCell.className = "rocs-table-cursor rocs-table-unselected";
 						}
 					}
-					if(tec < rocs_ec) {
-						for(i=rocs_sr;i<=rocs_er;i++) {
-							theCell = theTable.rows[i].cells[rocs_ec];
-							if(widget.@edu.rpi.rocs.client.ui.filters.helpers.SelectableTableWidget::isSelected(II)(i-1,rocs_ec-1))
+					if(tec < obj.ec) {
+						for(i=obj.sr;i<=obj.er;i++) {
+							var theCell = obj.rows[i].cells[obj.ec];
+							if(widget.@edu.rpi.rocs.client.ui.filters.helpers.SelectableTableWidget::isSelected(II)(i-1,obj.ec-1))
 								theCell.className = "rocs-table-cursor rocs-table-selected";
 							else
 								theCell.className = "rocs-table-cursor rocs-table-unselected";
 						}
 					}
-					rocs_sr = tsr; rocs_sc = tsc; rocs_er = ter; rocs_ec = tec;
-					for(row=rocs_sr;row<=rocs_er;row++) {
-						for(col=rocs_sc;col<=rocs_ec;col++) {
-							theCell = theTable.rows[row].cells[col];
+					obj.sr = tsr; obj.sc = tsc; obj.er = ter; obj.ec = tec;
+					for(row=obj.sr;row<=obj.er;row++) {
+						for(col=obj.sc;col<=obj.ec;col++) {
+							var theCell = obj.rows[row].cells[col];
 							theCell.className = "rocs-table-cursor rocs-table-possible";
 						}
 					}
 				}
 			}
-			if(document.addEventListener)
-				document.addEventListener('mouseup', stopDrag, false);
-			else if(document.attachEvent)
-				document.attachEvent("onmouseup", stopDrag);
 		}
 	}-*/;
 	
 	private native void setElementWidget(Element e, SelectableTableWidget w)/*-{
 		e.widget = w;
-		window.theTable = e;
+		e.mdown = false;
+		e.start_row = e.start_col = e.end_row = e.end_col = 0;
+		e.sr = e.sc = e.er = e.ec = 1;
+		e.startValue = false;
+		e.onmousedown = function () { return false; };
+		e.onselectstart = function() { return false; };
+		if($doc.attachEvent)
+			$doc.attachEvent("onmouseup",$wnd.callback(e,$wnd.stopDrag));
+		else
+			$doc.addEventListener("mouseup",$wnd.callback(e,$wnd.stopDrag),false);
 	}-*/;
 	
-	private native void addEventHandlers(Element e)/*-{
-		e.onmousedown = startDrag;
-		e.onmouseup = stopDrag;
-		e.onmouseover = continueDrag;
+	private native void addEventHandlers(Element e, Element theTable)/*-{
+		if($wnd.attachEvent) {
+			e.attachEvent("onmousedown",$wnd.callback(theTable,$wnd.startDrag));
+			e.attachEvent("onmousemove",$wnd.callback(theTable,$wnd.continueDrag));
+			e.attachEvent("onmouseup",$wnd.callback(theTable,$wnd.stopDrag));
+			e.attachEvent("onselectstart",function() { return false; });
+		}
+		else {
+			e.addEventListener("mousedown",$wnd.callback(theTable,$wnd.startDrag),false);
+			e.addEventListener("mousemove",$wnd.callback(theTable,$wnd.continueDrag),false);
+			e.addEventListener("mouseup",$wnd.callback(theTable,$wnd.stopDrag),false);
+			e.addEventListener("selectstart",function() { return false; }, false);
+		}
 	}-*/;
+	/*e.onselectstart = function(e) { $wnd.startDrag(e); return true; };*/
 	
 	public SelectableTableWidget(int rows, int cols) {
 		m_rows = rows;
@@ -132,8 +163,6 @@ public class SelectableTableWidget extends Widget {
 		m_element.setId("timetable");
 		m_tbody = Document.get().createElement("tbody");
 		m_element.appendChild(m_tbody);
-		setElement(m_element);
-		setElementWidget(m_element, this);
 		addDocumentHandlers();
 		Element t_row;
 		Element t_col;
@@ -143,7 +172,7 @@ public class SelectableTableWidget extends Widget {
 				t_col = Document.get().createElement("td");
 				if(row>0&&col>0) {
 					t_col.setClassName("rocs-table-cursor rocs-table-unselected");
-					addEventHandlers(t_col);
+					addEventHandlers(t_col, m_element);
 				}
 				else {
 					t_col.setClassName("rocs-table-unselected");
@@ -152,20 +181,28 @@ public class SelectableTableWidget extends Widget {
 			}
 			m_tbody.appendChild(t_row);
 		}
+		setElement(m_element);
+		//setElementWidget(m_element, this);
 	}
 	
-	private native void setInternalSelected(int row, int col, boolean value)/*-{
+	@Override
+	public void onAttach() {
+		super.onAttach();
+		setElementWidget(m_element, this);
+	}
+	
+	private native void setInternalSelected(Element theTable, int row, int col, boolean value)/*-{
 		if(value) {
-			window.theTable.rows[row].cells[col].className = "rocs-table-cursor rocs-table-selected";
+			theTable.rows[row].cells[col].className = "rocs-table-cursor rocs-table-selected";
 		}
 		else {
-			window.theTable.rows[row].cells[col].className = "rocs-table-cursor rocs-table-unselected";
+			theTable.rows[row].cells[col].className = "rocs-table-cursor rocs-table-unselected";
 		}
 	}-*/;
 	
 	public void setSelected(int row, int col, boolean value) {
 		selected[row][col]=value;
-		setInternalSelected(row+1,col+1,value);
+		setInternalSelected(m_element, row+1,col+1,value);
 	}
 	
 	public boolean isSelected(int row, int col) {
