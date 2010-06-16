@@ -17,7 +17,6 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 import edu.rpi.rocs.client.filters.schedule.ScheduleFilter;
 import edu.rpi.rocs.client.objectmodel.SemesterManager.SemesterManagerCallback;
 import edu.rpi.rocs.client.services.schedulemanager.ScheduleManagerService;
-import edu.rpi.rocs.client.ui.coursesearch.CourseSearchPanel;
 
 /**
  * The Schedule Manager is responsible for keeping track of the current state of the scheduler on the
@@ -200,6 +199,7 @@ public class SchedulerManager implements IsSerializable {
 	 * @param c The course to add
 	 */
 	public void addCourse(Course c) {
+		Log.debug("added course");
 		CourseStatusObject status =new CourseStatusObject(c, true);
 		currentCourses.put(c, status);
 		m_changed = true;
@@ -215,12 +215,11 @@ public class SchedulerManager implements IsSerializable {
 	 * @param c The course to make required
 	 */
 	public void setCourseRequired(Course c) {
+		Log.debug("set course required");
 		m_changed = true;
 		CourseStatusObject obj = currentCourses.get(c);
 		if(obj!=null) {
-			if (!obj.getRequired()) CourseSearchPanel.getInstance().addFS(c);
 			obj.setRequired(true);
-
 			for(CourseRequiredHandler e : courseRequiredHandlers) {
 				e.handleEvent(obj);
 			}
@@ -233,6 +232,7 @@ public class SchedulerManager implements IsSerializable {
 	 * @param c The course to make optional
 	 */
 	public void setCourseOptional(Course c) {
+		Log.debug("set course optional");
 		m_changed = true;
 		CourseStatusObject obj = currentCourses.get(c);
 		if(obj!=null) {
@@ -263,6 +263,7 @@ public class SchedulerManager implements IsSerializable {
 	 * @param c The course to remove
 	 */
 	public void removeCourse(Course c) {
+		Log.debug("removed course");
 		m_changed = true;
 		CourseStatusObject status = currentCourses.get(c);
 		currentCourses.remove(c);

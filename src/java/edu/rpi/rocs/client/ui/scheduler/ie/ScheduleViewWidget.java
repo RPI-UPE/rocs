@@ -3,6 +3,10 @@ package edu.rpi.rocs.client.ui.scheduler.ie;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.HasClickHandlers;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -26,7 +30,7 @@ public class ScheduleViewWidget extends FlowPanel {
 	//private static final int MINOR_Y_DISTANCE=13;
 	RandomColorGenerator m_generator=null;
 	
-	private class CustomFlowPanel extends FlowPanel {
+	private class CustomFlowPanel extends FlowPanel implements HasClickHandlers {
 		private native void setColorJS(Element e, String color)/*-{
 			e.style.backgroundColor = color;
 		}-*/;
@@ -49,6 +53,10 @@ public class ScheduleViewWidget extends FlowPanel {
 		
 		public void setTop(String top) {
 			setTopJS(getElement(), top);
+		}
+
+		public HandlerRegistration addClickHandler(ClickHandler arg0) {
+			return addDomHandler(arg0, ClickEvent.getType());
 		}
 	}
 
@@ -120,6 +128,18 @@ public class ScheduleViewWidget extends FlowPanel {
 			createBlocked(mSchedule);
 		}
 	}
+	
+	class CustomClickHandler implements ClickHandler {
+		Section section;
+		
+		CustomClickHandler(Section s) { 
+			section = s;
+		}
+
+		public void onClick(ClickEvent arg0) {
+			SchedulerDisplayPanel.getInstance().getInfoPanel().displayInfoForSection(section);
+		}
+	}
 
 	private class SectionGroupWidget extends FlowPanel {
 		private ArrayList<CustomFlowPanel> m_divs=null;
@@ -158,6 +178,7 @@ public class ScheduleViewWidget extends FlowPanel {
 					w.addStyleName("course-div");
 					Label lbl = new Label(s.getParent().getId());
 					w.add(lbl);
+					w.addClickHandler(new CustomClickHandler(s));
 					m_divs.add(w);
 				}
 			}

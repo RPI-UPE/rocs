@@ -69,4 +69,25 @@ public class Time implements Serializable, Cloneable {
 		if(t.hour == this.hour && t.minute == this.minute) return true;
 		return false;
 	}
+
+	public String getMeridiem() {
+		return (hour>=12 ? "AM" : "PM");
+	}
+	
+	public String get24HRString() {
+		return Integer.toString(hour)+":"+(minute<10 ? "0"+minute : ""+minute);
+	}
+	
+	public String get12HRString(boolean meridiem) {
+		if(hour>=12) {
+			return Integer.toString(hour-12)+":"+(minute<10 ? "0"+minute : ""+minute)+(meridiem ? " PM" : "");
+		}
+		else {
+			return Integer.toString(hour)+":"+(minute<10 ? "0"+minute : ""+minute)+(meridiem ? " AM" : "");
+		}
+	}
+	
+	public String get12HRString() {
+		return get12HRString(true);
+	}
 }

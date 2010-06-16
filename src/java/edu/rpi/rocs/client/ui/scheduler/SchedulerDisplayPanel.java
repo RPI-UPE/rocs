@@ -23,6 +23,8 @@ public class SchedulerDisplayPanel extends VerticalPanel {
 	RandomColorGenerator m_genMap = new RandomColorGenerator();
 	HorizontalPanel crn_pane = new HorizontalPanel();
 	HorizontalPanel content = new HorizontalPanel();
+	VerticalPanel rightbar = new VerticalPanel();
+	SectionInfoPanel infoPanel = new SectionInfoPanel();
 	Label crnsLbl = new Label("Schedule CRNs:");
 
 	private void setActiveSchedule(Schedule s) {
@@ -52,7 +54,10 @@ public class SchedulerDisplayPanel extends VerticalPanel {
 		m_summary.addStyleName("rocs-style");
 		m_summary.addStyleName("schedule-list");
 		
-		content.add(m_summary);
+		rightbar.add(m_summary);
+		rightbar.add(infoPanel);
+		
+		content.add(rightbar);
 		
 		crn_pane.add(crnsLbl);
 		crn_pane.addStyleName("crn-pane");
@@ -64,6 +69,10 @@ public class SchedulerDisplayPanel extends VerticalPanel {
 	public static SchedulerDisplayPanel getInstance() {
 		if(theInstance==null) theInstance = new SchedulerDisplayPanel();
 		return theInstance;
+	}
+	
+	public SectionInfoPanel getInfoPanel() {
+		return infoPanel;
 	}
 
 	public void setSchedules(ArrayList<Schedule> schedules) {
@@ -91,6 +100,7 @@ public class SchedulerDisplayPanel extends VerticalPanel {
 		}
 		if(m_current==null) {
 			Window.alert("Unable to compute at least one valid schedule.");
+			infoPanel.clear();
 			return;
 		}
 		m_view = new ScheduleViewWidget(m_current, m_genMap);

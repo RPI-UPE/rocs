@@ -2,6 +2,7 @@ package edu.rpi.rocs.client.ui.coursesearch;
 
 import java.util.ArrayList;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -47,8 +48,10 @@ public class CourseResultList {
 		c = m_table.new HTMLTableListCell(true); c.setText("Instructor"); m_header.add(c);
 		m_table.add(m_header);
 
+		/*
 		SchedulerManager.getInstance().addCourseAddedEventHandler(addedHandler);
 		SchedulerManager.getInstance().addCourseRemovedEventHandler(removedHandler);
+		*/
 	}
 
 	public static CourseResultList getInstance() {
@@ -68,10 +71,10 @@ public class CourseResultList {
 			int x = m_table.indexOfElement(e)-1;
 			if(x<0) return;
 			Course c = results.get(x);
+			Log.debug("onclick");
 			SchedulerManager.getInstance().addCourse(c);
 			if(!ROCSInterface.getInstance().isDisplaying(ClassViewPanel.getInstance()))
 				ROCSInterface.getInstance().show(ClassViewPanel.getInstance(), true);
-			CourseSearchPanel.getInstance().redosearch();
 		}
 
 	};
@@ -99,9 +102,9 @@ public class CourseResultList {
 		}
 		else {
 			r.setStyleName("course-selectable");
-			r.addClickHandler(clickHandler);
 			r.setTitle("Click to add this course");
 		}
+		r.addClickHandler(clickHandler);
 		m_table.add(r);
 	}
 
@@ -123,7 +126,7 @@ public class CourseResultList {
 		}
 		else {
 			r.setStyleName("course-selectable");
-			r.addClickHandler(clickHandler);
+			//r.addClickHandler(clickHandler);
 			r.setTitle("Click to add this course");
 		}
 	}

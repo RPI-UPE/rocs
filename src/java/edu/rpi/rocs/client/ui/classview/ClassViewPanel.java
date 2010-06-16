@@ -169,39 +169,39 @@ public class ClassViewPanel extends VerticalPanel implements CourseAddedHandler,
 
 	public void markOptional()
 	{
-		boolean mod = false;
 		for(int i=0; i<classList.getItemCount(); i++)
 		{
 			if( classList.isItemSelected(i) )
 			{
-				mod = true;
 				Course c = curCourses.get(i).getCourse();
 				SchedulerManager.getInstance().setCourseOptional(c);
 			}
 		}
+		/*
 		if (mod)
 		{
 			CourseSearchPanel.getInstance().rebuildFS();
 			CourseSearchPanel.getInstance().redosearch();
 		}
+		*/
 	}
 
 	public void remove()
 	{
-		boolean mod = false;
 		for(int i=0; i<classList.getItemCount(); i++)
 		{
 			if( classList.isItemSelected(i) )
 			{
-				mod = true;
 				Course c = curCourses.get(i).getCourse();
 				SchedulerManager.getInstance().removeCourse(c);
 			}
 		}
+		/*
 		if (mod)
 		{
 			CourseSearchPanel.getInstance().rebuildFS();
 			CourseSearchPanel.getInstance().redosearch();
 		}
+		*/
 	}
 }

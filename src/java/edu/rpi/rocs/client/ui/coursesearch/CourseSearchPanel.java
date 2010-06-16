@@ -15,12 +15,10 @@ import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
-import edu.rpi.rocs.client.filters.schedule.ScheduleFilter;
 import edu.rpi.rocs.client.objectmodel.Course;
 import edu.rpi.rocs.client.objectmodel.FastSchedule;
 import edu.rpi.rocs.client.objectmodel.CrossListing;
-import edu.rpi.rocs.client.objectmodel.Period;
-import edu.rpi.rocs.client.objectmodel.Schedule;
+import edu.rpi.rocs.client.objectmodel.FastSchedule2;
 import edu.rpi.rocs.client.objectmodel.SchedulerManager;
 import edu.rpi.rocs.client.objectmodel.SemesterManager;
 import edu.rpi.rocs.client.objectmodel.CourseStatusObject;
@@ -29,7 +27,6 @@ import edu.rpi.rocs.client.objectmodel.Section;
 import edu.rpi.rocs.client.objectmodel.Semester;
 import edu.rpi.rocs.client.objectmodel.Course.CourseComparator;
 import edu.rpi.rocs.client.ui.HTMLTableList;
-import edu.rpi.rocs.client.ui.scheduler.SchedulerFilterDisplayPanel;
 
 public class CourseSearchPanel extends VerticalPanel {
 
@@ -180,6 +177,42 @@ public class CourseSearchPanel extends VerticalPanel {
 			}
 
 		});
+		
+		SchedulerManager.getInstance().addCourseAddedEventHandler(new SchedulerManager.CourseAddedHandler() {
+			
+			public void handleEvent(CourseStatusObject status) {
+				// TODO Auto-generated method stub
+				FS2.addCourse(status.getCourse());
+				redosearch();
+			}
+		});
+		
+		SchedulerManager.getInstance().addCourseRequiredEventHandler(new SchedulerManager.CourseRequiredHandler() {
+			
+			public void handleEvent(CourseStatusObject status) {
+				// TODO Auto-generated method stub
+				FS2.addCourse(status.getCourse());
+				redosearch();
+			}
+		});
+		
+		SchedulerManager.getInstance().addCourseOptionalEventHandler(new SchedulerManager.CourseOptionalHandler() {
+			
+			public void handleEvent(CourseStatusObject status) {
+				// TODO Auto-generated method stub
+				FS2.removeCourse(status.getCourse());
+				redosearch();
+			}
+		});
+		
+		SchedulerManager.getInstance().addCourseRemovedEventHandler(new SchedulerManager.CourseRemovedHandler() {
+			
+			public void handleEvent(CourseStatusObject status) {
+				// TODO Auto-generated method stub
+				FS2.removeCourse(status.getCourse());
+				redosearch();
+			}
+		});
 
 		/*
 		resultsListBox.addStyleName("search_results");
@@ -224,6 +257,7 @@ public class CourseSearchPanel extends VerticalPanel {
 	private ArrayList<Course> theResults=null;
 
 	private FastSchedule FS = new FastSchedule();
+	private FastSchedule2 FS2 = new FastSchedule2();
 
 	public void rebuildFS()
 	{
@@ -233,7 +267,8 @@ public class CourseSearchPanel extends VerticalPanel {
 	}
 	public void addFS(Course C)
 	{
-		FS.addCourse(C);
+		//FS.addCourse(C);
+		FS2.addCourse(C);
 	}
 
 	public void search() {
@@ -278,6 +313,7 @@ public class CourseSearchPanel extends VerticalPanel {
 		}
 		Collections.sort(theResults, new CourseComparator());
 
+
 		//resultsListBox.clear();
 		CourseResultList.getInstance().clear();
 		for(Course course : theResults) {
@@ -288,7 +324,10 @@ public class CourseSearchPanel extends VerticalPanel {
 			}
 			int bits = 0;
 			if (chosen) bits += 1;
+			/*
 			if (!chosen && FS.test(course)) bits += 4;
+			*/
+			if(!chosen && FS2.conflicts(course)) bits += 4;
 			if (course.isClosed()) bits += 2;
 			//resultsListBox.addHTML(LIST_HEAD[bits]+course.getListDescription()+LIST_TAIL[bits], course.getDept()+course.getNum());
 			CourseResultList.getInstance().add(course, bits);
@@ -312,14 +351,13 @@ public class CourseSearchPanel extends VerticalPanel {
 			}
 			int bits = 0;
 			if (chosen) bits += 1;
-			if (!chosen && FS.test(course)) bits += 4;
+			if (!chosen && FS2.conflicts(course)) bits += 4;
 			if (course.isClosed()) bits += 2;
 			//resultsListBox.addHTML(LIST_HEAD[bits]+course.getListDescription()+LIST_TAIL[bits], course.getDept()+course.getNum());
 			CourseResultList.getInstance().modifyBits(i, bits);
 		}
 	}
 
-	@SuppressWarnings("unused")
 	/*private Section combineSections(Section S1, Section S2) {
 		Section retVal = new Section();
 		for (Period P : S1.getPeriods()) retVal.addPeriod(P);

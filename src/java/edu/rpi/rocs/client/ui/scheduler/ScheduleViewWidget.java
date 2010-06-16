@@ -3,6 +3,8 @@ package edu.rpi.rocs.client.ui.scheduler;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.MouseOutEvent;
 import com.google.gwt.event.dom.client.MouseOutHandler;
 import com.google.gwt.event.dom.client.MouseOverEvent;
@@ -235,6 +237,14 @@ public class ScheduleViewWidget extends SVGCanvasWidget {
 				self = w;
 			}
 		}
+		
+		abstract class SectionClickHandler implements ClickHandler {
+			SectionGroupWidget self;
+			
+			SectionClickHandler(SectionGroupWidget w) {
+				self = w;
+			}
+		}
 
 		SectionMouseOverHandler overHandle = new SectionMouseOverHandler(this) {
 
@@ -256,6 +266,17 @@ public class ScheduleViewWidget extends SVGCanvasWidget {
 				}
 			}
 			
+		};
+		
+		SectionClickHandler clickHandle = new SectionClickHandler(this) {
+			
+			public void onClick(ClickEvent arg0) {
+				for(SVGRectWidget w : self.m_rects) {
+					w.setStrokeColor("#000000");
+					w.setStrokeWidth("3");
+				}
+				SchedulerDisplayPanel.getInstance().getInfoPanel().displayInfoForSection(m_section);
+			}
 		};
 
 		public SectionGroupWidget(Section s) {
@@ -297,6 +318,7 @@ public class ScheduleViewWidget extends SVGCanvasWidget {
 					rect.setStrokeWidth("1");
 					rect.addMouseOutHandler(outHandle);
 					rect.addMouseOverHandler(overHandle);
+					rect.addClickHandler(clickHandle);
 					m_rects.add(rect);
 
 					SVGTextWidget text = new SVGTextWidget();
@@ -307,6 +329,7 @@ public class ScheduleViewWidget extends SVGCanvasWidget {
 					text.setText(m_identifier);
 					text.addMouseOutHandler(outHandle);
 					text.addMouseOverHandler(overHandle);
+					text.addClickHandler(clickHandle);
 					m_text.add(text);
 				}
 			}
