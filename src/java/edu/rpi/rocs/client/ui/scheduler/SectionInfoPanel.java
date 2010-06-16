@@ -44,7 +44,7 @@ public class SectionInfoPanel extends VerticalPanel {
 		else minStr = ""+min;
 		time = new Label("Class time: "+hr+":"+minStr+" per week");
 		seats = new Label("Seats: "+s.getSeats()+" ("+(s.getSeats()-s.getStudents())+" remaining)");
-		String text = "<p>Class times:<p>";
+		String text = "<p>Class times:</p>";
 		text += "<ul>";
 		for(Period p : s.getPeriods()) {
 			String type = p.getType();
@@ -76,6 +76,20 @@ public class SectionInfoPanel extends VerticalPanel {
 		}
 		text += "</ul>";
 		periods = new HTML(text);
+		text = "";
+		for(String t : s.getNotes()) {
+			text += t + "<br/>";
+		}
+		notes = new HTML(text);
+		for(int i=this.getWidgetCount();i>0;i--) {
+			this.remove(0);
+		}
+		add(name);
+		add(num);
+		add(time);
+		add(seats);
+		add(periods);
+		add(notes);
 	}
 	
 	private String dayOfWeek(int day) {

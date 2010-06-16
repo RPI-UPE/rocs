@@ -54,8 +54,12 @@ public class SchedulerDisplayPanel extends VerticalPanel {
 		m_summary.addStyleName("rocs-style");
 		m_summary.addStyleName("schedule-list");
 		
+		FlowPanel wrapper = new FlowPanel();
+		wrapper.add(infoPanel);
+		wrapper.setStyleName("section-info");
+	
 		rightbar.add(m_summary);
-		rightbar.add(infoPanel);
+		rightbar.add(wrapper);
 		
 		content.add(rightbar);
 		
