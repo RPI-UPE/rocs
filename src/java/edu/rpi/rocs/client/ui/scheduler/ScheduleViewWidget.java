@@ -9,6 +9,7 @@ import com.google.gwt.event.dom.client.MouseOutEvent;
 import com.google.gwt.event.dom.client.MouseOutHandler;
 import com.google.gwt.event.dom.client.MouseOverEvent;
 import com.google.gwt.event.dom.client.MouseOverHandler;
+import com.google.gwt.user.client.Element;
 
 import edu.rpi.rocs.client.objectmodel.Course;
 import edu.rpi.rocs.client.objectmodel.Period;
@@ -278,6 +279,10 @@ public class ScheduleViewWidget extends SVGCanvasWidget {
 				SchedulerDisplayPanel.getInstance().getInfoPanel().displayInfoForSection(m_section);
 			}
 		};
+		
+		protected native void setStyle(Element e)/*-{
+			e.style = "cursor: pointer;";
+		}-*/;
 
 		public SectionGroupWidget(Section s) {
 			m_section = s;
@@ -287,7 +292,7 @@ public class ScheduleViewWidget extends SVGCanvasWidget {
 			m_rects = new ArrayList<SVGRectWidget>();
 			m_text = new ArrayList<SVGTextWidget>();
 			List<Period> times = s.getPeriods();
-			this.addStyleName("with-cursor");
+			this.setStyle(this.getElement());
 			for(Period p : times) {
 				Time start = p.getStart();
 				Time end = p.getEnd();
