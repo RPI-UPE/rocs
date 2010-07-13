@@ -1,5 +1,8 @@
 package edu.rpi.rocs.client.ui;
 
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Hyperlink;
@@ -24,6 +27,7 @@ public class WelcomeScreen extends VerticalPanel {
 		return theInstance;
 	}
 	
+	@SuppressWarnings("deprecation")
 	private WelcomeScreen() {
 		title = new InlineHTML("<h1 align=\"center\">Welcome to the Rensselaer Open Course Scheduler Beta</h1>");
 		subtitle = new InlineHTML("<h4 align=\"center\">The Rensselaer Open Course Scheduler [BETA]</h4>");
@@ -40,6 +44,13 @@ public class WelcomeScreen extends VerticalPanel {
 		tutorialButton = new InlineHyperlink("See a ROCS Tutorial","rocs-tutorial");
 		tutorialButton.addStyleName("bluebutton");
 		tutorialButton.addStyleName("linkbutton");
+		tutorialButton.addClickHandler(new ClickHandler() {
+
+			public void onClick(ClickEvent arg0) {
+				Window.open("http://upe.acm.cs.rpi.edu/rocs/tutorial.mov", "_blank", "");
+			}
+			
+		});
 		continueButton = new InlineHyperlink("Start using ROCS", "rocs-main");
 		continueButton.addStyleName("bluebutton");
 		continueButton.addStyleName("linkbutton");

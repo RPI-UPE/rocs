@@ -287,6 +287,7 @@ public class ScheduleViewWidget extends SVGCanvasWidget {
 			m_rects = new ArrayList<SVGRectWidget>();
 			m_text = new ArrayList<SVGTextWidget>();
 			List<Period> times = s.getPeriods();
+			this.addStyleName("with-cursor");
 			for(Period p : times) {
 				Time start = p.getStart();
 				Time end = p.getEnd();

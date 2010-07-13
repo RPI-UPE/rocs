@@ -5,6 +5,7 @@ import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.History;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.RootPanel;
 
 import edu.rpi.rocs.client.ui.ROCSInterface;
@@ -33,6 +34,9 @@ public class MainEntryPoint implements EntryPoint {
 		Log.trace("Init Token = " + initToken);
 		if(initToken=="rocs-main") {
 			RootPanel.get("rocs_PORTLET_rocs_root_view").add(ROCSInterface.getInstance());
+		}
+		else if(initToken=="rocs-tutorial") {
+			Window.open("http://upe.acm.cs.rpi.edu/rocs/tutorial.mov", "_blank", "");
 		}
 		else if(initToken=="rocs-welcome") {
 			RootPanel.get("rocs_PORTLET_rocs_root_view").add(WelcomeScreen.getInstance());

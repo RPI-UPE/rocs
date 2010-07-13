@@ -31,6 +31,11 @@ public class ScheduleViewWidget extends FlowPanel {
 	RandomColorGenerator m_generator=null;
 	
 	private class CustomFlowPanel extends FlowPanel implements HasClickHandlers {
+		CustomFlowPanel() {
+			super();
+			this.addStyleName("with-cursor");
+		}
+		
 		private native void setColorJS(Element e, String color)/*-{
 			e.style.backgroundColor = color;
 		}-*/;

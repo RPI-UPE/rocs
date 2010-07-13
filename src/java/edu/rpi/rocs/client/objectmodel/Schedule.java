@@ -155,22 +155,21 @@ public class Schedule implements Serializable {
 		return results;
 	}
 	
-	
 	public static ArrayList<Schedule> buildAllSchedulesGivenCoursesAndFilters(Collection<Course> requiredCourses, Collection<Course> optionalCourses, Collection<ScheduleFilter> filters) {
-		//Log.debug("Inside buildAllSchedulesGivenCoursesAndFilters");
-		//Log.debug("Building required courses hashmap");
 		Map<Course, Set<Section>> requiredCourseMap = new HashMap<Course, Set<Section>>();
 		for(Course c : requiredCourses) {
 			Set<Section> set = new HashSet<Section>(c.getSections());
 			requiredCourseMap.put(c, set);
 		}
-		//Log.debug("Building optional courses hashmap");
 		Map<Course, Set<Section>> optionalCourseMap = new HashMap<Course, Set<Section>>();
 		for(Course c : optionalCourses) {
 			Set<Section> set = new HashSet<Section>(c.getSections());
 			optionalCourseMap.put(c, set);
 		}
-		//Log.debug("Finding TimeSchedulerFilter");
+		return buildAllSchedulesGivenCoursesAndFilters(requiredCourseMap, optionalCourseMap, filters);
+	}
+	
+	public static ArrayList<Schedule> buildAllSchedulesGivenCoursesAndFilters(Map<Course, Set<Section>> requiredCourseMap, Map<Course, Set<Section>> optionalCourseMap, Collection<ScheduleFilter> filters) {
 		TimeSchedulerFilter timeFilter=null;
 		for(ScheduleFilter filter : filters) {
 			if(filter.getClass().equals(TimeSchedulerFilter.class)) {
@@ -178,7 +177,6 @@ public class Schedule implements Serializable {
 				break;
 			}
 		}
-		//Log.debug("Blocking out times specified in filter");
 		HashMap<Integer, ArrayList<Time>> times = timeFilter.getTimes();
 		Schedule start = new Schedule();
 		for(int i=0;i<7;i++) {
@@ -188,19 +186,16 @@ public class Schedule implements Serializable {
 				start.blockTime(i, t.getHour(), t.getMinute());
 			}
 		}
-		//Log.debug("Removing the TimeSchedulerFilter");
 		ArrayList<ScheduleFilter> newFilters = new ArrayList<ScheduleFilter>(filters);
 		newFilters.remove(timeFilter);
 		ArrayList<Schedule> schedules = buildSchedulesGivenStartingPoint(start, requiredCourseMap, optionalCourseMap, newFilters);
 		ArrayList<Schedule> result = new ArrayList<Schedule>();
 		
 		for(Schedule s : schedules) {
-			if(s.getCourses().containsAll(requiredCourses)) {
+			if(s.getCourses().containsAll(requiredCourseMap.keySet())) {
 				result.add(s);
 			}
 		}
-		//if(result.size()==0) Window.alert("Conflict detected. Unable to generate any valid schedules.");
-		
 		return result;
 	}
 	

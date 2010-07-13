@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
@@ -115,6 +116,8 @@ public class SchedulerManager implements IsSerializable {
 	private transient HashSet<CourseRemovedHandler> courseRemoveHandlers=new HashSet<CourseRemovedHandler>();
 	private transient HashSet<CourseRequiredHandler> courseRequiredHandlers=new HashSet<CourseRequiredHandler>();
 	private transient HashSet<CourseOptionalHandler> courseOptionalHandlers=new HashSet<CourseOptionalHandler>();
+	private transient HashSet<SectionIncludedHandler> sectionIncludedHandlers=new HashSet<SectionIncludedHandler>();
+	private transient HashSet<SectionExcludedHandler> sectionExcludedHandlers=new HashSet<SectionExcludedHandler>();
 
 	/**
 	 * Hidden for singleton management
@@ -157,6 +160,22 @@ public class SchedulerManager implements IsSerializable {
 	public void removeCourseOptionalEventHandler(CourseOptionalHandler e) {
 		courseOptionalHandlers.remove(e);
 	}
+	
+	public void addSectionIncludedHandler(SectionIncludedHandler e) {
+		sectionIncludedHandlers.add(e);
+	}
+	
+	public void removeSectionIncludedHandler(SectionIncludedHandler e) {
+		sectionIncludedHandlers.remove(e);
+	}
+	
+	public void addSectionExcludedHandler(SectionExcludedHandler e) {
+		sectionExcludedHandlers.add(e);
+	}
+	
+	public void removeSectionExcludedHandler(SectionExcludedHandler e) {
+		sectionExcludedHandlers.remove(e);
+	}
 
 	/**
 	 * Gets the singleton ScheduleManager instance
@@ -181,6 +200,10 @@ public class SchedulerManager implements IsSerializable {
 	public interface CourseModificationHandler extends EventHandler {
 		public void handleEvent(CourseStatusObject status);
 	}
+	
+	public interface SectionModificationHandler extends EventHandler {
+		public void handleEvent(SectionStatusObject status);
+	}
 
 	public interface CourseAddedHandler extends CourseModificationHandler {
 	}
@@ -193,6 +216,12 @@ public class SchedulerManager implements IsSerializable {
 
 	public interface CourseOptionalHandler extends CourseModificationHandler {
 	}
+	
+	public interface SectionIncludedHandler extends SectionModificationHandler {
+	}
+	
+	public interface SectionExcludedHandler extends SectionModificationHandler {
+	}
 
 	/**
 	 * Adds a course to the current course listing
@@ -203,6 +232,15 @@ public class SchedulerManager implements IsSerializable {
 		CourseStatusObject status =new CourseStatusObject(c, true);
 		currentCourses.put(c, status);
 		m_changed = true;
+		
+		Map<Section,SectionStatusObject> objs = new HashMap<Section,SectionStatusObject>();
+		for(Section s : c.getSections()) {
+			SectionStatusObject sso = new SectionStatusObject();
+			sso.setSection(s);
+			sso.setIncluded(true);
+			objs.put(s, sso);
+		}
+		currentSections.put(c, objs);
 
 		for(CourseAddedHandler e : courseAddHandlers) {
 			e.handleEvent(status);
@@ -267,6 +305,7 @@ public class SchedulerManager implements IsSerializable {
 		m_changed = true;
 		CourseStatusObject status = currentCourses.get(c);
 		currentCourses.remove(c);
+		currentSections.remove(c);
 
 		for(CourseRemovedHandler e : courseRemoveHandlers) {
 			e.handleEvent(status);
@@ -331,9 +370,32 @@ public class SchedulerManager implements IsSerializable {
 				optionalCourses.add(status.getCourse());
 			}
 		}
+		
+		Map<Course, Set<Section>> requiredSections = new HashMap<Course, Set<Section>>();
+		Map<Course, Set<Section>> optionalSections = new HashMap<Course, Set<Section>>();
+		
+		for(Course c : requiredCourses) {
+			Map<Section, SectionStatusObject> stats = currentSections.get(c);
+			Set<Section> set = new HashSet<Section>();
+			for(SectionStatusObject sso : stats.values()) {
+				if(sso.getIncluded())
+					set.add(sso.getSection());
+			}
+			requiredSections.put(c, set);
+		}
+		for(Course c : optionalCourses) {
+			Map<Section, SectionStatusObject> stats = currentSections.get(c);
+			Set<Section> set = new HashSet<Section>();
+			for(SectionStatusObject sso : stats.values()) {
+				if(sso.getIncluded())
+					set.add(sso.getSection());
+			}
+			optionalSections.put(c, set);
+		}
+		
 
 		HashSet<ScheduleFilter> filters = ScheduleFilterManager.getInstance().getFilters();
-		generatedSchedules = Schedule.buildAllSchedulesGivenCoursesAndFilters(requiredCourses, optionalCourses, filters);
+		generatedSchedules = Schedule.buildAllSchedulesGivenCoursesAndFilters(requiredSections, optionalSections, filters);
 		if(generatedSchedules != null)
 			Log.trace("Generated " + generatedSchedules.size() + " schedules");
 		if(generatedSchedules != null && generatedSchedules.size()>0) {
@@ -350,6 +412,34 @@ public class SchedulerManager implements IsSerializable {
 	}
 	public Map<Course, CourseStatusObject> getCurrentCourses() {
 		return new HashMap<Course, CourseStatusObject>(currentCourses);
+	}
+	
+	private HashMap<Course, Map<Section, SectionStatusObject>> currentSections = new HashMap<Course, Map<Section, SectionStatusObject>>();
+	public void setSectionIncluded(Section s) {
+		currentSections.get(s.getParent()).get(s).setIncluded(true);
+		for(SectionIncludedHandler handler : sectionIncludedHandlers) {
+			handler.handleEvent(currentSections.get(s.getParent()).get(s));
+		}
+	}
+	
+	public void setSectionExcluded(Section s) {
+		currentSections.get(s.getParent()).get(s).setIncluded(false);
+		for(SectionExcludedHandler handler : sectionExcludedHandlers) {
+			handler.handleEvent(currentSections.get(s.getParent()).get(s));
+		}
+	}
+	
+	public Map<Section, SectionStatusObject> getCurrentSections() {
+		Map<Section, SectionStatusObject> obj = new HashMap<Section, SectionStatusObject>();
+		for(Course c : currentCourses.keySet()) {
+			Map<Section, SectionStatusObject> r = currentSections.get(c);
+			obj.putAll(r);
+		}
+		return obj;
+	}
+	
+	public Map<Section, SectionStatusObject> getSectionsForCourse(Course c) {
+		return new HashMap<Section, SectionStatusObject>(currentSections.get(c));
 	}
 
 	private String m_uid=null;

@@ -30,6 +30,7 @@ public class HTMLTableList extends Widget implements List<HTMLTableList.HTMLTabl
 	
 	public class HTMLTableListCell extends Widget implements HasClickHandlers, HasMouseOverHandlers, HasMouseOutHandlers {
 		public Element m_td=null;
+		private Widget w = null;
 		
 		public HTMLTableListCell() {
 			this(false);
@@ -49,6 +50,7 @@ public class HTMLTableList extends Widget implements List<HTMLTableList.HTMLTabl
 		}
 		
 		public void setWidget(Widget w) {
+			this.w = w;
 			m_td.appendChild(w.getElement());
 		}
 
@@ -78,6 +80,10 @@ public class HTMLTableList extends Widget implements List<HTMLTableList.HTMLTabl
 
 		public void setRowSpan(int i) {
 			m_td.setAttribute("rowspan", Integer.toString(i));
+		}
+
+		public Widget getWidget() {
+			return w;
 		}
 	}
 	
