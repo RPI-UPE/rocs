@@ -71,7 +71,7 @@ public class Time implements Serializable, Cloneable {
 	}
 
 	public String getMeridiem() {
-		return (hour>=12 ? "AM" : "PM");
+		return (hour<12 ? "AM" : "PM");
 	}
 	
 	public String get24HRString() {
@@ -80,7 +80,7 @@ public class Time implements Serializable, Cloneable {
 	
 	public String get12HRString(boolean meridiem) {
 		if(hour>=12) {
-			return Integer.toString(hour-12)+":"+(minute<10 ? "0"+minute : ""+minute)+(meridiem ? " PM" : "");
+			return (hour>12?Integer.toString(hour-12):"12")+":"+(minute<10 ? "0"+minute : ""+minute)+(meridiem ? " PM" : "");
 		}
 		else {
 			return Integer.toString(hour)+":"+(minute<10 ? "0"+minute : ""+minute)+(meridiem ? " AM" : "");

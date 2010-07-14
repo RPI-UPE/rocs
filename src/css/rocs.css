@@ -80,13 +80,13 @@ div#rocs_PORTLET_rocs_semester_pane {
 
 div#rocs_PORTLET_rocs_courses_pane {
     width:800px;
-    height:180px;
+    height:380px;
     overflow:hidden;
 }
 
 div#rocs_PORTLET_rocs_courses_pane select.class_view {    
     width: 640px;
-    height: 90px;
+    height: 290px;
     overflow-x: scroll;
 }
 
@@ -108,13 +108,14 @@ div#rocs_PORTLET_rocs_courses_pane table td {
 
 div#rocs_PORTLET_rocs_courses_pane div.class_view {
 	width: 640px;
-	height: 90px;
+	height: 290px;
 	overflow: scroll;
 }
 
 .with-cursor {
 	cursor: pointer;
 }
+
 
 div#rocs_PORTLET_rocs_search_pane {
     width:800px;
@@ -237,6 +238,9 @@ div.rocs-dialog {
 	width: 200px;
 	overflow: scroll;
 	height: 200px;
+	top: 0px;
+	left: 0px;
+	position: relative;
 }
 
 .schedule-list svg {
@@ -433,4 +437,9 @@ div#rocs_PORTLET_rocs_root_view .course-search-list tr.course-selectable:hover {
 .rocs-style .schedule-mini-widget div {
 	border: 1px solid black;
 	position: absolute;
+}
+
+table.section-info {
+	height: auto;
+	width: auto;
 }

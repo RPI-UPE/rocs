@@ -7,14 +7,12 @@ import java.util.List;
 import java.util.Map;
 
 import com.allen_sauer.gwt.log.client.Log;
-import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.Anchor;
+import com.google.gwt.user.client.ui.SimpleCheckBox;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
@@ -53,6 +51,7 @@ public class ClassViewPanel extends VerticalPanel implements CourseAddedHandler,
 	private CourseRequiredHandler requiredHandler = new CourseRequiredHandler() {
 		
 		public void handleEvent(CourseStatusObject status) {
+			instance.requireCourse(status);
 		}
 		
 	};
@@ -60,6 +59,7 @@ public class ClassViewPanel extends VerticalPanel implements CourseAddedHandler,
 	private CourseOptionalHandler optionalHandler = new CourseOptionalHandler() {
 		
 		public void handleEvent(CourseStatusObject status) {
+			instance.optionalCourse(status);
 		}
 		
 	};
@@ -78,7 +78,7 @@ public class ClassViewPanel extends VerticalPanel implements CourseAddedHandler,
 	private class Pair {
 		public Course course;
 		public ArrayList<HTMLTableList.HTMLTableListRow> rows = new ArrayList<HTMLTableList.HTMLTableListRow>();
-		public CheckBox check;
+		public SimpleCheckBox check;
 	}
 	private ArrayList<Pair> rows = new ArrayList<Pair>();
 
@@ -98,7 +98,7 @@ public class ClassViewPanel extends VerticalPanel implements CourseAddedHandler,
 		HTMLTableListRow r = createRowForCourse(status);
 		Pair p = new Pair();
 		p.course = status.getCourse();
-		p.check = (CheckBox) r.get(0).getWidget();
+		p.check = (SimpleCheckBox) r.get(0).getWidget();
 		sectionList.add(r);
 		p.rows.add(r);
 		for(SectionStatusObject sso : stats.values()) {
@@ -109,11 +109,31 @@ public class ClassViewPanel extends VerticalPanel implements CourseAddedHandler,
 		rows.add(p);
 	}
 	
+	protected void requireCourse(CourseStatusObject status) {
+		for(Pair p : rows) {
+			if(p.course.equals(status.getCourse())) {
+				p.rows.get(0).get(4).setText("Required");
+				return;
+			}
+		}
+	}
+	
+	protected void optionalCourse(CourseStatusObject status) {
+		for(Pair p : rows) {
+			if(p.course.equals(status.getCourse())) {
+				p.rows.get(0).get(4).setText("Optional");
+				return;
+			}
+		}
+	}
+	
 	protected void removedCourse(CourseStatusObject status) {
+		Log.debug("Removing course "+status.getCourse().getName());
 		Iterator<Pair> i = rows.iterator();
 		while(i.hasNext()) {
 			Pair p = i.next();
-			if(p.course == status.getCourse()) {
+			if(p.course.equals(status.getCourse())) {
+				Log.debug("Found course. Removing rows...");
 				for(HTMLTableListRow r : p.rows) {
 					sectionList.remove(r);
 				}
@@ -127,7 +147,8 @@ public class ClassViewPanel extends VerticalPanel implements CourseAddedHandler,
 		Course course= c.getCourse();
 		HTMLTableListRow row = sectionList.new HTMLTableListRow();
 		HTMLTableListCell cell = sectionList.new HTMLTableListCell();
-		CheckBox check = new CheckBox();
+		SimpleCheckBox check = new SimpleCheckBox();
+		check.setTitle("Select");
 		cell.setWidget(check);
 		row.add(cell);
 		cell = sectionList.new HTMLTableListCell();
@@ -138,14 +159,17 @@ public class ClassViewPanel extends VerticalPanel implements CourseAddedHandler,
 		cell = sectionList.new HTMLTableListCell();
 		cell.setText(course.getName());
 		row.add(cell);
+		cell = sectionList.new HTMLTableListCell();
+		cell.setText(c.getRequired() ? "Required" : "Optional");
+		row.add(cell);
 		return row;
 	}
 	
-	protected abstract class CheckBoxCallback implements ValueChangeHandler<Boolean> {
-		CheckBox cb = null;
+	protected abstract class CheckBoxCallback implements ClickHandler {
+		SimpleCheckBox cb = null;
 		
-		public CheckBoxCallback(CheckBox caller) {
-			cb = caller;
+		public CheckBoxCallback(SimpleCheckBox check) {
+			cb = check;
 		}
 	}
 	
@@ -157,7 +181,7 @@ public class ClassViewPanel extends VerticalPanel implements CourseAddedHandler,
 			SchedulerManager.getInstance().setSectionExcluded(sso.getSection());
 	}
 	
-	protected native void addEventHandler(Element e, CheckBox cb, SectionStatusObject sso)/*-{
+	protected native void addEventHandler(Element e, SimpleCheckBox cb, SectionStatusObject sso)/*-{
 		var self = this;
 		var callback = function() {
 			self.@edu.rpi.rocs.client.ui.classview.ClassViewPanel::checkClicked(ZLedu/rpi/rocs/client/objectmodel/SectionStatusObject;)(e.checked, sso);
@@ -166,7 +190,7 @@ public class ClassViewPanel extends VerticalPanel implements CourseAddedHandler,
 			e.addEventListener("change",callback,false);
 		}
 		else {
-			e.attachEvent("onchange",callback);
+			e.attachEvent("onclick",callback);
 		}
 	}-*/;
 	
@@ -176,20 +200,23 @@ public class ClassViewPanel extends VerticalPanel implements CourseAddedHandler,
 		HTMLTableListCell cell = sectionList.new HTMLTableListCell();
 		row.add(cell);
 		cell = sectionList.new HTMLTableListCell();
-		CheckBox check = new CheckBox();
-		check.setValue(sso.getIncluded());
+		SimpleCheckBox check = new SimpleCheckBox();
+		check.setTitle("Include?");
+		check.setChecked(sso.getIncluded());
 		addEventHandler(check.getElement(), check, sso);
-		check.addValueChangeHandler(new CheckBoxCallback(check) {
+		/*
+		check.addClickHandler(new CheckBoxCallback(check) {
 
-			public void onValueChange(ValueChangeEvent<Boolean> arg0) {
-				Log.debug("Section included: "+cb.getValue());
-				if(cb.getValue())
+			public void onClick(ClickEvent arg0) {
+				Log.debug("Section included: "+cb.isChecked());
+				if(cb.isChecked())
 					SchedulerManager.getInstance().setSectionIncluded(sso.getSection());
 				else
 					SchedulerManager.getInstance().setSectionExcluded(sso.getSection());
 			}
 
 		});
+		*/
 		Log.debug("Added click handler");
 		cell.setWidget(check);
 		row.add(cell);
@@ -211,7 +238,7 @@ public class ClassViewPanel extends VerticalPanel implements CourseAddedHandler,
 		}
 		else 
 			cell.setHTML("Section "+s.getNumber()+" - "+profs);
-		cell.setColSpan(2);
+		cell.setColSpan(3);
 		row.add(cell);
 		return row;
 	}
@@ -336,9 +363,9 @@ public class ClassViewPanel extends VerticalPanel implements CourseAddedHandler,
 	public void markRequired()
 	{
 		for(Pair p : rows) {
-			if(p.check.getValue()) {
+			if(p.check.isChecked()) {
 				SchedulerManager.getInstance().setCourseRequired(p.course);
-				p.check.setValue(false);
+				p.check.setChecked(false);
 			}
 		}
 	}
@@ -346,9 +373,9 @@ public class ClassViewPanel extends VerticalPanel implements CourseAddedHandler,
 	public void markOptional()
 	{
 		for(Pair p : rows) {
-			if(p.check.getValue()) {
+			if(p.check.isChecked()) {
 				SchedulerManager.getInstance().setCourseOptional(p.course);
-				p.check.setValue(false);
+				p.check.setChecked(false);
 			}
 		}
 	}
@@ -357,9 +384,11 @@ public class ClassViewPanel extends VerticalPanel implements CourseAddedHandler,
 	{
 		ArrayList<Course> temp = new ArrayList<Course>();
 		for(Pair p : rows) {
-			if(p.check.getValue()) {
+			Log.debug(p.course.getName()+": "+p.check.isChecked());
+			Log.debug(p.course.getName()+" (attached?): "+p.check.isAttached());
+			if(p.check.isChecked()) {
 				temp.add(p.course);
-				p.check.setValue(false);
+				p.check.setChecked(false);
 			}
 		}
 		for(int i=0; i<temp.size(); i++)

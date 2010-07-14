@@ -281,7 +281,7 @@ public class ScheduleViewWidget extends SVGCanvasWidget {
 		};
 		
 		protected native void setStyle(Element e)/*-{
-			e.style = "cursor: pointer;";
+			e.className.baseVal = "with-cursor";
 		}-*/;
 
 		public SectionGroupWidget(Section s) {

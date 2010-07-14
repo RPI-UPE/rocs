@@ -14,7 +14,6 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import edu.rpi.rocs.client.objectmodel.Schedule;
 import edu.rpi.rocs.client.objectmodel.Section;
 import edu.rpi.rocs.client.ui.scheduler.RandomColorGenerator;
-import edu.rpi.rocs.client.ui.scheduler.SectionInfoPanel;
 
 public class SchedulerDisplayPanel extends VerticalPanel {
 	ArrayList<Schedule> m_schedules=null;

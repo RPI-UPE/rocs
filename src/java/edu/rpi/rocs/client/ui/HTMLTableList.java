@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -35,6 +36,23 @@ public class HTMLTableList extends Widget implements List<HTMLTableList.HTMLTabl
 		public HTMLTableListCell() {
 			this(false);
 		}
+		
+		protected void doAttachChildren() {
+			if(w!=null) {
+				Log.debug("Attaching widget");
+				doAttachChildrenNative(w);
+			}
+		}
+		
+		protected native void doAttachChildrenNative(Widget w)/*-{
+			w.@com.google.gwt.user.client.ui.Widget::onAttach()();
+		}-*/;
+		
+		protected native void doDetachChildren()/*-{
+			var widget= this.w;
+			if(widget!=null)
+				widget.@com.google.gwt.user.client.ui.Widget::onDetach()();
+		}-*/;
 		
 		public HTMLTableListCell(boolean t) {
 			m_td = (t? DOM.createTH() : DOM.createTD());
@@ -321,10 +339,12 @@ public class HTMLTableList extends Widget implements List<HTMLTableList.HTMLTabl
 	}
 
 	public boolean remove(Object o) {
+		m_tbody.removeChild(((HTMLTableListRow)o).getElement());
 		return m_rows.remove(o);
 	}
 
 	public HTMLTableListRow remove(int index) {
+		m_tbody.removeChild(m_rows.get(index).getElement());
 		return m_rows.remove(index);
 	}
 
@@ -370,6 +390,7 @@ public class HTMLTableList extends Widget implements List<HTMLTableList.HTMLTabl
 	
 	@Override
 	protected void doAttachChildren() {
+		Log.debug("attaching HTMLTableList's children");
 		for(HTMLTableListRow r : m_rows) {
 			r.attach();
 		}
