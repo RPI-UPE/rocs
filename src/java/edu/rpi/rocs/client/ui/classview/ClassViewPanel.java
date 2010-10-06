@@ -7,10 +7,14 @@ import java.util.List;
 import java.util.Map;
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.Anchor;
+import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.SimpleCheckBox;
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Label;
@@ -143,13 +147,32 @@ public class ClassViewPanel extends VerticalPanel implements CourseAddedHandler,
 		}
 	}
 	
+	private abstract class ModeChangeHandler implements ChangeHandler {
+		ListBox mode;
+		Course course;
+		
+		public ModeChangeHandler(ListBox m, Course c) {
+			mode = m;
+			course = c;
+		}
+	}
+	
+	private abstract class DeleteClickHandler implements ClickHandler {
+		Course course;
+		
+		public DeleteClickHandler(Course c) {
+			course = c;
+		}
+	}
+	
 	protected HTMLTableListRow createRowForCourse(CourseStatusObject c) {
 		Course course= c.getCourse();
 		HTMLTableListRow row = sectionList.new HTMLTableListRow();
+		row.setStyleName("course");
 		HTMLTableListCell cell = sectionList.new HTMLTableListCell();
-		SimpleCheckBox check = new SimpleCheckBox();
-		check.setTitle("Select");
-		cell.setWidget(check);
+		//SimpleCheckBox check = new SimpleCheckBox();
+		//check.setTitle("Select");
+		//cell.setWidget(check);
 		row.add(cell);
 		cell = sectionList.new HTMLTableListCell();
 		row.add(cell);
@@ -160,7 +183,42 @@ public class ClassViewPanel extends VerticalPanel implements CourseAddedHandler,
 		cell.setText(course.getName());
 		row.add(cell);
 		cell = sectionList.new HTMLTableListCell();
-		cell.setText(c.getRequired() ? "Required" : "Optional");
+		cell.setText("State: ");
+		row.add(cell);
+		cell = sectionList.new HTMLTableListCell();
+		ListBox mode = new ListBox();
+		mode.addItem("Required");
+		mode.addItem("Optional");
+		mode.setVisibleItemCount(1);
+		if(c.getRequired()) {
+			mode.setItemSelected(0, true);
+		}
+		else {
+			mode.setItemSelected(1, true);
+		}
+		mode.addChangeHandler(new ModeChangeHandler(mode, c.getCourse()) {
+
+			public void onChange(ChangeEvent arg0) {
+				int i = mode.getSelectedIndex();
+				if(i==0)
+					SchedulerManager.getInstance().setCourseRequired(course);
+				else
+					SchedulerManager.getInstance().setCourseOptional(course);
+			}
+			
+		});
+		cell.setWidget(mode);
+		row.add(cell);
+		cell = sectionList.new HTMLTableListCell();
+		Button delete = new Button("Remove");
+		delete.addClickHandler(new DeleteClickHandler(c.getCourse()) {
+
+			public void onClick(ClickEvent arg0) {
+				SchedulerManager.getInstance().removeCourse(course);
+			}
+			
+		});
+		cell.setWidget(delete);
 		row.add(cell);
 		return row;
 	}
@@ -238,7 +296,7 @@ public class ClassViewPanel extends VerticalPanel implements CourseAddedHandler,
 		}
 		else 
 			cell.setHTML("Section "+s.getNumber()+" - "+profs);
-		cell.setColSpan(3);
+		cell.setColSpan(5);
 		row.add(cell);
 		return row;
 	}
@@ -255,7 +313,7 @@ public class ClassViewPanel extends VerticalPanel implements CourseAddedHandler,
 		buttonHolder = new VerticalPanel();
 
 		layout.setWidget(0, 0, listHolder);
-		layout.setWidget(0, 1, buttonHolder);
+		//layout.setWidget(0, 1, buttonHolder);
 
 		selectedTitle = new Label("Selected Courses:");
 
