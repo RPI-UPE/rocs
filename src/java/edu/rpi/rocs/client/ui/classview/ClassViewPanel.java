@@ -38,7 +38,6 @@ public class ClassViewPanel extends VerticalPanel implements CourseAddedHandler,
 	private CourseAddedHandler addHandler = new CourseAddedHandler() {
 
 		public void handleEvent(CourseStatusObject status) {
-			// TODO Auto-generated method stub
 			instance.addedCourse(status);
 		}
 		
@@ -52,6 +51,7 @@ public class ClassViewPanel extends VerticalPanel implements CourseAddedHandler,
 		
 	};
 	
+	@SuppressWarnings("unused")
 	private CourseRequiredHandler requiredHandler = new CourseRequiredHandler() {
 		
 		public void handleEvent(CourseStatusObject status) {
@@ -60,6 +60,7 @@ public class ClassViewPanel extends VerticalPanel implements CourseAddedHandler,
 		
 	};
 	
+	@SuppressWarnings("unused")
 	private CourseOptionalHandler optionalHandler = new CourseOptionalHandler() {
 		
 		public void handleEvent(CourseStatusObject status) {
@@ -303,8 +304,11 @@ public class ClassViewPanel extends VerticalPanel implements CourseAddedHandler,
 
 	private ClassViewPanel() {
 		SchedulerManager.getInstance().addCourseAddedEventHandler( addHandler );
+		// No longer required
+		/*
 		SchedulerManager.getInstance().addCourseOptionalEventHandler( optionalHandler );
 		SchedulerManager.getInstance().addCourseRequiredEventHandler( requiredHandler );
+		*/
 		SchedulerManager.getInstance().addCourseRemovedEventHandler( removeHandler );
 		
 		layout = new FlexTable();

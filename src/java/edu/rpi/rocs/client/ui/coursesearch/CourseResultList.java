@@ -6,6 +6,7 @@ import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Window;
 
 import edu.rpi.rocs.client.objectmodel.Course;
 import edu.rpi.rocs.client.objectmodel.CourseStatusObject;
@@ -71,6 +72,27 @@ public class CourseResultList {
 			int x = m_table.indexOfElement(e)-1;
 			if(x<0) return;
 			Course c = results.get(x);
+			// Adding 1 here accounts for the header row.
+			HTMLTableListRow r = m_table.get(x+1);
+			String bits = r.getProperty("bits", null);
+			if(bits==null) {
+				Window.alert("bits field was null, contact the developers. CourseResultList.$ClickHandler");
+			}
+			else {
+				int val = Integer.parseInt(bits);
+				if(val == State.CONFLICT) {
+					Window.alert("This course conflicts with another you've already selected.");
+					return;
+				}
+				else if(val == State.CLOSED && !SchedulerManager.getInstance().didWarnUser(State.CLOSED)) {
+					Window.alert("This course is closed. You may add it but will have to fill out paperwork with the registrar to register for it.");
+					SchedulerManager.getInstance().warnedUser(State.CLOSED);
+				}
+				else if(val == State.CHOSEN) {
+					Window.alert("You have already selected this course for your schedule.");
+					return;
+				}
+			}
 			Log.debug("onclick");
 			SchedulerManager.getInstance().addCourse(c);
 			if(!ROCSInterface.getInstance().isDisplaying(ClassViewPanel.getInstance()))
@@ -89,18 +111,22 @@ public class CourseResultList {
 		c = m_table.new HTMLTableListCell(); c.setStyleName("title"); c.setText(a.getName()); r.add(c);
 		c = m_table.new HTMLTableListCell(); c.setText(a.getInstructorString()); r.add(c);
 		if((status & State.CONFLICT) == State.CONFLICT) {
+			r.setProperty("bits", Integer.toString(State.CONFLICT));
 			r.setStyleName("course-conflict");
 			r.setTitle("Conflicts with another course");
 		}
-		else if((status & State.CLOSED) == State.CLOSED) {
-			r.setStyleName("course-closed");
-			r.setTitle("Course closed to registration");
-		}
 		else if((status & State.CHOSEN) == State.CHOSEN) {
+			r.setProperty("bits", Integer.toString(State.CHOSEN));
 			r.setStyleName("course-selected");
 			r.setTitle("Course selected for scheduling");
 		}
+		else if((status & State.CLOSED) == State.CLOSED) {
+			r.setProperty("bits", Integer.toString(State.CLOSED));
+			r.setStyleName("course-closed");
+			r.setTitle("Course closed to registration");
+		}
 		else {
+			r.setProperty("bits", "0");
 			r.setStyleName("course-selectable");
 			r.setTitle("Click to add this course");
 		}
@@ -113,18 +139,22 @@ public class CourseResultList {
 		HTMLTableListRow r = m_table.get(index+1);
 
 		if((status & State.CONFLICT) == State.CONFLICT) {
+			r.setProperty("bits", Integer.toString(State.CONFLICT));
 			r.setStyleName("course-conflict");
 			r.setTitle("Conflicts with another course");
 		}
-		else if((status & State.CLOSED) == State.CLOSED) {
-			r.setStyleName("course-closed");
-			r.setTitle("Course closed to registration");
-		}
 		else if((status & State.CHOSEN) == State.CHOSEN) {
+			r.setProperty("bits", Integer.toString(State.CHOSEN));
 			r.setStyleName("course-selected");
 			r.setTitle("Course selected for scheduling");
 		}
+		else if((status & State.CLOSED) == State.CLOSED) {
+			r.setProperty("bits", Integer.toString(State.CLOSED));
+			r.setStyleName("course-closed");
+			r.setTitle("Course closed to registration");
+		}
 		else {
+			r.setProperty("bits", "0");
 			r.setStyleName("course-selectable");
 			//r.addClickHandler(clickHandler);
 			r.setTitle("Click to add this course");

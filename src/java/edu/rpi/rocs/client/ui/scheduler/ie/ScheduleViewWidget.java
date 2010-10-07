@@ -96,10 +96,10 @@ public class ScheduleViewWidget extends FlowPanel {
 					entry.addStyleName("t00");
 				}
 				else {
-					HTMLTableListCell temp = new HTMLTableListCell(true);
-					temp.addStyleName("firstcol");
-					temp.setHTML("&nbsp;");
-					entry.add(temp);
+					//HTMLTableListCell temp = new HTMLTableListCell(true);
+					//temp.addStyleName("firstcol");
+					//temp.setHTML("&nbsp;");
+					//entry.add(temp);
 					entry.addStyleName("t30");
 				}
 				for(int col=0;col<7;col++) {

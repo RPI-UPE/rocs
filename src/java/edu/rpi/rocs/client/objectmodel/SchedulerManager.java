@@ -228,6 +228,7 @@ public class SchedulerManager implements IsSerializable {
 	 * @param c The course to add
 	 */
 	public void addCourse(Course c) {
+		if(currentCourses.containsKey(c)) return;
 		Log.debug("added course");
 		CourseStatusObject status =new CourseStatusObject(c, true);
 		currentCourses.put(c, status);
@@ -402,6 +403,9 @@ public class SchedulerManager implements IsSerializable {
 			currentSchedule = generatedSchedules.get(0);
 			currentSchedule.setOwner(getUserId());
 		}
+		else {
+			Window.alert("Unable to generate any schedules given your constraints. Please attempt to loosen them or mark courses as optional.");
+		}
 		m_changed = false;
 
 	}
@@ -523,5 +527,15 @@ public class SchedulerManager implements IsSerializable {
 		for(RestorationEventHandler h : restoreHandlers) {
 			h.restore();
 		}
+	}
+	
+	private int warnings = 0;
+
+	public boolean didWarnUser(int state) {
+		return (warnings & state) == state;
+	}
+
+	public void warnedUser(int state) {
+		warnings |= state;
 	}
 }

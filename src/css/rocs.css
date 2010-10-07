@@ -107,7 +107,7 @@ div#rocs_PORTLET_rocs_courses_pane table td {
 }
 
 div#rocs_PORTLET_rocs_courses_pane div.class_view {
-	width: 640px;
+	width: 780px;
 	height: 290px;
 	overflow: scroll;
 }
@@ -336,6 +336,7 @@ div#rocs_PORTLET_rocs_root_view .course-search-list tr.course-conflict {
 
 div#rocs_PORTLET_rocs_root_view .course-search-list tr.course-closed {
 	background-color: #cccccc;
+	cursor: pointer;
 }
 
 div#rocs_PORTLET_rocs_root_view .course-search-list {

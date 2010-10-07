@@ -2,6 +2,7 @@ package edu.rpi.rocs.client.ui;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
@@ -92,12 +93,30 @@ public class HTMLTableList extends Widget implements List<HTMLTableList.HTMLTabl
 			onDetach();
 		}
 		
+		private native void setColSpanIE(Element e, int i)/*-{
+			e.colSpan = i;
+		}-*/;
+		
+		private native void setRowSpanIE(Element e, int i)/*-{
+			e.rowSpan = i;
+		}-*/;
+		
 		public void setColSpan(int i) {
-			m_td.setAttribute("colspan", Integer.toString(i));
+			if(ROCSInterface.isMSIE()) {
+				setColSpanIE(m_td, i);
+			}
+			else {
+				m_td.setAttribute("colspan", Integer.toString(i));
+			}
 		}
 
 		public void setRowSpan(int i) {
-			m_td.setAttribute("rowspan", Integer.toString(i));
+			if(ROCSInterface.isMSIE()){ 
+				setRowSpanIE(m_td, i);
+			}
+			else {
+				m_td.setAttribute("rowspan", Integer.toString(i));
+			}
 		}
 
 		public Widget getWidget() {
@@ -108,10 +127,20 @@ public class HTMLTableList extends Widget implements List<HTMLTableList.HTMLTabl
 	public class HTMLTableListRow extends Widget implements List<HTMLTableListCell>, HasClickHandlers, HasMouseOverHandlers, HasMouseOutHandlers {
 		public Element m_tr=null;
 		public ArrayList<HTMLTableListCell> m_cells=new ArrayList<HTMLTableListCell>();
+		public HashMap<String,String> m_props=new HashMap<String,String>();
 		
 		public HTMLTableListRow() {
 			m_tr = DOM.createTR();
 			setElement(m_tr);
+		}
+		
+		public String getProperty(String name, String def) {
+			if(m_props.containsKey(name)) return m_props.get(name);
+			return def;
+		}
+		
+		public void setProperty(String name, String val) {
+			m_props.put(name, val);
 		}
 		
 		public boolean add(HTMLTableListCell e) {
