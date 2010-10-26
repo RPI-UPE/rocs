@@ -19,11 +19,12 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import edu.rpi.rocs.client.objectmodel.SchedulerManager;
 import edu.rpi.rocs.client.objectmodel.SemesterDescription;
 import edu.rpi.rocs.client.objectmodel.SemesterManager;
+import edu.rpi.rocs.client.objectmodel.SchedulerManager.RestorationEventHandler;
 import edu.rpi.rocs.client.services.coursedb.CourseDBService;
 import edu.rpi.rocs.client.services.updatemanager.UpdateItem;
 
 
-public class SemesterSelectionPanel extends VerticalPanel {
+public class SemesterSelectionPanel extends VerticalPanel implements RestorationEventHandler {
 	private FlexTable layout = new FlexTable();
 	private Label title = new Label("Semester: Loading...");
 	private ListBox semesterList = new ListBox();
@@ -80,7 +81,7 @@ public class SemesterSelectionPanel extends VerticalPanel {
 		buttons.setWidget(0, 2, saveFile);
 
 		add(buttons);
-
+		
 		CourseDBService.Singleton.getInstance().getSemesterList(semesterListCallback);
 	}
 
@@ -230,5 +231,9 @@ public class SemesterSelectionPanel extends VerticalPanel {
 
 	public SemesterDescription getSelectedSemester() {
 		return selectedSemester;
+	}
+
+	public void restore() {
+		
 	}
 }

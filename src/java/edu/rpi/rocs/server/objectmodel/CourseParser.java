@@ -21,22 +21,22 @@ public class CourseParser {
     		Node n = src.getAttributes().item(i);
     		String name = n.getNodeName();
     		String val = n.getNodeValue();
-    		if(name == "name") {
+    		if(name.equals("name")) {
     			course.setName(val);
     		}
-    		else if(name == "dept") {
+    		else if(name.equals("dept")) {
     			course.setDept(val);
     		}
-    		else if(name == "num") {
+    		else if(name.equals("num")) {
     			course.setNum(Integer.parseInt(val));
     		}
-    		else if(name == "credmin") {
-    			course.setNum(Integer.parseInt(val));
+    		else if(name.equals("credmin")) {
+    			course.setCredmin(Integer.parseInt(val));
     		}
-    		else if(name == "credmax") {
+    		else if(name.equals("credmax")) {
     			course.setCredmax(Integer.parseInt(val));
     		}
-    		else if(name == "gradetype") {
+    		else if(name.equals("gradetype")) {
     			course.setGradetype(val);
     		}
     		else {

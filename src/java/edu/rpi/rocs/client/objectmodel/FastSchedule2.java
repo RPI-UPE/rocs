@@ -148,4 +148,9 @@ public class FastSchedule2 {
 		courses = new ArrayList<Course>();
 		for(Course c : temp) addCourse(c);
 	}
+
+	public void clear() {
+		courses = new ArrayList<Course>();
+		topnodes.clear();
+	}
 }

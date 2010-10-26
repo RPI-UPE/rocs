@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.user.client.ui.Button;
@@ -33,7 +34,7 @@ import edu.rpi.rocs.client.objectmodel.Section;
 import edu.rpi.rocs.client.objectmodel.SectionStatusObject;
 import edu.rpi.rocs.client.objectmodel.SchedulerManager.*;
 
-public class ClassViewPanel extends VerticalPanel implements CourseAddedHandler, CourseRemovedHandler, CourseRequiredHandler, CourseOptionalHandler
+public class ClassViewPanel extends VerticalPanel implements CourseAddedHandler, CourseRemovedHandler, CourseRequiredHandler, CourseOptionalHandler, RestorationEventHandler
 {
 	private CourseAddedHandler addHandler = new CourseAddedHandler() {
 
@@ -293,10 +294,10 @@ public class ClassViewPanel extends VerticalPanel implements CourseAddedHandler,
 				notes += s.getNotes().get(i);
 				if(i+1<s.getNotes().size()) notes += "<br/>";
 			}
-			cell.setHTML("Section "+s.getNumber()+" - "+profs+"<br/>"+notes);
+			cell.setHTML("Section "+s.getNumber()+": "+s.getStudents()+" of "+s.getSeats()+" - "+profs+"<br/>"+notes);
 		}
 		else 
-			cell.setHTML("Section "+s.getNumber()+" - "+profs);
+			cell.setHTML("Section "+s.getNumber()+": "+s.getStudents()+" of "+s.getSeats()+" - "+profs);
 		cell.setColSpan(5);
 		row.add(cell);
 		return row;
@@ -310,6 +311,7 @@ public class ClassViewPanel extends VerticalPanel implements CourseAddedHandler,
 		SchedulerManager.getInstance().addCourseRequiredEventHandler( requiredHandler );
 		*/
 		SchedulerManager.getInstance().addCourseRemovedEventHandler( removeHandler );
+		SchedulerManager.getInstance().addRestorationEventHandler(this);
 		
 		layout = new FlexTable();
 
@@ -395,6 +397,7 @@ public class ClassViewPanel extends VerticalPanel implements CourseAddedHandler,
 		classList.addHTML( str, "MESSAGE" );
 	}
 
+	@Deprecated
 	private void updateList()
 	{
 		curCourses = SchedulerManager.getInstance().getSelectedCourses();
@@ -456,6 +459,16 @@ public class ClassViewPanel extends VerticalPanel implements CourseAddedHandler,
 		for(int i=0; i<temp.size(); i++)
 		{
 			SchedulerManager.getInstance().removeCourse(temp.get(i));
+		}
+	}
+
+	public void restore() {
+		sectionList.clear();
+		rows = new ArrayList<Pair>();
+		Map<Course,CourseStatusObject> coursesMap = SchedulerManager.getInstance().getCurrentCourses();
+		Set<Course> courses = coursesMap.keySet();
+		for(Course c : courses) {
+			addedCourse(coursesMap.get(c));
 		}
 	}
 }

@@ -21,13 +21,14 @@ import edu.rpi.rocs.client.filters.schedule.TimeSchedulerFilter;
 import edu.rpi.rocs.client.objectmodel.Schedule;
 import edu.rpi.rocs.client.objectmodel.ScheduleFilterManager;
 import edu.rpi.rocs.client.objectmodel.SchedulerManager;
+import edu.rpi.rocs.client.objectmodel.SchedulerManager.RestorationEventHandler;
 import edu.rpi.rocs.client.ui.ROCSInterface;
 import edu.rpi.rocs.client.ui.classview.ClassViewPanel;
 import edu.rpi.rocs.client.ui.coursesearch.CourseSearchPanel;
 import edu.rpi.rocs.client.ui.scheduler.SchedulerFilterDialogBox.SchedulerFilterDialogBoxCompleted;
 import edu.rpi.rocs.client.ui.semesterselect.SemesterSelectionPanel;
 
-public class SchedulerFilterDisplayPanel extends VerticalPanel implements SchedulerFilterDialogBoxCompleted, ChangeHandler {
+public class SchedulerFilterDisplayPanel extends VerticalPanel implements SchedulerFilterDialogBoxCompleted, ChangeHandler, RestorationEventHandler {
 	private FlexTable layout = new FlexTable();
 	private VerticalPanel subLayout = new VerticalPanel();
 	private HorizontalPanel subSubLayout = new HorizontalPanel();
@@ -180,10 +181,13 @@ public class SchedulerFilterDisplayPanel extends VerticalPanel implements Schedu
 	}
 
 	public void onChange(ChangeEvent arg0) {
-		// TODO Auto-generated method stub
 		int index = filterList.getSelectedIndex();
 		ScheduleFilter filter = currentFilters.get(index);
 		wrapperPanel.clear();
 		wrapperPanel.add(filter.getWidget());
+	}
+
+	public void restore() {
+		ROCSInterface.getInstance().show(this, false);
 	}
 }

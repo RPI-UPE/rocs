@@ -448,3 +448,7 @@ table.section-info {
 .rocs-style tr.course {
 	background-color: #efefff;
 }
+
+.rocs-style div.class_view table {
+	width: 100%;
+}

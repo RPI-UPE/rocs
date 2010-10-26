@@ -23,6 +23,7 @@ public class HibernateUtil {
 			return new Configuration().configure(confpath)
 						.addURL(new URL("jndi:/localhost/rocs/xml/Period.hbm.xml"))
 						.addURL(new URL("jndi:/localhost/rocs/xml/Section.hbm.xml"))
+						.addURL(new URL("jndi:/localhost/rocs/xml/SectionStatusObject.hbm.xml"))
 						.addURL(new URL("jndi:/localhost/rocs/xml/Course.hbm.xml"))
 						.addURL(new URL("jndi:/localhost/rocs/xml/CourseStatusObject.hbm.xml"))
 						.addURL(new URL("jndi:/localhost/rocs/xml/SchedulerManager.hbm.xml"))

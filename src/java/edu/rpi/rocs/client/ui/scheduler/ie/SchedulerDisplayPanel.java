@@ -12,10 +12,12 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 import edu.rpi.rocs.client.objectmodel.Schedule;
+import edu.rpi.rocs.client.objectmodel.SchedulerManager;
 import edu.rpi.rocs.client.objectmodel.Section;
+import edu.rpi.rocs.client.objectmodel.SchedulerManager.RestorationEventHandler;
 import edu.rpi.rocs.client.ui.scheduler.RandomColorGenerator;
 
-public class SchedulerDisplayPanel extends VerticalPanel {
+public class SchedulerDisplayPanel extends VerticalPanel implements RestorationEventHandler {
 	ArrayList<Schedule> m_schedules=null;
 	static SchedulerDisplayPanel theInstance=null;
 	Schedule m_current=null;
@@ -65,6 +67,8 @@ public class SchedulerDisplayPanel extends VerticalPanel {
 		
 		add(content);
 		add(crn_pane);
+		
+		SchedulerManager.getInstance().addRestorationEventHandler(this);
 	}
 
 	public static SchedulerDisplayPanel getInstance() {
@@ -112,5 +116,9 @@ public class SchedulerDisplayPanel extends VerticalPanel {
 				crn_pane.add(x);
 			}
 		}
+	}
+
+	public void restore() {
+		setSchedules(SchedulerManager.getInstance().getAllSchedules());
 	}
 }

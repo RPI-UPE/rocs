@@ -433,6 +433,16 @@ public class SchedulerManager implements IsSerializable {
 		}
 	}
 	
+	public void setCurrentSections(Map<Section, SectionStatusObject> map) {
+		currentSections = new HashMap<Course, Map<Section, SectionStatusObject>>();
+		for(Section s : map.keySet()) {
+			Course c = s.getParent();
+			if(!currentSections.containsKey(c)) {
+				currentSections.put(c, new HashMap<Section,SectionStatusObject>());
+			}
+			currentSections.get(c).put(s, map.get(s));
+		}
+	}
 	public Map<Section, SectionStatusObject> getCurrentSections() {
 		Map<Section, SectionStatusObject> obj = new HashMap<Section, SectionStatusObject>();
 		for(Course c : currentCourses.keySet()) {
@@ -443,6 +453,12 @@ public class SchedulerManager implements IsSerializable {
 	}
 	
 	public Map<Section, SectionStatusObject> getSectionsForCourse(Course c) {
+		if(!currentSections.containsKey(c)) {
+			currentSections.put(c, new HashMap<Section, SectionStatusObject>());
+			for(Section s : c.getSections()) {
+				currentSections.get(c).put(s, new SectionStatusObject(s,true));
+			}
+		}
 		return new HashMap<Section, SectionStatusObject>(currentSections.get(c));
 	}
 
@@ -527,6 +543,14 @@ public class SchedulerManager implements IsSerializable {
 		for(RestorationEventHandler h : restoreHandlers) {
 			h.restore();
 		}
+		
+		// Copy handlers from old manager to new manager
+		mgr.courseAddHandlers = this.courseAddHandlers;
+		mgr.courseOptionalHandlers = this.courseOptionalHandlers;
+		mgr.courseRequiredHandlers = this.courseRequiredHandlers;
+		mgr.courseRemoveHandlers = this.courseRemoveHandlers;
+		mgr.sectionExcludedHandlers = this.sectionExcludedHandlers;
+		mgr.sectionIncludedHandlers = this.sectionIncludedHandlers;
 	}
 	
 	private int warnings = 0;

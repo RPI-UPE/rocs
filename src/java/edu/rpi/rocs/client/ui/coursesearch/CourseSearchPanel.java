@@ -1,6 +1,7 @@
 package edu.rpi.rocs.client.ui.coursesearch;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.TreeSet;
@@ -22,13 +23,14 @@ import edu.rpi.rocs.client.objectmodel.FastSchedule2;
 import edu.rpi.rocs.client.objectmodel.SchedulerManager;
 import edu.rpi.rocs.client.objectmodel.SemesterManager;
 import edu.rpi.rocs.client.objectmodel.CourseStatusObject;
+import edu.rpi.rocs.client.objectmodel.SchedulerManager.RestorationEventHandler;
 import edu.rpi.rocs.client.objectmodel.SemesterManager.SemesterManagerCallback;
 import edu.rpi.rocs.client.objectmodel.Section;
 import edu.rpi.rocs.client.objectmodel.Semester;
 import edu.rpi.rocs.client.objectmodel.Course.CourseComparator;
 import edu.rpi.rocs.client.ui.HTMLTableList;
 
-public class CourseSearchPanel extends VerticalPanel {
+public class CourseSearchPanel extends VerticalPanel implements RestorationEventHandler {
 
 	/*
 	private static final String CHECK = IMG("check.png"),
@@ -172,7 +174,6 @@ public class CourseSearchPanel extends VerticalPanel {
 		searchButton.addClickHandler(new ClickHandler() {
 
 			public void onClick(ClickEvent event) {
-				// TODO Auto-generated method stub
 				CourseSearchPanel.getInstance().search();
 			}
 
@@ -181,7 +182,6 @@ public class CourseSearchPanel extends VerticalPanel {
 		SchedulerManager.getInstance().addCourseAddedEventHandler(new SchedulerManager.CourseAddedHandler() {
 			
 			public void handleEvent(CourseStatusObject status) {
-				// TODO Auto-generated method stub
 				FS2.addCourse(status.getCourse());
 				redosearch();
 			}
@@ -190,7 +190,6 @@ public class CourseSearchPanel extends VerticalPanel {
 		SchedulerManager.getInstance().addCourseRequiredEventHandler(new SchedulerManager.CourseRequiredHandler() {
 			
 			public void handleEvent(CourseStatusObject status) {
-				// TODO Auto-generated method stub
 				FS2.addCourse(status.getCourse());
 				redosearch();
 			}
@@ -199,7 +198,6 @@ public class CourseSearchPanel extends VerticalPanel {
 		SchedulerManager.getInstance().addCourseOptionalEventHandler(new SchedulerManager.CourseOptionalHandler() {
 			
 			public void handleEvent(CourseStatusObject status) {
-				// TODO Auto-generated method stub
 				FS2.removeCourse(status.getCourse());
 				redosearch();
 			}
@@ -208,7 +206,6 @@ public class CourseSearchPanel extends VerticalPanel {
 		SchedulerManager.getInstance().addCourseRemovedEventHandler(new SchedulerManager.CourseRemovedHandler() {
 			
 			public void handleEvent(CourseStatusObject status) {
-				// TODO Auto-generated method stub
 				FS2.removeCourse(status.getCourse());
 				redosearch();
 			}
@@ -223,7 +220,6 @@ public class CourseSearchPanel extends VerticalPanel {
 
 
 			public void onClick(ClickEvent event) {
-				// TODO Auto-generated method stub
 				for(int i=0;i<resultsListBox.getItemCount();i++) {
 					if(resultsListBox.isItemSelected(i)) {
 						Course c = theResults.get(i);
@@ -252,6 +248,7 @@ public class CourseSearchPanel extends VerticalPanel {
 			this.add(filters[i].getFilter().getFilterWidget());
 		}
 		*/
+		SchedulerManager.getInstance().addRestorationEventHandler(this);
 	}
 
 	private ArrayList<Course> theResults=null;
@@ -447,5 +444,16 @@ public class CourseSearchPanel extends VerticalPanel {
 			}
 		}
 		return false;
+	}
+
+	public void restore() {
+		FS2.clear();
+		Collection<CourseStatusObject> courses = SchedulerManager.getInstance().getCurrentCourses().values();
+		for(CourseStatusObject c : courses) {
+			if(c.getRequired()) {
+				FS2.addCourse(c.getCourse());
+			}
+		}
+		redosearch();
 	}
 }

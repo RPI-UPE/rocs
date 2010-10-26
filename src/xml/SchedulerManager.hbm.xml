@@ -11,9 +11,15 @@
   	<many-to-one name="CurrentSchedule" class="Schedule"/>
   	<map name="currentCourses">
   		<cache usage="read-write"/>
-  		<key column="STATE_ID"/>
+  		<key column="COL_STATE_ID"/>
   		<index-many-to-many column="COURSE_ID" class="Course"/>
   		<one-to-many class="CourseStatusObject"/>
+  	</map>
+  	<map name="currentSections">
+  		<cache usage="read-write"/>
+  		<key column="SEC_STATE_ID"/>
+  		<index-many-to-many column="SECTION_ID" class="Section"/>
+  		<one-to-many class="SectionStatusObject"/>
   	</map>
   	<property name="Name" column="schedule_name"/>
   	<property name="UserId"/>

@@ -23,6 +23,7 @@
         
         <!--<mapping resource="jndi:/localhost/rocs/xml/Period.hbm.xml"/>
         <mapping resource="jndi:/localhost/rocs/xml/Section.hbm.xml"/>
+        <mapping resource="jndi:/localhost/rocs/xml/SectionStatusObject.hbm.xml"/>
         <mapping resource="jndi:/localhost/rocs/xml/Course.hbm.xml"/>
         <mapping resource="jndi:/localhost/rocs/xml/CourseStatusObject.hbm.xml"/>
         <mapping resource="jndi:/localhost/rocs/xml/SchedulerManager.hbm.xml"/>

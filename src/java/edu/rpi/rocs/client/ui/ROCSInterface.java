@@ -7,20 +7,20 @@ import com.google.gwt.user.client.ui.Widget;
 import edu.rpi.rocs.client.ImageManager;
 import edu.rpi.rocs.client.objectmodel.Course;
 import edu.rpi.rocs.client.objectmodel.CrossListing;
+import edu.rpi.rocs.client.objectmodel.SchedulerManager;
 import edu.rpi.rocs.client.objectmodel.Section;
 import edu.rpi.rocs.client.objectmodel.Semester;
 import edu.rpi.rocs.client.objectmodel.SemesterManager;
+import edu.rpi.rocs.client.objectmodel.SchedulerManager.RestorationEventHandler;
 import edu.rpi.rocs.client.ui.coursesearch.CourseSearchPanel;
 import edu.rpi.rocs.client.ui.scheduler.SchedulerDisplayPanel;
 import edu.rpi.rocs.client.ui.scheduler.SchedulerFilterDisplayPanel;
-import edu.rpi.rocs.client.ui.scheduler.SchedulerPanel;
 import edu.rpi.rocs.client.ui.semesterselect.SemesterSelectionPanel;
 import edu.rpi.rocs.client.ui.classview.ClassViewPanel;
 
-public class ROCSInterface extends HTMLPanel {
+public class ROCSInterface extends HTMLPanel implements RestorationEventHandler {
 	SemesterSelectionPanel semesterPanel;
 	CourseSearchPanel searchPanel;
-	SchedulerPanel schedulerPanel;
 	ClassViewPanel viewPanel;
 	SchedulerFilterDisplayPanel filterPanel;
 	SchedulerDisplayPanel schedulerDisplayPanel;
@@ -166,6 +166,7 @@ public class ROCSInterface extends HTMLPanel {
 		
 		this.add(thePanel, "rocs_PORTLET_rocs_stackbody");
 		thePanel.setAnimationTime(300);
+		SchedulerManager.getInstance().addRestorationEventHandler(this);
 	}
 	
 	public boolean isDisplaying(Widget w) {
@@ -175,7 +176,7 @@ public class ROCSInterface extends HTMLPanel {
 		if(w==CourseSearchPanel.getInstance()) index=1;
 		if(w==ClassViewPanel.getInstance()) index=2;
 		if(w==SchedulerFilterDisplayPanel.getInstance()) index=3;
-		if(w==SchedulerPanel.getInstance()) index=4;
+		if(w==SchedulerDisplayPanel.getInstance()) index=4;
 		if(w==edu.rpi.rocs.client.ui.scheduler.ie.SchedulerDisplayPanel.getInstance()) index=4;
 		if(index>-1) {
 			result = thePanel.isVisible(index);
@@ -189,7 +190,7 @@ public class ROCSInterface extends HTMLPanel {
 		if(w==CourseSearchPanel.getInstance()) index=1;
 		if(w==ClassViewPanel.getInstance()) index=2;
 		if(w==SchedulerFilterDisplayPanel.getInstance()) index=3;
-		if(w==SchedulerPanel.getInstance()) index=4;
+		if(w==SchedulerDisplayPanel.getInstance()) index=4;
 		if(w==edu.rpi.rocs.client.ui.scheduler.ie.SchedulerDisplayPanel.getInstance()) index=4;
 		if(index>-1&&isDisplaying(w)!=visible) {
 			thePanel.showStack(index);
@@ -202,5 +203,18 @@ public class ROCSInterface extends HTMLPanel {
 	
 	public static boolean isMSIE() {
 		return getUserAgent().contains("msie");
+	}
+
+	public void restore() {
+		show(SemesterSelectionPanel.getInstance(),false);
+		show(CourseSearchPanel.getInstance(),false);
+		show(ClassViewPanel.getInstance(),true);
+		show(SchedulerFilterDisplayPanel.getInstance(),false);
+		if(isMSIE()) {
+			show(edu.rpi.rocs.client.ui.scheduler.ie.SchedulerDisplayPanel.getInstance(),true);
+		}
+		else {
+			show(SchedulerDisplayPanel.getInstance(),true);
+		}
 	}
 }

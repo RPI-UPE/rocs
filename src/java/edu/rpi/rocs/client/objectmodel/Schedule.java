@@ -103,8 +103,8 @@ public class Schedule implements Serializable {
 		while(i.hasNext()) {
 			Section s = i.next();
 			Course c = s.getParent();
-			creditMin = c.getCredmin();
-			creditMax = c.getCredmax();
+			creditMin += c.getCredmin();
+			creditMax += c.getCredmax();
 		}
 	}
 	
@@ -113,6 +113,7 @@ public class Schedule implements Serializable {
 		ArrayList<Schedule> results = new ArrayList<Schedule>();
 		if(requiredCourses.size()==0) {
 			boolean satisfies=true;
+			start.calculateCredits();
 			for(ScheduleFilter filter : filters) {
 				if(!filter.doesScheduleSatisfyFilter(start)) {
 					satisfies = false;
