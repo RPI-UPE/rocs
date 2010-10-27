@@ -11,7 +11,7 @@
   	<many-to-one name="CurrentSchedule" class="Schedule"/>
   	<map name="currentCourses">
   		<cache usage="read-write"/>
-  		<key column="COL_STATE_ID"/>
+  		<key column="STATE_ID"/>
   		<index-many-to-many column="COURSE_ID" class="Course"/>
   		<one-to-many class="CourseStatusObject"/>
   	</map>

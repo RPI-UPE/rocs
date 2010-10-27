@@ -1,12 +1,19 @@
 package edu.rpi.rocs.server.services.schedulemanager;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.portlet.PortletConfig;
 
 import org.hibernate.Session;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
+import edu.rpi.rocs.Scheduler;
 import edu.rpi.rocs.client.objectmodel.Schedule;
 import edu.rpi.rocs.client.objectmodel.SchedulerManager;
 import edu.rpi.rocs.client.objectmodel.Section;
@@ -82,7 +89,27 @@ public class ScheduleManagerServiceImpl extends RemoteServiceServlet implements
 		}
 		
 		session.getTransaction().rollback();
+		
 		return temp;
+	}
+	
+	public String getMOTD() {
+		URL motdFile=null;
+		String motd="";
+		try {
+			PortletConfig theConfig = Scheduler.getInstance().getPortletConfig();
+			motdFile = theConfig.getPortletContext().getResource("/WEB-INF/classes/motd.txt");
+			InputStream is = motdFile.openStream();
+			InputStreamReader isr = new InputStreamReader(is);
+			BufferedReader br = new BufferedReader(isr);
+			String parts;
+			while((parts=br.readLine())!=null) {
+				motd += parts + "\r\n";
+			}
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		return motd;
 	}
 
 }

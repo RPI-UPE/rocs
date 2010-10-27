@@ -259,7 +259,7 @@ public class Scheduler extends GenericPortlet {
 				"<a href=\"mailto:UPE-ROCS-USER-L@lists.rpi.edu\">the ROCS dev team</a> with details.</div>");
 		out.println("<div style=\"background-color: yellow; width:100%; text-align: center;\">" +
 				"If you have problems with course content (e.g. two required courses conflict),<br/> please contact " +
-				"<a href=\"registrar@rpi.edu\">the Registrar's office</a> with details.</div>");
+				"<a href=\"mailto:registrar@rpi.edu\">the Registrar's office</a> with details.</div>");
 		out.println("</div>");
 	}
 	

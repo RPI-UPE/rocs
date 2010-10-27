@@ -10,4 +10,5 @@ public interface ScheduleManagerServiceAsync {
 	public void getScheduleList(String user, AsyncCallback<List<String>> callback);
 	public void saveSchedule(String name, SchedulerManager schedule, AsyncCallback<Void> callback);
 	public void loadSchedule(String user, String name, int semesterid, AsyncCallback<SchedulerManager> callback);
+	public void getMOTD(AsyncCallback<String> callback);
 }

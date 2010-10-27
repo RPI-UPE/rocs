@@ -3,6 +3,7 @@ package edu.rpi.rocs.client.ui;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Hyperlink;
@@ -11,12 +12,15 @@ import com.google.gwt.user.client.ui.InlineHyperlink;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.FlexTable.FlexCellFormatter;
 
+import edu.rpi.rocs.client.services.schedulemanager.ScheduleManagerService;
+
 public class WelcomeScreen extends VerticalPanel {
 	InlineHTML title;
 	InlineHTML subtitle;
 	HTML body;
 	HTML prompt;
 	HTML warning;
+	HTML motd;
 	FlexTable buttonTable;
 	Hyperlink tutorialButton;
 	Hyperlink continueButton;
@@ -40,6 +44,8 @@ public class WelcomeScreen extends VerticalPanel {
 				"\"/><img title=\"Opera\" src=\""+ImageManager.getPathForImage("opera.png")+
 				"\"/></p>");
 				*/
+		warning = new HTML("<p align=\"center\">If you are using Internet Explorer, please be advised that ROCS will not work with any version of IE below 8.<br/>Please update if your version of Internet Explorer is out of date.</p>");
+		motd = new HTML("<p></p>");
 		prompt = new HTML("<p>How would you like to continue?</p>");
 		tutorialButton = new InlineHyperlink("See a ROCS Tutorial","rocs-tutorial");
 		tutorialButton.addStyleName("bluebutton");
@@ -71,8 +77,19 @@ public class WelcomeScreen extends VerticalPanel {
 		this.add(title);
 		this.add(subtitle);
 		this.add(body);
-		//this.add(warning);
+		this.add(warning);
+		this.add(motd);
 		this.add(prompt);
 		this.add(buttonTable);
+		ScheduleManagerService.Singleton.getInstance().getMOTD(new AsyncCallback<String> (){
+
+			public void onFailure(Throwable arg0) {
+			}
+
+			public void onSuccess(String arg0) {
+				motd.setHTML(arg0);
+			}
+			
+		});
 	}
 }
