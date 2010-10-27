@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.TreeSet;
 
 import com.allen_sauer.gwt.log.client.Log;
@@ -313,9 +314,14 @@ public class CourseSearchPanel extends VerticalPanel implements RestorationEvent
 
 		//resultsListBox.clear();
 		CourseResultList.getInstance().clear();
+		CourseComparator comparer = new CourseComparator();
 		for(Course course : theResults) {
 			boolean chosen = false;
-			for (Course C : ReqList) if ((new CourseComparator()).compare(C, course) == 0) {
+			for (Course C : ReqList) if (comparer.compare(C, course) == 0) {
+				chosen = true;
+				break;
+			}
+			for (Course C : OptList) if (comparer.compare(C, course) == 0) {
 				chosen = true;
 				break;
 			}
@@ -324,10 +330,15 @@ public class CourseSearchPanel extends VerticalPanel implements RestorationEvent
 			/*
 			if (!chosen && FS.test(course)) bits += 4;
 			*/
-			if(!chosen && FS2.conflicts(course)) bits += 4;
+			Set<Course> conflicts = null;
+			if(!chosen) {
+				conflicts = FS2.conflicts(course,true);
+				if(conflicts.size()>0) bits += 4;
+			}
+			//if(!chosen && FS2.conflicts(course)) bits += 4;
 			if (course.isClosed()) bits += 2;
 			//resultsListBox.addHTML(LIST_HEAD[bits]+course.getListDescription()+LIST_TAIL[bits], course.getDept()+course.getNum());
-			CourseResultList.getInstance().add(course, bits);
+			CourseResultList.getInstance().add(course, bits, conflicts);
 		}
 	}
 
@@ -338,20 +349,30 @@ public class CourseSearchPanel extends VerticalPanel implements RestorationEvent
 		for (CourseStatusObject CSO : CSOlist) if (CSO.getRequired()) ReqList.add(CSO.getCourse());
 															else OptList.add(CSO.getCourse());
 
+		CourseComparator comparer = new CourseComparator();
 		for (int i = 0; i < theResults.size(); i++)
 		{
 			Course course = theResults.get(i);
 			boolean chosen = false;
-			for (Course C : ReqList) if ((new CourseComparator()).compare(C, course) == 0) {
+			for (Course C : ReqList) if (comparer.compare(C, course) == 0) {
+				chosen = true;
+				break;
+			}
+			for (Course C : OptList) if (comparer.compare(C, course) == 0) {
 				chosen = true;
 				break;
 			}
 			int bits = 0;
 			if (chosen) bits += 1;
-			if (!chosen && FS2.conflicts(course)) bits += 4;
+			Set<Course> conflicts = null;
+			if(!chosen) {
+				conflicts = FS2.conflicts(course,true);
+				if(conflicts.size()>0) bits += 4;
+			}
+			//if (!chosen && FS2.conflicts(course)) bits += 4;
 			if (course.isClosed()) bits += 2;
 			//resultsListBox.addHTML(LIST_HEAD[bits]+course.getListDescription()+LIST_TAIL[bits], course.getDept()+course.getNum());
-			CourseResultList.getInstance().modifyBits(i, bits);
+			CourseResultList.getInstance().modifyBits(i, bits, conflicts);
 		}
 	}
 

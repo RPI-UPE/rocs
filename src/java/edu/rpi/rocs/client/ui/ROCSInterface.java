@@ -206,10 +206,10 @@ public class ROCSInterface extends HTMLPanel implements RestorationEventHandler 
 	}
 
 	public void restore() {
-		show(SemesterSelectionPanel.getInstance(),false);
-		show(CourseSearchPanel.getInstance(),false);
+		//show(SemesterSelectionPanel.getInstance(),false);
+		//show(CourseSearchPanel.getInstance(),false);
 		show(ClassViewPanel.getInstance(),true);
-		show(SchedulerFilterDisplayPanel.getInstance(),false);
+		//show(SchedulerFilterDisplayPanel.getInstance(),false);
 		if(isMSIE()) {
 			show(edu.rpi.rocs.client.ui.scheduler.ie.SchedulerDisplayPanel.getInstance(),true);
 		}

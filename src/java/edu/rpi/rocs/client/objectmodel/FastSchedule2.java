@@ -1,7 +1,9 @@
 package edu.rpi.rocs.client.objectmodel;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import com.allen_sauer.gwt.log.client.Log;
 
@@ -67,6 +69,21 @@ public class FastSchedule2 {
 			}
 			return false;
 		}
+		
+		public Set<Course> collides(int[] test, boolean differ) {
+			Set<Course> result = new HashSet<Course>();
+			for(int i=0;i<7;i++) {
+				if((test[i] & combined[i]) != 0) {
+					if(next != null) {
+						Set<Course> subset = next.collides(test, differ);
+						if(subset.size()>0) return subset;
+					}
+					result.add(this.contents.getParent());
+					return result;
+				}
+			}
+			return result;
+		}
 	}
 	
 	private ArrayList<Node> topnodes = new ArrayList<Node>();
@@ -104,6 +121,24 @@ public class FastSchedule2 {
 			}
 		}
 		return true;
+	}
+	
+	public Set<Course> conflicts(Course c, boolean differ) {
+		Set<Course> result = new HashSet<Course>();
+		if(courses.size()==0) return result;
+		if(courses.contains(c)) return result;
+		List<Section> sections = c.getSections();
+		if(sections.size()==0) return result;
+		result = new HashSet<Course>();
+		for(Section s : sections) {
+			int[] days=createBlock(s);
+			for(Node n : topnodes) {
+				Set<Course> temp = n.collides(days, true);
+				if(temp.size()==0) return new HashSet<Course>();
+				result.addAll(temp);
+			}
+		}
+		return result;
 	}
 	
 	public void addCourse(Course c) {

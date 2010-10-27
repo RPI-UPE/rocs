@@ -23,10 +23,7 @@ import edu.rpi.rocs.client.objectmodel.ScheduleFilterManager;
 import edu.rpi.rocs.client.objectmodel.SchedulerManager;
 import edu.rpi.rocs.client.objectmodel.SchedulerManager.RestorationEventHandler;
 import edu.rpi.rocs.client.ui.ROCSInterface;
-import edu.rpi.rocs.client.ui.classview.ClassViewPanel;
-import edu.rpi.rocs.client.ui.coursesearch.CourseSearchPanel;
 import edu.rpi.rocs.client.ui.scheduler.SchedulerFilterDialogBox.SchedulerFilterDialogBoxCompleted;
-import edu.rpi.rocs.client.ui.semesterselect.SemesterSelectionPanel;
 
 public class SchedulerFilterDisplayPanel extends VerticalPanel implements SchedulerFilterDialogBoxCompleted, ChangeHandler, RestorationEventHandler {
 	private FlexTable layout = new FlexTable();
@@ -136,15 +133,15 @@ public class SchedulerFilterDisplayPanel extends VerticalPanel implements Schedu
 				else {
 					SchedulerDisplayPanel.getInstance().setSchedules(schedules);
 				}
-				ROCSInterface.getInstance().show(SemesterSelectionPanel.getInstance(), false);
-				ROCSInterface.getInstance().show(CourseSearchPanel.getInstance(), false);
-				ROCSInterface.getInstance().show(ClassViewPanel.getInstance(), false);
-				ROCSInterface.getInstance().show(this, false);
+				//ROCSInterface.getInstance().show(SemesterSelectionPanel.getInstance(), false);
+				//ROCSInterface.getInstance().show(CourseSearchPanel.getInstance(), false);
+				//ROCSInterface.getInstance().show(ClassViewPanel.getInstance(), false);
+				//ROCSInterface.getInstance().show(this, false);
 				if(ROCSInterface.isMSIE()) {
 					ROCSInterface.getInstance().show(edu.rpi.rocs.client.ui.scheduler.ie.SchedulerDisplayPanel.getInstance(), true);
 				}
 				else {
-					ROCSInterface.getInstance().show(SchedulerPanel.getInstance(), true);
+					ROCSInterface.getInstance().show(SchedulerDisplayPanel.getInstance(), true);
 				}
 			}
 		}

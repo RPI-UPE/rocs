@@ -1,6 +1,7 @@
 package edu.rpi.rocs.client.ui.coursesearch;
 
 import java.util.ArrayList;
+import java.util.Set;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.dom.client.Element;
@@ -101,7 +102,7 @@ public class CourseResultList {
 
 	};
 
-	public void add(Course a, int status) {
+	public void add(Course a, int status, Set<Course> conflicts) {
 		results.add(a);
 		HTMLTableListRow r=m_table.new HTMLTableListRow();
 		HTMLTableListCell c;
@@ -113,7 +114,19 @@ public class CourseResultList {
 		if((status & State.CONFLICT) == State.CONFLICT) {
 			r.setProperty("bits", Integer.toString(State.CONFLICT));
 			r.setStyleName("course-conflict");
-			r.setTitle("Conflicts with another course");
+			if(conflicts.size()>0) {
+				String title = "Conflicts with: ";
+				boolean first=true;
+				for(Course course : conflicts) {
+					if(!first) title += ", ";
+					title += course.getName();
+					first = false;
+				}
+				r.setTitle(title);
+			}
+			else {
+				r.setTitle("Conflicts with another course");
+			}
 		}
 		else if((status & State.CHOSEN) == State.CHOSEN) {
 			r.setProperty("bits", Integer.toString(State.CHOSEN));
@@ -134,14 +147,26 @@ public class CourseResultList {
 		m_table.add(r);
 	}
 
-	public void modifyBits(int index, int status)
+	public void modifyBits(int index, int status, Set<Course> conflicts)
 	{
 		HTMLTableListRow r = m_table.get(index+1);
 
 		if((status & State.CONFLICT) == State.CONFLICT) {
 			r.setProperty("bits", Integer.toString(State.CONFLICT));
 			r.setStyleName("course-conflict");
-			r.setTitle("Conflicts with another course");
+			if(conflicts.size()>0) {
+				String title = "Conflicts with: ";
+				boolean first=true;
+				for(Course course : conflicts) {
+					if(!first) title += ", ";
+					title += course.getName();
+					first = false;
+				}
+				r.setTitle(title);
+			}
+			else {
+				r.setTitle("Conflicts with another course");
+			}
 		}
 		else if((status & State.CHOSEN) == State.CHOSEN) {
 			r.setProperty("bits", Integer.toString(State.CHOSEN));
