@@ -40,7 +40,11 @@ public class SectionInfoPanel extends HTML {
 		String minStr;
 		if(min < 10) minStr = "0"+min;
 		else minStr = ""+min;
-		time = "Class time: "+hr+":"+minStr+" per week";
+		int cmin=s.getParent().getCredmin(),cmax=s.getParent().getCredmax();
+		String credits;
+		if(cmin==cmax) credits="("+Integer.toString(cmax)+" Credits)";
+		else credits="("+Integer.toString(cmin)+"-"+Integer.toString(cmax)+" Credits)";
+		time = "Class time: "+hr+":"+minStr+" per week "+credits;
 		seats = "Seats: "+s.getSeats()+" ("+(s.getSeats()-s.getStudents())+" remaining)";
 		String text = "<p>Class times:</p>";
 		text += "<ul>";
@@ -69,7 +73,7 @@ public class SectionInfoPanel extends HTML {
 				}
 			}
 			text += "<br/>";
-			text += "Professor: "+prof;
+			text += "Instructor: "+prof;
 			text += "</li>";
 		}
 		text += "</ul>";

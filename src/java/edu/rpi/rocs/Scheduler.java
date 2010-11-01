@@ -253,7 +253,7 @@ public class Scheduler extends GenericPortlet {
 		out.println("<script language=\"javascript\">var rocsUserName=\""+userName.hashCode()+"\";\nvar rocsContext=\""+aRequest.getContextPath()+"\";\nwindow.rocsContext=rocsContext;</script>");
 		out.println("<script language=\"javascript\" src=\"" + aRequest.getContextPath() + "/rocs.gwt/rocs.gwt.nocache.js\"></script>");
 		out.println("<link rel=\"stylesheet\" type=\"text/css\" href=\"" + aRequest.getContextPath() + "/css/rocs.css\"/>");
-		out.println("<div id=\"rocs_PORTLET_rocs_root_view\" class=\"rocs-style\">");
+		out.println("<div id=\"rocs_PORTLET_rocs_root_view\" class=\"rocs-style\"><a name=\"rocs-main\"></a>");
 		out.println("<div style=\"background-color: red; width:100%; text-align: center;\">" + 
 				"This is beta software. If you experience problems please contact " +
 				"<a href=\"mailto:UPE-ROCS-USER-L@lists.rpi.edu\">the ROCS dev team</a> with details.</div>");

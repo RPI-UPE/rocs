@@ -42,7 +42,11 @@ public class SectionInfoPanel extends VerticalPanel {
 		String minStr;
 		if(min < 10) minStr = "0"+min;
 		else minStr = ""+min;
-		time = new Label("Class time: "+hr+":"+minStr+" per week");
+		int cmin=s.getParent().getCredmin(),cmax=s.getParent().getCredmax();
+		String credits;
+		if(cmin==cmax) credits="("+Integer.toString(cmax)+" Credits)";
+		else credits="("+Integer.toString(cmin)+"-"+Integer.toString(cmax)+" Credits)";
+		time = new Label("Class time: "+hr+":"+minStr+" per week "+credits);
 		seats = new Label("Seats: "+s.getSeats()+" ("+(s.getSeats()-s.getStudents())+" remaining)");
 		String text = "<p>Class times:</p>";
 		text += "<ul>";
@@ -71,7 +75,7 @@ public class SectionInfoPanel extends VerticalPanel {
 				}
 			}
 			text += "<br/>";
-			text += "Professor: "+prof;
+			text += "Instructor: "+prof;
 			text += "</li>";
 		}
 		text += "</ul>";

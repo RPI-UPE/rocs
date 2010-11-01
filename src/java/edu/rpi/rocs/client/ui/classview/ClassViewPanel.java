@@ -1,11 +1,13 @@
 package edu.rpi.rocs.client.ui.classview;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Map.Entry;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.user.client.ui.Button;
@@ -27,14 +29,18 @@ import edu.rpi.rocs.client.ui.scheduler.SchedulerFilterDisplayPanel;
 import edu.rpi.rocs.client.ui.HTMLTableList;
 import edu.rpi.rocs.client.ui.ListBoxHTML;
 import edu.rpi.rocs.client.ui.ROCSInterface;
+import edu.rpi.rocs.client.filters.schedule.TimeSchedulerFilter;
+import edu.rpi.rocs.client.filters.schedule.TimeSchedulerFilter.TimeSchedulerFilterChangeHandler;
+import edu.rpi.rocs.client.objectmodel.Period;
 import edu.rpi.rocs.client.objectmodel.SchedulerManager;
 import edu.rpi.rocs.client.objectmodel.CourseStatusObject;
 import edu.rpi.rocs.client.objectmodel.Course;
 import edu.rpi.rocs.client.objectmodel.Section;
 import edu.rpi.rocs.client.objectmodel.SectionStatusObject;
+import edu.rpi.rocs.client.objectmodel.Time;
 import edu.rpi.rocs.client.objectmodel.SchedulerManager.*;
 
-public class ClassViewPanel extends VerticalPanel implements CourseAddedHandler, CourseRemovedHandler, CourseRequiredHandler, CourseOptionalHandler, RestorationEventHandler
+public class ClassViewPanel extends VerticalPanel implements CourseAddedHandler, CourseRemovedHandler, CourseRequiredHandler, CourseOptionalHandler, RestorationEventHandler, TimeSchedulerFilterChangeHandler
 {
 	private CourseAddedHandler addHandler = new CourseAddedHandler() {
 
@@ -87,6 +93,7 @@ public class ClassViewPanel extends VerticalPanel implements CourseAddedHandler,
 		public SimpleCheckBox check;
 	}
 	private ArrayList<Pair> rows = new ArrayList<Pair>();
+	protected HashMap<Section, HTMLTableListRow> sectionRowMap = new HashMap<Section, HTMLTableListRow>();
 
 	//Data Members:
 	private List<CourseStatusObject> curCourses=null;
@@ -108,11 +115,15 @@ public class ClassViewPanel extends VerticalPanel implements CourseAddedHandler,
 		sectionList.add(r);
 		p.rows.add(r);
 		for(SectionStatusObject sso : stats.values()) {
-			r = createRowForSectionStatusObject(sso);
-			sectionList.add(r);
-			p.rows.add(r);
+			if(!sso.getSection().wasDeleted()) {
+				r = createRowForSectionStatusObject(sso);
+				sectionList.add(r);
+				p.rows.add(r);
+				sectionRowMap.put(sso.getSection(), r);
+			}
 		}
 		rows.add(p);
+		strikeSections();
 	}
 	
 	protected void requireCourse(CourseStatusObject status) {
@@ -183,6 +194,12 @@ public class ClassViewPanel extends VerticalPanel implements CourseAddedHandler,
 		row.add(cell);
 		cell = sectionList.new HTMLTableListCell();
 		cell.setText(course.getName());
+		row.add(cell);
+		cell = sectionList.new HTMLTableListCell();
+		if(course.getCredmin()==course.getCredmax())
+			cell.setText(Integer.toString(course.getCredmax())+" Credits");
+		else
+			cell.setText(Integer.toString(course.getCredmin())+"-"+Integer.toString(course.getCredmax())+" Credits");
 		row.add(cell);
 		cell = sectionList.new HTMLTableListCell();
 		cell.setText("State: ");
@@ -288,17 +305,52 @@ public class ClassViewPanel extends VerticalPanel implements CourseAddedHandler,
 			if(count+1<professors.size()) profs = profs + "/";
 		}
 		cell = sectionList.new HTMLTableListCell();
+		String time = "Meets on ";
+		boolean first=true;
+		for(Period p : s.getPeriods()) {
+			if(!p.wasDeleted()) {
+				if(!first) time += "; ";
+				else first = false;
+				for(Integer d : p.getDays()) {
+					switch(d) {
+					case 0:
+						time += "M";
+						break;
+					case 1:
+						time += "T";
+						break;
+					case 2:
+						time += "W";
+						break;
+					case 3:
+						time += "R";
+						break;
+					case 4:
+						time += "F";
+						break;
+					case 5:
+						time += "S";
+						break;
+					case 6:
+						time += "S";
+						break;
+					}
+				}
+				time += ": ";
+				time += p.getStart().get12HRString()+"-"+p.getEnd().get12HRString();
+			}
+		}
 		if(s.getNotes().size()>0) {
 			String notes = "";
 			for(int i=0;i<s.getNotes().size();i++) {
 				notes += s.getNotes().get(i);
 				if(i+1<s.getNotes().size()) notes += "<br/>";
 			}
-			cell.setHTML("Section "+s.getNumber()+": "+s.getStudents()+" of "+s.getSeats()+" - "+profs+"<br/>"+notes);
+			cell.setHTML("<span class=\"section-info\">Section "+s.getNumber()+": "+s.getStudents()+" of "+s.getSeats()+" - "+profs+"<br/>"+time+"<br/>"+notes+"</span>");
 		}
 		else 
-			cell.setHTML("Section "+s.getNumber()+": "+s.getStudents()+" of "+s.getSeats()+" - "+profs);
-		cell.setColSpan(5);
+			cell.setHTML("<span class=\"section-info\">Section "+s.getNumber()+": "+s.getStudents()+" of "+s.getSeats()+" - "+profs+"<br/>"+time+"</span><br/>");
+		cell.setColSpan(6);
 		row.add(cell);
 		return row;
 	}
@@ -312,6 +364,7 @@ public class ClassViewPanel extends VerticalPanel implements CourseAddedHandler,
 		*/
 		SchedulerManager.getInstance().addCourseRemovedEventHandler( removeHandler );
 		SchedulerManager.getInstance().addRestorationEventHandler(this);
+		SchedulerManager.getInstance().addChangeHandler(this);
 		
 		layout = new FlexTable();
 
@@ -470,5 +523,52 @@ public class ClassViewPanel extends VerticalPanel implements CourseAddedHandler,
 		for(Course c : courses) {
 			addedCourse(coursesMap.get(c));
 		}
+		strikeSections();
+	}
+	
+	HashMap<Integer, ArrayList<Time>> blocked = null;
+	
+	protected void strikeSections() {
+		if(blocked==null) return;
+		for(Entry<Section, HTMLTableListRow> p : sectionRowMap.entrySet()) {
+			p.getValue().removeStyleName("strikethrough");
+			Section s = p.getKey();
+			List<Period> periods = s.getPeriods();
+			for(Period period : periods) {
+				int start = period.getStart().getAbsMinute();
+				int end = period.getEnd().getAbsMinute();
+				for(Integer day : period.getDays()) {
+					ArrayList<Time> times = blocked.get(day);
+					for(Time time : times) {
+						int asABS = time.getAbsMinute();
+						if(start <= asABS && asABS <= end) {
+							p.getValue().addStyleName("strikethrough");
+						}
+					}
+				}
+			}
+		}
+		for(Pair pair : rows) {
+			List<Section> sections = pair.course.getSections();
+			List<HTMLTableListRow> rows = pair.rows;
+			boolean blocked=true;
+			for(int i=0;i<sections.size();i++) {
+				if(!rows.get(i+1).getStyleName().contains("strikethrough")) {
+					blocked=false;
+					break;
+				}
+			}
+			if(blocked) {
+				rows.get(0).addStyleName("unsatisfiable");
+			}
+			else {
+				rows.get(0).removeStyleName("unsatisfiable");
+			}
+		}
+	}
+
+	public void onChange(TimeSchedulerFilter filter) {
+		blocked = filter.getTimes();
+		strikeSections();
 	}
 }

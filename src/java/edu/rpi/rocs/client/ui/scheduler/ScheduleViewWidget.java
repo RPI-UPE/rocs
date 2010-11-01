@@ -171,7 +171,11 @@ public class ScheduleViewWidget extends SVGCanvasWidget {
 				SVGTextWidget text = new SVGTextWidget();
 				text.setFillColor("#000000");
 				text.setTextAnchor(TextAnchor.End);
-				text.setText(Integer.toString(i+8));
+				int j = i+8;
+				boolean am=true;
+				if(j>11) am=false;
+				if(j>12) j -= 12;
+				text.setText(Integer.toString(j)+(am?" AM":" PM"));
 				text.setX("72");
 				text.setY(Integer.toString((i+1)*26+20));
 				text.setFontSize("16");
@@ -294,49 +298,51 @@ public class ScheduleViewWidget extends SVGCanvasWidget {
 			List<Period> times = s.getPeriods();
 			this.setStyle(this.getElement());
 			for(Period p : times) {
-				Time start = p.getStart();
-				Time end = p.getEnd();
-				int startPix = (int)((double)MAJOR_Y_DISTANCE*(double)((double)start.getMinute()/60.0));
-				startPix += (start.getHour()-8)*MAJOR_Y_DISTANCE;
-				int endPix = (int)((double)MAJOR_Y_DISTANCE*(double)((double)end.getMinute()/60.0));
-				endPix += (end.getHour()-8)*MAJOR_Y_DISTANCE;
-
-				// Adjust for header row
-				startPix += MAJOR_Y_DISTANCE;
-				endPix += MAJOR_Y_DISTANCE;
-
-				for(Integer day : p.getDays()) {
-					int d = day.intValue();
-					int left = MAJOR_X_DISTANCE*d;
-					int right = MAJOR_X_DISTANCE*(d+1);
-
-					// Adjust for header column
-					left += MAJOR_X_DISTANCE;
-					right += MAJOR_X_DISTANCE;
-
-					SVGRectWidget rect = new SVGRectWidget();
-					rect.setX(Integer.toString(left));
-					rect.setY(Integer.toString(startPix));
-					rect.setWidth(Integer.toString(right-left));
-					rect.setHeight(Integer.toString(endPix-startPix));
-					rect.setFillColor(m_color);
-					rect.setStrokeColor("#000000");
-					rect.setStrokeWidth("1");
-					rect.addMouseOutHandler(outHandle);
-					rect.addMouseOverHandler(overHandle);
-					rect.addClickHandler(clickHandle);
-					m_rects.add(rect);
-
-					SVGTextWidget text = new SVGTextWidget();
-					text.setX(Integer.toString((left+right)/2));
-					text.setY(Integer.toString(startPix+MINOR_Y_DISTANCE-2));
-					text.setFontSize("12");
-					text.setTextAnchor(TextAnchor.Middle);
-					text.setText(m_identifier);
-					text.addMouseOutHandler(outHandle);
-					text.addMouseOverHandler(overHandle);
-					text.addClickHandler(clickHandle);
-					m_text.add(text);
+				if(!p.wasDeleted()) {
+					Time start = p.getStart();
+					Time end = p.getEnd();
+					int startPix = (int)((double)MAJOR_Y_DISTANCE*(double)((double)start.getMinute()/60.0));
+					startPix += (start.getHour()-8)*MAJOR_Y_DISTANCE;
+					int endPix = (int)((double)MAJOR_Y_DISTANCE*(double)((double)end.getMinute()/60.0));
+					endPix += (end.getHour()-8)*MAJOR_Y_DISTANCE;
+	
+					// Adjust for header row
+					startPix += MAJOR_Y_DISTANCE;
+					endPix += MAJOR_Y_DISTANCE;
+	
+					for(Integer day : p.getDays()) {
+						int d = day.intValue();
+						int left = MAJOR_X_DISTANCE*d;
+						int right = MAJOR_X_DISTANCE*(d+1);
+	
+						// Adjust for header column
+						left += MAJOR_X_DISTANCE;
+						right += MAJOR_X_DISTANCE;
+	
+						SVGRectWidget rect = new SVGRectWidget();
+						rect.setX(Integer.toString(left));
+						rect.setY(Integer.toString(startPix));
+						rect.setWidth(Integer.toString(right-left));
+						rect.setHeight(Integer.toString(endPix-startPix));
+						rect.setFillColor(m_color);
+						rect.setStrokeColor("#000000");
+						rect.setStrokeWidth("1");
+						rect.addMouseOutHandler(outHandle);
+						rect.addMouseOverHandler(overHandle);
+						rect.addClickHandler(clickHandle);
+						m_rects.add(rect);
+	
+						SVGTextWidget text = new SVGTextWidget();
+						text.setX(Integer.toString((left+right)/2));
+						text.setY(Integer.toString(startPix+MINOR_Y_DISTANCE-2));
+						text.setFontSize("12");
+						text.setTextAnchor(TextAnchor.Middle);
+						text.setText(m_identifier);
+						text.addMouseOutHandler(outHandle);
+						text.addMouseOverHandler(overHandle);
+						text.addClickHandler(clickHandle);
+						m_text.add(text);
+					}
 				}
 			}
 			for(SVGRectWidget w : m_rects)

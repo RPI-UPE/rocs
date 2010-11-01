@@ -4,12 +4,19 @@ import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.Widget;
 
+import edu.rpi.rocs.client.ui.filters.ScheduleTimeBlockFilterWidget;
+
 public class SelectableTableWidget extends Widget {
 	private boolean selected[][];
 	private int m_rows;
 	private int m_cols;
 	private Element m_element;
 	private Element m_tbody;
+	protected transient ScheduleTimeBlockFilterWidget owner = null;
+	
+	public void setOwner(ScheduleTimeBlockFilterWidget owner) {
+		this.owner = owner;
+	}
 	
 	private native void addDocumentHandlers()/*-{
 		if($wnd._rocs_init===undefined) {
@@ -56,6 +63,7 @@ public class SelectableTableWidget extends Widget {
 							widget.@edu.rpi.rocs.client.ui.filters.helpers.SelectableTableWidget::setSelected(IIZ)(row-1,col-1,obj.startValue);
 						}
 					}
+					widget.@edu.rpi.rocs.client.ui.filters.helpers.SelectableTableWidget::onChange()();
 					obj.sr = obj.sc = obj.er = obj.ec = 1;
 					e.cancelBubble = true;
 				}
@@ -238,5 +246,9 @@ public class SelectableTableWidget extends Widget {
 			else row--;
 		}
 		e.getFirstChildElement().setInnerHTML(text);
+	}
+	
+	protected void onChange() {
+		owner.tableChanged();
 	}
 }

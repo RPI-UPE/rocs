@@ -9,11 +9,16 @@ import com.google.gwt.user.client.ui.Widget;
 
 import edu.rpi.rocs.client.objectmodel.Schedule;
 import edu.rpi.rocs.client.objectmodel.ScheduleFilterManager;
+import edu.rpi.rocs.client.objectmodel.SchedulerManager;
 import edu.rpi.rocs.client.objectmodel.Time;
 import edu.rpi.rocs.client.ui.filters.ScheduleTimeBlockFilterWidget;
 
 public class TimeSchedulerFilter implements ScheduleFilter {
 
+	public static interface TimeSchedulerFilterChangeHandler {
+		public void onChange(TimeSchedulerFilter filter);
+	}
+	
 	private static String DISPLAY_NAME="Disallowed Times Filter";
 	private static String QUALIFIED_NAME="edu.rpi.rocs.client.filters.schedule.TimeSchedulerFilter";
 	
@@ -47,36 +52,37 @@ public class TimeSchedulerFilter implements ScheduleFilter {
 	}
 	
 	public boolean doesScheduleSatisfyFilter(Schedule schedule) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	public boolean shouldPruneTreeOnFailure() {
-		// TODO Auto-generated method stub
 		return true;
 	}
 
 	public Widget getWidget() {
-		// TODO Auto-generated method stub
-		if(widget==null) widget = new ScheduleTimeBlockFilterWidget();
+		if(widget==null) {
+			widget = new ScheduleTimeBlockFilterWidget();
+			widget.setOwner(this);
+		}
 		return widget;
 	}
 
 	public String getDisplayTitle() {
-		// TODO Auto-generated method stub
 		return DISPLAY_NAME;
 	}
 	
 	private HashSet<ChangeHandler> changeHandlers = new HashSet<ChangeHandler>();
 
 	public void addChangeHandler(ChangeHandler e) {
-		// TODO Auto-generated method stub
 		changeHandlers.add(e);
 	}
 
 	public void removeChangeHandler(ChangeHandler e) {
-		// TODO Auto-generated method stub
 		changeHandlers.remove(e);
+	}
+
+	public void onChange() {
+		SchedulerManager.getInstance().fireTimeFilterChangeHandlers(this);
 	}
 
 }

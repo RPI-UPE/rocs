@@ -32,6 +32,7 @@ public class ScheduleMiniViewWidget extends FlowPanel implements HasClickHandler
 			List<Period> periods = section.getPeriods();
 			String color = m_generator.randomlySelectColor(section.getParent());
 			for(Period p : periods) {
+				if(p.wasDeleted()) continue;
 				int start = p.getStart().getAbsMinute();
 				int end = p.getEnd().getAbsMinute();
 				start /= 10;

@@ -16,6 +16,8 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 import edu.rpi.rocs.client.filters.schedule.ScheduleFilter;
+import edu.rpi.rocs.client.filters.schedule.TimeSchedulerFilter;
+import edu.rpi.rocs.client.filters.schedule.TimeSchedulerFilter.TimeSchedulerFilterChangeHandler;
 import edu.rpi.rocs.client.objectmodel.SemesterManager.SemesterManagerCallback;
 import edu.rpi.rocs.client.services.schedulemanager.ScheduleManagerService;
 
@@ -236,10 +238,12 @@ public class SchedulerManager implements IsSerializable {
 		
 		Map<Section,SectionStatusObject> objs = new HashMap<Section,SectionStatusObject>();
 		for(Section s : c.getSections()) {
-			SectionStatusObject sso = new SectionStatusObject();
-			sso.setSection(s);
-			sso.setIncluded(true);
-			objs.put(s, sso);
+			if(!s.wasDeleted()) {
+				SectionStatusObject sso = new SectionStatusObject();
+				sso.setSection(s);
+				sso.setIncluded(true);
+				objs.put(s, sso);
+			}
 		}
 		currentSections.put(c, objs);
 
@@ -379,8 +383,9 @@ public class SchedulerManager implements IsSerializable {
 			Map<Section, SectionStatusObject> stats = currentSections.get(c);
 			Set<Section> set = new HashSet<Section>();
 			for(SectionStatusObject sso : stats.values()) {
-				if(sso.getIncluded())
-					set.add(sso.getSection());
+				if(!sso.getSection().wasDeleted())
+					if(sso.getIncluded())
+						set.add(sso.getSection());
 			}
 			requiredSections.put(c, set);
 		}
@@ -388,8 +393,9 @@ public class SchedulerManager implements IsSerializable {
 			Map<Section, SectionStatusObject> stats = currentSections.get(c);
 			Set<Section> set = new HashSet<Section>();
 			for(SectionStatusObject sso : stats.values()) {
-				if(sso.getIncluded())
-					set.add(sso.getSection());
+				if(!sso.getSection().wasDeleted())
+					if(sso.getIncluded())
+						set.add(sso.getSection());
 			}
 			optionalSections.put(c, set);
 		}
@@ -561,5 +567,22 @@ public class SchedulerManager implements IsSerializable {
 
 	public void warnedUser(int state) {
 		warnings |= state;
+	}
+	
+	protected transient HashSet<TimeSchedulerFilterChangeHandler> filterHandlers =
+		new HashSet<TimeSchedulerFilterChangeHandler>();
+	
+	public void addChangeHandler(TimeSchedulerFilterChangeHandler e) {
+		filterHandlers.add(e);
+	}
+	
+	public void removeChangeHandler(TimeSchedulerFilterChangeHandler e) {
+		filterHandlers.remove(e);
+	}
+	
+	public void fireTimeFilterChangeHandlers(TimeSchedulerFilter e) {
+		for(TimeSchedulerFilterChangeHandler handler : filterHandlers) {
+			handler.onChange(e);
+		}
 	}
 }

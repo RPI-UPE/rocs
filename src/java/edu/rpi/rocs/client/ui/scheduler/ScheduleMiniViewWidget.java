@@ -46,24 +46,26 @@ public class ScheduleMiniViewWidget extends SVGCanvasWidget implements
 			List<Period> periods = section.getPeriods();
 			String color = m_generator.randomlySelectColor(section.getParent());
 			for(Period p : periods) {
-				int start = p.getStart().getAbsMinute();
-				int end = p.getEnd().getAbsMinute();
-				start /= 10;
-				end /= 10;
-				start -= 8*6;
-				end -= 8*6;
-				Iterator<Integer> d = p.getDays().iterator();
-				while(d.hasNext()) {
-					int day = d.next().intValue();
-					SVGRectWidget rect = new SVGRectWidget();
-					rect.setX(Integer.toString(day*10+5));
-					rect.setY(Integer.toString(start+5));
-					rect.setWidth("10");
-					rect.setHeight(Integer.toString(end-start));
-					rect.setFillColor(color);
-					rect.setStrokeColor("#000000");
-					rect.setStrokeWidth("1");
-					m_classes.add(rect);
+				if(!p.wasDeleted()) {
+					int start = p.getStart().getAbsMinute();
+					int end = p.getEnd().getAbsMinute();
+					start /= 10;
+					end /= 10;
+					start -= 8*6;
+					end -= 8*6;
+					Iterator<Integer> d = p.getDays().iterator();
+					while(d.hasNext()) {
+						int day = d.next().intValue();
+						SVGRectWidget rect = new SVGRectWidget();
+						rect.setX(Integer.toString(day*10+5));
+						rect.setY(Integer.toString(start+5));
+						rect.setWidth("10");
+						rect.setHeight(Integer.toString(end-start));
+						rect.setFillColor(color);
+						rect.setStrokeColor("#000000");
+						rect.setStrokeWidth("1");
+						m_classes.add(rect);
+					}
 				}
 			}
 		}

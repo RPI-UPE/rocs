@@ -89,7 +89,11 @@ public class ScheduleViewWidget extends FlowPanel {
 				HTMLTableListRow entry = new HTMLTableListRow();
 				if(row%2==0) {
 					HTMLTableListCell temp = new HTMLTableListCell(true);
-					temp.setText(Integer.toString(row/2));
+					int j=row/2;
+					boolean am=true;
+					if(j>11) am=false;
+					if(j>12) j -= 12;
+					temp.setText(Integer.toString(j)+(am?" AM":" PM"));
 					temp.setRowSpan(2);
 					temp.addStyleName("firstcol");
 					entry.add(temp);
@@ -155,6 +159,7 @@ public class ScheduleViewWidget extends FlowPanel {
 			m_divs = new ArrayList<CustomFlowPanel>();
 			List<Period> times = s.getPeriods();
 			for(Period p : times) {
+				if(p.wasDeleted()) continue;
 				Time start = p.getStart();
 				Time end = p.getEnd();
 				int startPix = (int)((double)MAJOR_Y_DISTANCE*(double)((double)start.getMinute()/60.0));

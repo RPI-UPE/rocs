@@ -3,9 +3,11 @@ package edu.rpi.rocs.client.ui.coursesearch;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.Map.Entry;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -17,13 +19,18 @@ import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
+import edu.rpi.rocs.client.filters.schedule.TimeSchedulerFilter;
+import edu.rpi.rocs.client.filters.schedule.TimeSchedulerFilter.TimeSchedulerFilterChangeHandler;
 import edu.rpi.rocs.client.objectmodel.Course;
 import edu.rpi.rocs.client.objectmodel.FastSchedule;
 import edu.rpi.rocs.client.objectmodel.CrossListing;
 import edu.rpi.rocs.client.objectmodel.FastSchedule2;
+import edu.rpi.rocs.client.objectmodel.Period;
 import edu.rpi.rocs.client.objectmodel.SchedulerManager;
+import edu.rpi.rocs.client.objectmodel.SectionStatusObject;
 import edu.rpi.rocs.client.objectmodel.SemesterManager;
 import edu.rpi.rocs.client.objectmodel.CourseStatusObject;
+import edu.rpi.rocs.client.objectmodel.Time;
 import edu.rpi.rocs.client.objectmodel.SchedulerManager.RestorationEventHandler;
 import edu.rpi.rocs.client.objectmodel.SemesterManager.SemesterManagerCallback;
 import edu.rpi.rocs.client.objectmodel.Section;
@@ -31,7 +38,7 @@ import edu.rpi.rocs.client.objectmodel.Semester;
 import edu.rpi.rocs.client.objectmodel.Course.CourseComparator;
 import edu.rpi.rocs.client.ui.HTMLTableList;
 
-public class CourseSearchPanel extends VerticalPanel implements RestorationEventHandler {
+public class CourseSearchPanel extends VerticalPanel implements RestorationEventHandler, TimeSchedulerFilterChangeHandler {
 
 	/*
 	private static final String CHECK = IMG("check.png"),
@@ -211,6 +218,22 @@ public class CourseSearchPanel extends VerticalPanel implements RestorationEvent
 				redosearch();
 			}
 		});
+		SchedulerManager.getInstance().addSectionIncludedHandler(new SchedulerManager.SectionIncludedHandler() {
+			
+			public void handleEvent(SectionStatusObject status) {
+				FS2.removeCourse(status.getSection().getParent());
+				FS2.addCourse(status.getSection().getParent());
+				redosearch();
+			}
+		});
+		SchedulerManager.getInstance().addSectionExcludedHandler(new SchedulerManager.SectionExcludedHandler() {
+			
+			public void handleEvent(SectionStatusObject status) {
+				FS2.removeCourse(status.getSection().getParent());
+				FS2.addCourse(status.getSection().getParent());
+				redosearch();
+			}
+		});
 
 		/*
 		resultsListBox.addStyleName("search_results");
@@ -250,9 +273,10 @@ public class CourseSearchPanel extends VerticalPanel implements RestorationEvent
 		}
 		*/
 		SchedulerManager.getInstance().addRestorationEventHandler(this);
+		SchedulerManager.getInstance().addChangeHandler(this);
 	}
 
-	private ArrayList<Course> theResults=null;
+	private ArrayList<Course> theResults=new ArrayList<Course>();
 
 	private FastSchedule FS = new FastSchedule();
 	private FastSchedule2 FS2 = new FastSchedule2();
@@ -299,11 +323,13 @@ public class CourseSearchPanel extends VerticalPanel implements RestorationEvent
 
 		theResults = new ArrayList<Course>();
 		for(Course course : courses) {
-			if(dept==null || course.getDept()==dept) {
-				if(getCorrectCourseLevel(level, course.getNum()) == true){
-					if(userCourseNum == -1 || userCourseNum == course.getNum()){
-						if(name == null || course.getName().toLowerCase().indexOf(name.toLowerCase()) != -1){
-							theResults.add(course);
+			if(!course.wasDeleted()) {
+				if(dept==null || course.getDept()==dept) {
+					if(getCorrectCourseLevel(level, course.getNum()) == true){
+						if(userCourseNum == -1 || userCourseNum == course.getNum()){
+							if(name == null || course.getName().toLowerCase().indexOf(name.toLowerCase()) != -1){
+								theResults.add(course);
+							}
 						}
 					}
 				}
@@ -469,6 +495,40 @@ public class CourseSearchPanel extends VerticalPanel implements RestorationEvent
 
 	public void restore() {
 		FS2.clear();
+		if(timeCourse!=null) FS2.addCourse(timeCourse);
+		Collection<CourseStatusObject> courses = SchedulerManager.getInstance().getCurrentCourses().values();
+		for(CourseStatusObject c : courses) {
+			if(c.getRequired()) {
+				FS2.addCourse(c.getCourse());
+			}
+		}
+		redosearch();
+	}
+	
+	transient Course timeCourse = null;
+
+	public void onChange(TimeSchedulerFilter filter) {
+		HashMap<Integer, ArrayList<Time>> blocks = filter.getTimes();
+		timeCourse = new Course();
+		timeCourse.setName("Time Filter");
+		Section timeSection = new Section();
+		timeCourse.addSection(timeSection);
+		for(Entry<Integer, ArrayList<Time>> pair : blocks.entrySet()) {
+			ArrayList<Time> times = pair.getValue();
+			// Inefficient
+			for(Time t : times) {
+				Time endTime = new Time();
+				endTime.setMinute(t.getMinute()+30);
+				endTime.setHour(t.getHour()+(t.getMinute()+30>=60?1:0));
+				Period period = new Period();
+				period.addDay(pair.getKey());
+				period.setStart(t);
+				period.setEnd(endTime);
+				timeSection.addPeriod(period);
+			}
+		}
+		FS2.clear();
+		FS2.addCourse(timeCourse);
 		Collection<CourseStatusObject> courses = SchedulerManager.getInstance().getCurrentCourses().values();
 		for(CourseStatusObject c : courses) {
 			if(c.getRequired()) {

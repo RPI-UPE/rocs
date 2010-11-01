@@ -238,18 +238,20 @@ public class Schedule implements Serializable {
 		Iterator<Period> i = s.getPeriods().iterator();
 		while(i.hasNext()) {
 			Period p = i.next();
-			int starttime = p.getStart().getAbsMinute();
-			int endtime = p.getEnd().getAbsMinute();
-			starttime /= 10;
-			endtime /= 10;
-			
-			Iterator<Integer> j = p.getDays().iterator();
-			while(j.hasNext()) {
-				int day = j.next().intValue();
-				for(int k=starttime;k<endtime;k++) {
-					TimeBlockType t = times.get(day).get(k);
-					if(t == TimeBlockType.Filled || t == TimeBlockType.Blocked)
-						return true;
+			if(!p.wasDeleted()) {
+				int starttime = p.getStart().getAbsMinute();
+				int endtime = p.getEnd().getAbsMinute();
+				starttime /= 10;
+				endtime /= 10;
+				
+				Iterator<Integer> j = p.getDays().iterator();
+				while(j.hasNext()) {
+					int day = j.next().intValue();
+					for(int k=starttime;k<endtime;k++) {
+						TimeBlockType t = times.get(day).get(k);
+						if(t == TimeBlockType.Filled || t == TimeBlockType.Blocked)
+							return true;
+					}
 				}
 			}
 		}

@@ -3,6 +3,7 @@ package edu.rpi.rocs.client.objectmodel;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import com.allen_sauer.gwt.log.client.Log;
@@ -25,20 +26,25 @@ public class FastSchedule2 {
 		 * Assume classes don't overlap within an hour
 		 */
 		public void createBlock() {
-			days = new int[7];
+			days = new int[14];
 			if(contents==null) return;
 			for(Period p : contents.getPeriods()) {
-				int start = p.getStartInt();
-				int end = p.getEndInt();
-				start /= 60;
-				if(end%60==0) end -= 1;
-				end /= 60;
-				int flags=0;
-				for(int i=start;i<=end;i++) {
-					flags |= 1<<i;
-				}
-				for(int day : p.getDays()) {
-					days[day]  = flags;
+				if(!p.wasDeleted()) {
+					int start = p.getStartInt();
+					int end = p.getEndInt();
+					start /= 30;
+					if(end%30==0) end -= 1;
+					end /= 30;
+					int flagsAM=0;
+					int flagsPM=0;
+					for(int i=start;i<=end;i++) {
+						if(i>=24) flagsPM |= 1<<(i-24);
+						else flagsAM |= 1<<i;
+					}
+					for(int day : p.getDays()) {
+						days[2*day] |= flagsAM;
+						days[2*day+1] |= flagsPM;
+					}
 				}
 			}
 		}
@@ -47,15 +53,15 @@ public class FastSchedule2 {
 			if(days==null) createBlock();
 			if(next!=null) {
 				if(next.combined == null) next.combine();
-				if(combined==null) combined = new int[7];
-				for(int i=0;i<7;i++) {
+				if(combined==null) combined = new int[14];
+				for(int i=0;i<days.length;i++) {
 					combined[i] = days[i] | next.combined[i];
 				}
 			}
 			else {
 				if(combined==null) {
-					combined = new int[7];
-					for(int i=0;i<7;i++) {
+					combined = new int[14];
+					for(int i=0;i<days.length;i++) {
 						combined[i] = days[i];
 					}
 				}
@@ -64,7 +70,7 @@ public class FastSchedule2 {
 
 		public boolean collides(int[] test) {
 			if(combined==null) combine();
-			for(int i=0;i<7;i++){ 
+			for(int i=0;i<test.length;i++){ 
 				if((test[i] & combined[i]) != 0) return true;
 			}
 			return false;
@@ -72,7 +78,7 @@ public class FastSchedule2 {
 		
 		public Set<Course> collides(int[] test, boolean differ) {
 			Set<Course> result = new HashSet<Course>();
-			for(int i=0;i<7;i++) {
+			for(int i=0;i<test.length;i++) {
 				if((test[i] & combined[i]) != 0) {
 					if(next != null) {
 						Set<Course> subset = next.collides(test, differ);
@@ -89,21 +95,32 @@ public class FastSchedule2 {
 	private ArrayList<Node> topnodes = new ArrayList<Node>();
 	
 	private int[] createBlock(Section s) {
-		int[] days = new int[7];
+		int[] days = new int[14];
 		for(Period p : s.getPeriods()) {
-			int start = p.getStartInt();
-			int end = p.getEndInt();
-			start /= 60;
-			if(end%60==0) end -= 1;
-			end /= 60;
-			int flags=0;
-			for(int i=start;i<=end;i++) {
-				flags |= 1<<i;
-			}
-			for(int day : p.getDays()) {
-				days[day]  = flags;
+			if(!p.wasDeleted()) {
+				int start = p.getStartInt();
+				int end = p.getEndInt();
+				start /= 30;
+				if(end%30==0) end -= 1;
+				end /= 30;
+				/*
+				if(s.getParent().getNum()==1100) {
+					Log.debug("start = "+start+", end = "+end);
+				}
+				*/
+				int flagsAM=0;
+				int flagsPM=0;
+				for(int i=start;i<=end;i++) {
+					if(i>=24) flagsPM |= 1<<(i-24);
+					else flagsAM |= 1<<i;
+				}
+				for(int day : p.getDays()) {
+					days[2*day] |= flagsAM;
+					days[2*day+1] |= flagsPM;
+				}
 			}
 		}
+		//logDays("createBlock",days);
 		return days;
 	}
 	
@@ -115,9 +132,11 @@ public class FastSchedule2 {
 		List<Section> sections = c.getSections();
 		if(sections.size()==0) return false;
 		for(Section s : sections) {
-			int[] days=createBlock(s);
-			for(Node n : topnodes) {
-				if(!n.collides(days)) return false;
+			if(!s.wasDeleted()) {
+				int[] days=createBlock(s);
+				for(Node n : topnodes) {
+					if(!n.collides(days)) return false;
+				}
 			}
 		}
 		return true;
@@ -131,11 +150,13 @@ public class FastSchedule2 {
 		if(sections.size()==0) return result;
 		result = new HashSet<Course>();
 		for(Section s : sections) {
-			int[] days=createBlock(s);
-			for(Node n : topnodes) {
-				Set<Course> temp = n.collides(days, true);
-				if(temp.size()==0) return new HashSet<Course>();
-				result.addAll(temp);
+			if(!s.wasDeleted()) {
+				int[] days=createBlock(s);
+				for(Node n : topnodes) {
+					Set<Course> temp = n.collides(days, true);
+					if(temp.size()==0) return new HashSet<Course>();
+					result.addAll(temp);
+				}
 			}
 		}
 		return result;
@@ -144,29 +165,44 @@ public class FastSchedule2 {
 	public void addCourse(Course c) {
 		if(courses.contains(c)) return;
 		Log.debug("Course: "+c.getName());
-		if(courses.size()==0) {
+		// Debug
+		/*
+		if(true) {
 			for(Section s : c.getSections()) {
-				Node n = new Node();
-				n.contents = s;
-				n.createBlock();
-				n.combine();
-				topnodes.add(n);
+				int[] days = createBlock(s);
+				debug(days);
+			}
+		}
+		*/
+		if(courses.size()==0) {
+			Map<Section, SectionStatusObject> sections = SchedulerManager.getInstance().getSectionsForCourse(c);
+			for(SectionStatusObject s : sections.values()) {
+				if(s.getIncluded()&&!s.getSection().wasDeleted()) {
+					Node n = new Node();
+					n.contents = s.getSection();
+					n.createBlock();
+					n.combine();
+					topnodes.add(n);
+				}
 			}
 			courses.add(c);
 			Log.debug("topnodes.size() = "+topnodes.size());
 		}
 		else {
 			ArrayList<Node> newnodes = new ArrayList<Node>();
-			for(Section s : c.getSections()) {
-				int[] days = createBlock(s);
-				for(Node n : topnodes) {
-					if(!n.collides(days)) {
-						Node x = new Node();
-						x.contents = s;
-						x.createBlock();
-						x.next = n;
-						x.combine();
-						newnodes.add(x);
+			Map<Section, SectionStatusObject> sections = SchedulerManager.getInstance().getSectionsForCourse(c);
+			for(SectionStatusObject s : sections.values()) {
+				if(s.getIncluded()&&!s.getSection().wasDeleted()) {
+					int[] days = createBlock(s.getSection());
+					for(Node n : topnodes) {
+						if(!n.collides(days)) {
+							Node x = new Node();
+							x.contents = s.getSection();
+							x.createBlock();
+							x.next = n;
+							x.combine();
+							newnodes.add(x);
+						}
 					}
 				}
 			}
@@ -187,5 +223,31 @@ public class FastSchedule2 {
 	public void clear() {
 		courses = new ArrayList<Course>();
 		topnodes.clear();
+	}
+	
+	public void logDays(String label, int[] days) {
+		String data = "";
+		for(int i=0;i<days.length;i++) {
+			int day = days[i];
+			int bits = 0x800000;
+			while(bits!=0) {
+				if((day&bits)==bits) {
+					data += "1";
+				}
+				else {
+					data += "0";
+				}
+				bits = bits >> 1;
+			}
+			data += "  ";
+		}
+		Log.debug(label+"  "+data);
+	}
+	
+	public void debug(int[] days) {
+		logDays("section",days);
+		for(Node n : topnodes) {
+			logDays("topnode",n.combined);
+		}
 	}
 }
