@@ -209,7 +209,8 @@ public class ScheduleViewWidget extends SVGCanvasWidget {
 			createBackground();
 			addSVGElement(m_background);
 			createBlocked(mSchedule);
-			addSVGElement(m_blocked);
+			if(m_blocked.size()>0)
+				addSVGElement(m_blocked);
 			createSolidLines();
 			addSVGElement(m_solid_lines);
 			createDashedLines();

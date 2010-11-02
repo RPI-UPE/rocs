@@ -176,8 +176,8 @@ public class ROCSInterface extends HTMLPanel implements RestorationEventHandler 
 		if(w==CourseSearchPanel.getInstance()) index=1;
 		if(w==ClassViewPanel.getInstance()) index=2;
 		if(w==SchedulerFilterDisplayPanel.getInstance()) index=3;
-		if(w==SchedulerDisplayPanel.getInstance()) index=4;
-		if(w==edu.rpi.rocs.client.ui.scheduler.ie.SchedulerDisplayPanel.getInstance()) index=4;
+		if(!isMSIE()&&w==SchedulerDisplayPanel.getInstance()) index=4;
+		if(isMSIE()&&w==edu.rpi.rocs.client.ui.scheduler.ie.SchedulerDisplayPanel.getInstance()) index=4;
 		if(index>-1) {
 			result = thePanel.isVisible(index);
 		}
@@ -190,8 +190,8 @@ public class ROCSInterface extends HTMLPanel implements RestorationEventHandler 
 		if(w==CourseSearchPanel.getInstance()) index=1;
 		if(w==ClassViewPanel.getInstance()) index=2;
 		if(w==SchedulerFilterDisplayPanel.getInstance()) index=3;
-		if(w==SchedulerDisplayPanel.getInstance()) index=4;
-		if(w==edu.rpi.rocs.client.ui.scheduler.ie.SchedulerDisplayPanel.getInstance()) index=4;
+		if(!isMSIE()&&w==SchedulerDisplayPanel.getInstance()) index=4;
+		if(isMSIE()&&w==edu.rpi.rocs.client.ui.scheduler.ie.SchedulerDisplayPanel.getInstance()) index=4;
 		if(index>-1&&isDisplaying(w)!=visible) {
 			thePanel.showStack(index);
 		}

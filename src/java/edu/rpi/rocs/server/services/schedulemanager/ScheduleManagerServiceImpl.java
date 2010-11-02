@@ -48,7 +48,7 @@ public class ScheduleManagerServiceImpl extends RemoteServiceServlet implements
 		}
 	}
 	
-	public SchedulerManager loadSchedule(String user, String name, int semesterid) {
+	public SchedulerManager loadSchedule(String user, String name, int semesterid) throws Throwable {
 		try {
 			Session session = HibernateUtil.getSessionFactory().getCurrentSession();
 			session.beginTransaction();
@@ -73,8 +73,8 @@ public class ScheduleManagerServiceImpl extends RemoteServiceServlet implements
 		catch(Throwable ex) {
 			System.out.print("Caught exception: ");
 			ex.printStackTrace();
+			throw ex;
 		}
-		return null;
 	}
 
 	@SuppressWarnings("unchecked")
