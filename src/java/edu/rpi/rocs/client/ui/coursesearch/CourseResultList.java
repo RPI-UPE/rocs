@@ -86,11 +86,12 @@ public class CourseResultList {
 					return;
 				}
 				else if(val == State.CLOSED && !SchedulerManager.getInstance().didWarnUser(State.CLOSED)) {
-					Window.alert("This course is closed. You may add it but will have to fill out paperwork with the registrar to register for it.");
+					Window.alert("Warning: this course is closed.");
 					SchedulerManager.getInstance().warnedUser(State.CLOSED);
 				}
 				else if(val == State.CHOSEN) {
-					Window.alert("You have already selected this course for your schedule.");
+					//Window.alert("You have already selected this course for your schedule.");
+					SchedulerManager.getInstance().removeCourse(c);
 					return;
 				}
 			}

@@ -328,6 +328,7 @@ div#rocs_PORTLET_rocs_root_view .course-search-list .odd {
 
 div#rocs_PORTLET_rocs_root_view .course-search-list tr.course-selected {
 	background-color: #88ff88;
+	cursor: pointer;
 }
 
 div#rocs_PORTLET_rocs_root_view .course-search-list tr.course-conflict {

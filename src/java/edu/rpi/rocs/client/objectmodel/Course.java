@@ -342,21 +342,27 @@ public class Course extends MajorMinorRevisionObject implements Comparable<Cours
 
 	public void examineNewVersion(Course new_course) {
 		if(!new_course.getName().equals(name)) {
+			System.out.println("Name of course "+dept+"-"+num+" was different");
 			setName(new_course.getName());
 		}
 		else if(new_course.getNum() != num) {
+			System.out.println("Number of course "+dept+"-"+num+" was different");
 			setNum(new_course.getNum());
 		}
 		else if(!new_course.getDept().equals(dept)) {
+			System.out.println("Dept of course "+dept+"-"+num+" was different");
 			setDept(new_course.getDept());
 		}
 		else if(new_course.getCredmax() != credmax) {
+			System.out.println("Credmax of course "+dept+"-"+num+" was different");
 			setCredmax(new_course.getCredmax());
 		}
 		else if(new_course.getCredmin() != credmin) {
+			System.out.println("Credmin of course "+dept+"-"+num+" was different");
 			setCredmin(new_course.getCredmin());
 		}
 		else if(!new_course.getGradetype().equals(gradetype)) {
+			System.out.println("Gradetype of course "+dept+"-"+num+" was different");
 			setGradetype(new_course.getGradetype());
 		}
 		List<Section> others = new_course.getSections();
@@ -368,14 +374,14 @@ public class Course extends MajorMinorRevisionObject implements Comparable<Cours
 				s.examineNewVersion(t);
 			}
 			else {
-				//System.out.println("Deleting old section...");
+				System.out.println("Course "+dept+"-"+num+" deleting old section...");
 				s.delete();
 				updateMajorRevision();
 			}
 		}
 		for(Section s : others) {
 			if(!sections.contains(s)) {
-				//System.out.println("Found new section...");
+				System.out.println("Found new section for "+dept+"-"+num+"...");
 				sections.add(s);
 				s.setParent(this);
 				updateMajorRevision();
@@ -385,12 +391,14 @@ public class Course extends MajorMinorRevisionObject implements Comparable<Cours
 		ArrayList<String> copy = new ArrayList<String>(notes);
 		for(String s : notes) {
 			if(!temp.contains(s)) {
+				System.out.println("Notes 1");
 				copy.remove(s);
 				updateMajorRevision();
 			}
 		}
 		for(String s : temp) {
 			if(!copy.contains(s)) {
+				System.out.println("Notes 2");
 				copy.add(s);
 				updateMajorRevision();
 			}
@@ -400,6 +408,7 @@ public class Course extends MajorMinorRevisionObject implements Comparable<Cours
 	@Override
 	public void delete() {
 		super.delete();
+		System.out.println("Deleted "+dept+"-"+num);
 		this.setMajorRevision(Long.MAX_VALUE);
 		this.setMinorRevision(Long.MAX_VALUE);
 		for(Section s : sections) {

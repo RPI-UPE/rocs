@@ -24,7 +24,7 @@
   </logger>
 
   <root>
-    <level value="info"/>
+    <priority value="info"/>
     <appender-ref ref="appenderConsole"/>
     <!--<appender-ref ref="appenderFile"/>-->
   </root>

@@ -150,7 +150,10 @@ public class Schedule implements Serializable {
 					}
 					ArrayList<Schedule> temp = buildSchedulesGivenStartingPoint(copy,newCourses,optionalCourses,filters);
 					results.addAll(temp);
-				}
+				}/*
+				else {
+					Log.debug("Section "+section.getCrn()+" of course "+section.getParent().getId()+" conflicts with schedule.");
+				}*/
 			}
 		}
 		return results;
@@ -249,8 +252,10 @@ public class Schedule implements Serializable {
 					int day = j.next().intValue();
 					for(int k=starttime;k<endtime;k++) {
 						TimeBlockType t = times.get(day).get(k);
-						if(t == TimeBlockType.Filled || t == TimeBlockType.Blocked)
+						if(t == TimeBlockType.Filled || t == TimeBlockType.Blocked) {
+							//Log.debug("Conflict at "+(int)(k/60)+":"+(int)(k%60));
 							return true;
+						}
 					}
 				}
 			}
@@ -286,18 +291,20 @@ public class Schedule implements Serializable {
 		Iterator<Period> i = periods.iterator();
 		while(i.hasNext()) {
 			Period p = i.next();
-			Time start = p.getStart();
-			Time end = p.getEnd();
-			int starttime = start.getAbsMinute();
-			int endtime = end.getAbsMinute();
-			starttime /= 10;
-			endtime /= 10;
-			List<Integer> days = p.getDays();
-			Iterator<Integer> dayItr = days.iterator();
-			while(dayItr.hasNext()) {
-				int day = dayItr.next().intValue();
-				for(int j=starttime;j<endtime;j++)
-					times.get(day).set(j, TimeBlockType.Filled);
+			if(!p.wasDeleted()) {
+				Time start = p.getStart();
+				Time end = p.getEnd();
+				int starttime = start.getAbsMinute();
+				int endtime = end.getAbsMinute();
+				starttime /= 10;
+				endtime /= 10;
+				List<Integer> days = p.getDays();
+				Iterator<Integer> dayItr = days.iterator();
+				while(dayItr.hasNext()) {
+					int day = dayItr.next().intValue();
+					for(int j=starttime;j<endtime;j++)
+						times.get(day).set(j, TimeBlockType.Filled);
+				}
 			}
 		}
 		sections.add(s);
