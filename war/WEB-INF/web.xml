@@ -7,6 +7,7 @@
 	  <param-name>log4jConfigLocation</param-name>
 	  <param-value>/WEB-INF/classes/log4j.xml</param-value>
 	</context-param>
+	<!--
 	<filter>
 		<filter-name>Cache Filter - Resource</filter-name>
 		<filter-class>com.liferay.portal.kernel.servlet.PortalClassLoaderFilter</filter-class>
@@ -178,6 +179,7 @@
 	<listener>
 		<listener-class>com.liferay.portal.kernel.servlet.PortletContextListener</listener-class>
 	</listener>
+	-->
 	<servlet>
 		<servlet-name>DemoService</servlet-name>
 		<servlet-class>edu.rpi.rocs.server.services.demo.DemoServiceImpl</servlet-class>
@@ -190,6 +192,7 @@
 		<servlet-name>ScheduleManagerServiceImpl</servlet-name>
 		<servlet-class>edu.rpi.rocs.server.services.schedulemanager.ScheduleManagerServiceImpl</servlet-class>
 	</servlet>
+	<!--
 	<servlet>
 		<servlet-name>rocs</servlet-name>
 		<servlet-class>com.liferay.portal.kernel.servlet.PortletServlet</servlet-class>
@@ -199,6 +202,7 @@
 		</init-param>
 		<load-on-startup>0</load-on-startup>
 	</servlet>
+	-->
 	<servlet-mapping>
 		<servlet-name>CourseDBServiceImpl</servlet-name>
 		<url-pattern>/rocs.gwt/CourseDBService</url-pattern>
@@ -215,6 +219,7 @@
 		<servlet-name>rocs</servlet-name>
 		<url-pattern>/rocs/*</url-pattern>
 	</servlet-mapping>
+	<!--
 	<jsp-config>
 		<taglib>
 			<taglib-uri>http://java.sun.com/portlet_2_0</taglib-uri>
@@ -241,4 +246,5 @@
 			<taglib-location>/WEB-INF/tld/liferay-util.tld</taglib-location>
 		</taglib>
 	</jsp-config>
+	-->
 </web-app>
