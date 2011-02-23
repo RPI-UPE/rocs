@@ -9,6 +9,7 @@
 	<property name="war.classes"       value="${war.webinf}/classes"/>
 	<property name="war.lib"           value="${war.webinf}/lib"/>
 	<property name="war.css"           value="${war.dir}/css"/>
+	<property name="war.js"			   value="${war.dir}/js"/>
 	<property name="war.images"		   value="${war.dir}/images"/>
 	<property name="war.xml"		   value="${war.dir}/xml"/>
 	<property name="gwt.dir"           value="${war.dir}/${gwt.module}"/>
@@ -16,6 +17,7 @@
 	<property name="src.java.dir"      value="${src.dir}/java"/>
 	<property name="src.resources.dir" value="${src.dir}/resources"/>
 	<property name="src.css.dir"       value="${src.dir}/css"/>
+	<property name="src.js.dir"		   value="${src.dir}/js"/>
 	<property name="src.images.dir"    value="${src.dir}/images"/>
 	<property name="src.xml.dir"	   value="${src.dir}/xml"/>
 	<property name="docs.dir"          value="docs"/>
@@ -121,6 +123,10 @@
 	  <copy todir="${war.css}">
 	    <fileset dir="${src.css.dir}"/>
 	  </copy>
+		<mkdir dir="${war.js}"/>
+		<copy todir="${war.js}">
+			<fileset dir="${src.js.dir}"/>
+		</copy>
 	  <mkdir dir="${war.images}"/>
       <copy todir="${war.images}">
 		<fileset dir="${src.images.dir}"/>

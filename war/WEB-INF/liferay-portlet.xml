@@ -6,8 +6,6 @@
 		<portlet-name>rocs</portlet-name>
 		<icon>/icon.png</icon>
 		<instanceable>true</instanceable>
-		<header-portlet-css>/css/test.css</header-portlet-css>
-		<footer-portlet-javascript>/js/test.js</footer-portlet-javascript>
 	</portlet>
 	<role-mapper>
 		<role-name>administrator</role-name>

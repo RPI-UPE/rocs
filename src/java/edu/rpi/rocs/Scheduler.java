@@ -250,6 +250,10 @@ public class Scheduler extends GenericPortlet {
 		}
 		String userName = (String)userinfo.get("user.login.id");
 		userInfoMap.put(new Integer(userName.hashCode()), userinfo);
+		if(theConfig.getInitParameter("edu.rpi.rocs.Scheduler.includejQuery").equals("true")) {
+			out.println("<script language=\"javascript\" src=\"" + aRequest.getContextPath() + "/js/jquery-1.4.4.min.js\"></script>");
+			out.println("<script language=\"javascript\" src=\"" + aRequest.getContextPath() + "/js/jquery-ui-1.8.6.custom.min.js\"></script>");
+		}
 		out.println("<script language=\"javascript\">var rocsUserName=\""+userName.hashCode()+"\";\nvar rocsContext=\""+aRequest.getContextPath()+"\";\nwindow.rocsContext=rocsContext;</script>");
 		out.println("<script language=\"javascript\" src=\"" + aRequest.getContextPath() + "/rocs.gwt/rocs.gwt.nocache.js\"></script>");
 		out.println("<link rel=\"stylesheet\" type=\"text/css\" href=\"" + aRequest.getContextPath() + "/css/rocs.css\"/>");
