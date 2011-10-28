@@ -32,14 +32,21 @@
 		<pathelement path="${war.lib}/log4j-1.2.15.jar"/>
 		<pathelement path="${war.lib}/standard.jar"/>
 		<pathelement path="${war.lib}/hsqldb.jar"/>
-		<pathelement path="${war.lib}/gwt-log-2.6.2.jar"/>
+		<pathelement path="${war.lib}/gwt-log-3.1.5.jar"/>
 		<pathelement path="${war.lib}/hibernate3.jar"/>
 		<pathelement path="${war.lib}/hibernate-commons-annotations.jar"/>
 		<pathelement path="${war.lib}/ejb3-persistence.jar"/>
 
-		<pathelement path="${lib.dir}/servlet-api.jar"/>
+		<!--<pathelement path="${lib.dir}/servlet-api.jar"/>-->
+		<pathelement path="${lib.dir}/gwt-servlet.jar"/>
 		<pathelement path="${lib.dir}/gwt-user.jar"/>
 		<pathelement path="${lib.dir}/portlet.jar"/>
+		<pathelement path="${lib.dir}/validation-api-1.0.0.GA.jar"/>
+		<pathelement path="${lib.dir}/validation-api-1.0.0.GA-sources.jar"/>
+		<pathelement path="${lib.dir}/gwt-servlet-deps.jar"/>
+		<pathelement path="${lib.dir}/requestfactory-apt.jar"/>
+		<pathelement path="${lib.dir}/requestfactory-client.jar"/>
+		<pathelement path="${lib.dir}/requestfactory-server.jar"/>
 		<!-- Select the correct element for your platform, this will 
 			hopefully be automatic in the future -->
 		<pathelement path="${lib.dir}/gwt-dev.jar"/>
@@ -92,7 +99,8 @@
 		<javac srcdir="${src.java.dir}" includes="**" encoding="utf-8"
 			destdir="${war.classes}"
 			source="1.5" target="1.5" nowarn="true"
-			debug="true" debuglevel="lines,vars,source">
+			debug="true" debuglevel="lines,vars,source"
+			includeantruntime="false">
 			<classpath refid="build-classpath"/>
 		</javac>
 		<copy todir="${war.classes}">
@@ -109,6 +117,7 @@
 			</classpath>
 			<!-- add jvmarg -Xss16M or similar if you see a StackOverflowError -->
 			<jvmarg value="-Xmx256M"/>
+			<!--<arg value="-strict"/>-->
 			<arg value="-war"/><arg value="${war.dir}"/>
 			<arg value="-style"/><arg value="PRETTY"/>
 			<!-- Additional arguments like -style PRETTY or -logLevel DEBUG -->

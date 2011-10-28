@@ -18,6 +18,7 @@ public class SectionParser{
 	/**
 	 * 
 	 */
+	@SuppressWarnings("unused")
 	private static final long serialVersionUID = 7946967848665436746L;
 
 	public static Section parse(Node src) throws InvalidCourseDatabaseException {

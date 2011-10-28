@@ -18,6 +18,8 @@ public class Semester implements Serializable, Comparable<Semester> {
 	 * UID for Serializable interface
 	 */
 	private static final long serialVersionUID = 8117446154042777168L;
+	
+	//protected transient Logger Log = null;
 
 	/** Protected values set by @see edu.rpi.rocs.server.objectmodel.CourseDBImpl */
 	protected Long timestamp;
@@ -29,6 +31,17 @@ public class Semester implements Serializable, Comparable<Semester> {
     protected int counter;
     protected String lastChangeTime;
 
+    /*
+    public void setLogger(Logger log) {
+    	Log = log;
+    }
+    
+    public Logger getLogger() {
+    	if(GWT.isClient()) return null;
+    	return Log;
+    }
+    */
+    
     /**
      * Empty constructor to satisfy Serializable interface
      */
@@ -179,7 +192,7 @@ public class Semester implements Serializable, Comparable<Semester> {
 		crosslistings = new HashMap<Integer, CrossListing>();
 		for(CrossListing c : list) {
 			if(c==null) {
-				System.out.println("Found null CrossListing in semester.");
+				System.err.println("Found null CrossListing in semester.");
 				continue;
 			}
 			crosslistings.put(c.getUID(), c);

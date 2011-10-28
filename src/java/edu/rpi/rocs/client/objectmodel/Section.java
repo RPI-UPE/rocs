@@ -19,7 +19,9 @@ public class Section extends MajorMinorRevisionObject {
 	 * UID for Serializable interface
 	 */
 	private static final long serialVersionUID = 4374452349065230201L;
-
+	
+	//protected transient Logger Log;
+	
 	/** Protected members populated by @see edu.rpi.rocs.server.objectmodel.SectionImpl */
     protected int crn=0;
     protected String number=null;
@@ -29,6 +31,17 @@ public class Section extends MajorMinorRevisionObject {
     protected ArrayList<String> notes=null;
     protected Course parent=null;
     protected CrossListing cross=null;
+    
+    /*
+    protected Logger getLogger() {
+    	if(GWT.isClient()) return null;
+    	return Log;
+    }
+    
+    public void setLogger(Logger l) {
+    	Log = l;
+    }
+    */
     
     @Override
     public void updateMajorRevision() {
@@ -43,7 +56,7 @@ public class Section extends MajorMinorRevisionObject {
     		parent.updateMinorRevision();
     	}
     	else if(parent==null) {
-    		System.out.println("Parent null for section "+crn);
+    		System.err.println("Parent null for section "+crn);
     	}
     }
     
@@ -54,13 +67,13 @@ public class Section extends MajorMinorRevisionObject {
     		parent.updateMinorRevision();
     	}
     	else if(parent==null) {
-    		System.out.println("Parent null for section "+crn);
+    		System.err.println("Parent null for section "+crn);
     	}
     	if(cross!=null && cross.getMinorRevision()!=getMinorRevision()) {
     		cross.updateMinorRevision(true);
     	}
     	else if(cross==null) {
-    		System.out.println("Crosslisting null for section "+crn);
+    		System.err.println("Crosslisting null for section "+crn);
     	}
     }
 
@@ -136,7 +149,7 @@ public class Section extends MajorMinorRevisionObject {
     	while(i.hasNext()) {
     		Period p = i.next();
     		if(p!=null) periods.add(p);
-    		else System.out.println("Warning: found a period in section "+crn+" that is null.");
+    		else System.err.println("Period in section "+crn+" is null.");
     	}
     }
 
@@ -232,7 +245,7 @@ public class Section extends MajorMinorRevisionObject {
 	}
 	
 	public void setDbid(Long id) {
-		if(dbid!=null) System.out.println("Setting dbid to "+id+" from "+dbid);
+		if(dbid!=null) System.err.println("Setting dbid to "+id+" from "+dbid);
 		dbid = id;
 	}
 	
@@ -247,12 +260,12 @@ public class Section extends MajorMinorRevisionObject {
 
 	public void examineNewVersion(Section t) {
 		if(students != t.students) {
-			System.out.println("Updated CRN "+crn+" from students = "+students+" to students = "+t.students);
+			System.err.println("Updated CRN "+crn+" from students = "+students+" to students = "+t.students);
 			students = t.students;
 			updateMinorRevision();
 		}
 		if(seats != t.seats){
-			System.out.println("Updated CRN "+crn+" from students = "+seats+" to students = "+t.seats);
+			System.err.println("Updated CRN "+crn+" from students = "+seats+" to students = "+t.seats);
 			seats = t.seats;
 			updateMinorRevision();
 		}

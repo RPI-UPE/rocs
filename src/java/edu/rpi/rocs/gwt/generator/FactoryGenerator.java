@@ -28,7 +28,7 @@ public class FactoryGenerator extends Generator {
 		}
 		
 		try {
-			logger.log(TreeLogger.INFO, "Generating source for " + clazz.getQualifiedSourceName(), null);
+			//logger.log(TreeLogger.INFO, "Generating source for " + clazz.getQualifiedSourceName(), null);
 			
 			JClassType reflectableType = typeOracle.getType("edu.rpi.rocs.client.Instantiable");
 			SourceWriter sourceWriter = getSourceWriter(clazz, context, logger);
