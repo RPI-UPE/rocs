@@ -12,6 +12,7 @@ public class CourseParser {
     /**
 	 * 
 	 */
+	@SuppressWarnings("unused")
 	private static final long serialVersionUID = 7964624938393972286L;
 
 

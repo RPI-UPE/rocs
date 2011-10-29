@@ -18,8 +18,8 @@ public class SectionStatusObject implements Serializable {
 	
 	/**
 	 * Creates a course status given a course and whether it is required
-	 * @param c The course to store
-	 * @param required Whether the course is required
+	 * @param s The section to store
+	 * @param included Whether the course is required
 	 */
 	public SectionStatusObject(Section s, boolean included) {
 		theSection = s;
@@ -34,7 +34,7 @@ public class SectionStatusObject implements Serializable {
 	
 	/**
 	 * Sets the requirement flag
-	 * @param required true if required, false if optional
+	 * @param included true if required, false if optional
 	 */
 	public void setIncluded(boolean included) {
 		this.included = included;

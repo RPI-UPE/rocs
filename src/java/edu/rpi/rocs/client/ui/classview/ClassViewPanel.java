@@ -58,7 +58,6 @@ public class ClassViewPanel extends VerticalPanel implements CourseAddedHandler,
 		
 	};
 	
-	@SuppressWarnings("unused")
 	private CourseRequiredHandler requiredHandler = new CourseRequiredHandler() {
 		
 		public void handleEvent(CourseStatusObject status) {
@@ -67,7 +66,6 @@ public class ClassViewPanel extends VerticalPanel implements CourseAddedHandler,
 		
 	};
 	
-	@SuppressWarnings("unused")
 	private CourseOptionalHandler optionalHandler = new CourseOptionalHandler() {
 		
 		public void handleEvent(CourseStatusObject status) {
@@ -279,7 +277,7 @@ public class ClassViewPanel extends VerticalPanel implements CourseAddedHandler,
 		cell = sectionList.new HTMLTableListCell();
 		SimpleCheckBox check = new SimpleCheckBox();
 		check.setTitle("Include?");
-		check.setChecked(sso.getIncluded());
+		check.setValue(sso.getIncluded());
 		addEventHandler(check.getElement(), check, sso);
 		/*
 		check.addClickHandler(new CheckBoxCallback(check) {
@@ -481,9 +479,9 @@ public class ClassViewPanel extends VerticalPanel implements CourseAddedHandler,
 	public void markRequired()
 	{
 		for(Pair p : rows) {
-			if(p.check.isChecked()) {
+			if(p.check.getValue()) {
 				SchedulerManager.getInstance().setCourseRequired(p.course);
-				p.check.setChecked(false);
+				p.check.setValue(false);
 			}
 		}
 	}
@@ -491,9 +489,9 @@ public class ClassViewPanel extends VerticalPanel implements CourseAddedHandler,
 	public void markOptional()
 	{
 		for(Pair p : rows) {
-			if(p.check.isChecked()) {
+			if(p.check.getValue()) {
 				SchedulerManager.getInstance().setCourseOptional(p.course);
-				p.check.setChecked(false);
+				p.check.setValue(false);
 			}
 		}
 	}
@@ -502,11 +500,11 @@ public class ClassViewPanel extends VerticalPanel implements CourseAddedHandler,
 	{
 		ArrayList<Course> temp = new ArrayList<Course>();
 		for(Pair p : rows) {
-			Log.debug(p.course.getName()+": "+p.check.isChecked());
+			Log.debug(p.course.getName()+": "+p.check.getValue());
 			Log.debug(p.course.getName()+" (attached?): "+p.check.isAttached());
-			if(p.check.isChecked()) {
+			if(p.check.getValue()) {
 				temp.add(p.course);
-				p.check.setChecked(false);
+				p.check.setValue(false);
 			}
 		}
 		for(int i=0; i<temp.size(); i++)

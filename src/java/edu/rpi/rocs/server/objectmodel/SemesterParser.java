@@ -34,6 +34,7 @@ public class SemesterParser {
     /**
 	 * UID for Serializable interface
 	 */
+	@SuppressWarnings("unused")
 	private static final long serialVersionUID = -6328488261276368411L;
 	
 

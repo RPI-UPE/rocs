@@ -352,7 +352,6 @@ public class ScheduleViewWidget extends SVGCanvasWidget {
 				addSVGElement(w);
 		}
 
-		@SuppressWarnings("unused")
 		public Section getSection() {
 			return m_section;
 		}

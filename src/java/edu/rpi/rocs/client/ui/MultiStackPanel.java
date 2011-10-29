@@ -213,7 +213,7 @@ public class MultiStackPanel extends StackPanel {
 	}-*/;
 	
 	private native void setDisplay(Element e, boolean display)/*-{
-		var result = 'block';
+		var result = 'table-row';
 		if(display==false) {
 			result='none';
 		}

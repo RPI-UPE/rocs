@@ -95,9 +95,7 @@ public class Scheduler extends GenericPortlet {
 			ArrayList<Document> results=new ArrayList<Document>();
 			Pattern p = Pattern.compile("[^h]*(href=\"([^\"]*)\")>[^<]*</a>\\s*([^\\s]*)\\s([^\\s]*)|h[^r]", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE);
 			Matcher m = p.matcher(html);
-			int found=0;
 			while(m.find()) {
-				found++;
 				String path = m.group(1);
 				String date = m.group(3)+" "+m.group(4);
 				if(path!=null) {

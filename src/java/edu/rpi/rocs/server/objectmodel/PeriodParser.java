@@ -12,6 +12,7 @@ public class PeriodParser {
 	/**
 	 * 
 	 */
+	@SuppressWarnings("unused")
 	private static final long serialVersionUID = -6624571166889630370L;
 	
 	

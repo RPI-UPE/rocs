@@ -194,7 +194,6 @@ public class SemesterSelectionPanel extends VerticalPanel implements Restoration
 		javascriptThread(selectedSemester);
 	}
 
-	@SuppressWarnings("unused")
 	private void javaThread(SemesterDescription SD)
 	{
 		Log.debug("Waking...");

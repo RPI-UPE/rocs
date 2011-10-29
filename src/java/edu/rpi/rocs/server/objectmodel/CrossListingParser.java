@@ -11,6 +11,7 @@ public class CrossListingParser {
 	/**
 	 * 
 	 */
+	@SuppressWarnings("unused")
 	private static final long serialVersionUID = -1548320920265726231L;
 
 	public static CrossListing parse(Node src) throws InvalidCourseDatabaseException {
