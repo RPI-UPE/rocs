@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<portlet-app xmlns="http://java.sun.com/xml/ns/portlet/portlet-app_1_0.xsd"
+             version="1.0"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://java.sun.com/xml/ns/portlet/portlet-app_1_0.xsd http://java.sun.com/xml/ns/portlet/portlet-app_1_0.xsd"
+             id="edu.rpi.rocs.Scheduler.0">
+	<portlet>
+		<portlet-name>rocs</portlet-name>
+		<display-name>Rensselaer Open Course Scheduler [BETA]</display-name>
+		<portlet-class>edu.rpi.rocs.Scheduler</portlet-class>
+		<init-param>
+			<name>wps.markup</name>
+			<value>html</value>
+		</init-param>
+		<init-param>
+			<name>edu.rpi.rocs.Scheduler.hibernate.config.path</name>
+			<value>/Liferay/current/tomcat-6.0.18/webapps/rocs/xml/hibernate.cfg.xml</value>
+		</init-param>
+		<init-param>
+			<name>edu.rpi.rocs.Scheduler.xmlPath</name>
+			<value>https://sis.rpi.edu/reg/rocs/</value>
+		</init-param>
+		<init-param>
+			<name>edu.rpi.rocs.Scheduler.refreshInterval</name>
+			<value>300</value>
+		</init-param>
+		<init-param>
+			<name>edu.rpi.rocs.Scheduler.includejQuery</name>
+			<value>false</value>
+		</init-param>
+		<expiration-cache>0</expiration-cache>
+		<supports>
+			<mime-type>text/html</mime-type>
+			<portlet-mode>view</portlet-mode>
+		</supports>
+		<supported-locale>en</supported-locale>
+		<portlet-info>
+			<title>Rensselaer Open Course Scheduler [BETA]</title>
+			<short-title>RPI Scheduler [BETA]</short-title>
+			<keywords>rensselaer rpi course scheduler rocs</keywords>
+		</portlet-info>
+		<security-role-ref>
+			<role-name>administrator</role-name>
+		</security-role-ref>
+		<security-role-ref>
+			<role-name>user</role-name>
+		</security-role-ref>
+	</portlet>
+	<user-attribute>
+		<name>user.login.id</name>
+	</user-attribute>
+	<user-attribute>
+		<name>user.name.family</name>
+	</user-attribute>
+	<user-attribute>
+		<name>user.name.given</name>
+	</user-attribute>
+</portlet-app>

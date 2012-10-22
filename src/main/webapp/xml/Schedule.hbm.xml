@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="edu.rpi.rocs.client.objectmodel" default-lazy="false">
+  <class name="Schedule">
+    <cache region="rocs" usage="read-write"/>
+  	<id name="dbid" column="SCHEDULE_ID">
+  		<generator class="native"/>
+  	</id>
+  	<!-- 
+  	<property name="name" column="SCHEDULE_NAME"/>
+  	<property name="owner" column="SCHEDULE_OWNER"/>
+  	-->
+  	<list name="sections" table="SCHEDULE_MAP">
+  		<cache region="rocs" usage="read-write"/>
+  		<key column="SCHEDULE_ID"/>
+  		<index column="INDEX_COL"/>
+  		<many-to-many class="Section"/>
+  	</list>
+  	<!-- <many-to-one name="Manager" column="managerID" unique="true" not-null="true"/> -->
+  </class>
+</hibernate-mapping>
