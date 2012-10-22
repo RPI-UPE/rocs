@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="edu.rpi.rocs.client.objectmodel" default-lazy="false">
+  <class name="Period">
+    <cache region="rocs" usage="read-write"/>
+  	<id name="dbid" column="PERIOD_ID">
+  		<generator class="native"/>
+  	</id>
+  	<property name="instructor"/>
+  	<property name="location"/>
+  	<property name="startInt"/>
+  	<property name="endInt"/>
+  	<property name="type"/>
+  	<list name="days" table="PERIOD_DAYS">
+  		<cache region="rocs" usage="read-write"/>
+  		<key column="PERIOD_ID"/>
+  		<index column="INDEX_COL"/>
+  		<element column="PERIOD_DAY" type="integer"/>
+  	</list>
+  	<property name="MajorRevision"/>
+  	<property name="MinorRevision"/>
+  </class>
+</hibernate-mapping>
