@@ -7,8 +7,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.hibernate.Session;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import edu.rpi.rocs.Scheduler;
 import edu.rpi.rocs.client.objectmodel.Course;
 import edu.rpi.rocs.client.objectmodel.CrossListing;
 import edu.rpi.rocs.client.objectmodel.Period;
@@ -60,12 +61,13 @@ public class SemesterDB {
     
 	@SuppressWarnings("unchecked")
 	public static void restoreSemesters() {
+		final Logger log = LoggerFactory.getLogger(SemesterDB.class);
 		Session session = HibernateUtil.getSessionFactory().getCurrentSession();
 		session.beginTransaction();
 		
 		List<Semester> x = session.createQuery("from Semester").list();
 		for(Semester s : x) {
-			Scheduler.getInstance().getLogger().info("Loading semester \""+s.getSemesterDesc()+"\"");
+			log.info("Restoring semester \""+s.getSemesterDesc()+"\" from database");
 			semesters.put(s.getSemesterId(), s);
 			touch(s);
 		}
@@ -107,5 +109,10 @@ public class SemesterDB {
 
 	private static void touch(Period p) {
 		p.getDays();
+	}
+	
+	public static void reset() {
+		latest = null;
+		semesters.clear();
 	}
 }

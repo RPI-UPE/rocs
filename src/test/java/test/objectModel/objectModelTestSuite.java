@@ -18,5 +18,5 @@ public class objectModelTestSuite {
 		suite.addTestSuite( sectionTest.class );
 		
 		return suite;
-	}//end objectModelTest
-}//end objectModelTestSuite
+	}
+}

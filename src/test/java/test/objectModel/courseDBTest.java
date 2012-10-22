@@ -4,6 +4,9 @@ import java.net.URI;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.hibernate.Session;
+import org.hibernate.Transaction;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -70,6 +73,19 @@ public class courseDBTest extends TestCase{
 		assertTrue("getTimeStamp should be : " + "1238421894" +
 				" actual : " + testObject.getTimeStamp(), testObject.getTimeStamp() == 1238421894);
 	}
-
 	
+	@After
+	public void tearDown() {
+		try {
+			Semester s = SemesterDB.getInstance(0);
+			Session session = HibernateUtil.getSessionFactory().getCurrentSession();
+			Transaction tx = session.beginTransaction();
+			session.delete(s);
+			tx.commit();
+			SemesterDB.reset();
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
 }

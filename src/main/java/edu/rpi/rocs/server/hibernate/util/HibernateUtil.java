@@ -13,9 +13,10 @@ public class HibernateUtil {
 	private static final Logger log = LoggerFactory.getLogger(HibernateUtil.class);
 	
 	public static void init(final URL confpath) {
-		if(sessionFactory==null) {
-			sessionFactory = buildSessionFactory(confpath);
+		if(sessionFactory != null) {
+			clearSessionFactory();
 		}
+		sessionFactory = buildSessionFactory(confpath);
 	}
 	
 	private static SessionFactory buildSessionFactory(final URL confpath) {
@@ -45,5 +46,10 @@ public class HibernateUtil {
 	
 	public static SessionFactory getSessionFactory() {
 		return sessionFactory;
+	}
+	
+	public static void clearSessionFactory() {
+		sessionFactory.close();
+		sessionFactory = null;
 	}
 }

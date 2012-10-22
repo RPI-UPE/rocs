@@ -109,5 +109,4 @@ public class courseTest extends TestCase{
 		assertTrue("type matches", (testObject.getGradetype()).equals("type") );
 	}
 
-
-}//end course tests
+}
