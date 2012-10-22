@@ -3,6 +3,8 @@ package edu.rpi.rocs.server.hibernate.util;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import net.sf.ehcache.CacheManager;
+
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 import org.slf4j.Logger;
@@ -50,6 +52,10 @@ public class HibernateUtil {
 	
 	public static void clearSessionFactory() {
 		sessionFactory.close();
+		CacheManager manager = CacheManager.getCacheManager("default");
+		if(manager != null) {
+			manager.shutdown();
+		}
 		sessionFactory = null;
 	}
 }
