@@ -75,6 +75,7 @@ public class SemesterParser {
     		try {
     			session = HibernateUtil.getSessionFactory().getCurrentSession();
 	    		tx = session.beginTransaction();
+	    		tx.begin();
 	    		SemesterWriter sw = new SemesterWriter();
 	    		sw.setSession(session);
 	    		if(lastSemester==null)
@@ -84,8 +85,10 @@ public class SemesterParser {
 	    		tx.commit();
     		}
     		catch(Exception ex) {
-    			if(tx!=null) tx.rollback();
     			ex.printStackTrace();
+    			if(tx!=null) {
+    				tx.rollback();
+    			}
     		}
     		finally {
     			if(session.isOpen()) session.close();

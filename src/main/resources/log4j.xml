@@ -18,13 +18,17 @@
     </layout>
   </appender>
 -->
-  <logger name="org.hibernate.SQL" additivity="false">
+  <logger name="org.hibernate" additivity="false">
     <level value="warn"/>
     <appender-ref ref="appenderConsole"/>
   </logger>
+  <logger name="edu.rpi.rocs">
+    <level value="debug"/>
+    <!-- <appender-ref ref="appenderConsole"/> -->
+  </logger>
 
   <root>
-    <priority value="info"/>
+    <priority value="warn"/>
     <appender-ref ref="appenderConsole"/>
     <!--<appender-ref ref="appenderFile"/>-->
   </root>

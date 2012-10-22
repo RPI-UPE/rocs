@@ -1,6 +1,5 @@
 package edu.rpi.rocs.client.objectmodel;
 
-
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -15,7 +14,7 @@ import java.util.List;
  *
  */
 public class Course extends MajorMinorRevisionObject implements Comparable<Course> {
-
+	
 	public static class CourseComparator implements Comparator<Course> {
 		public final int compare(Course a, Course b) {
 			int result;
@@ -381,7 +380,7 @@ public class Course extends MajorMinorRevisionObject implements Comparable<Cours
 		}
 		for(Section s : others) {
 			if(!sections.contains(s)) {
-				System.out.println("Found new section for "+dept+"-"+num+"...");
+				System.out.println("Found new section '"+s.getNumber()+"' for "+dept+"-"+num+"...");
 				sections.add(s);
 				s.setParent(this);
 				updateMajorRevision();

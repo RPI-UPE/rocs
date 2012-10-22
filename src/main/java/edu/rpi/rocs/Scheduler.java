@@ -26,10 +26,11 @@ import javax.portlet.PortletRequest;
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
 
-import org.apache.log4j.Logger;
 import org.apache.log4j.helpers.Loader;
 import org.apache.log4j.xml.DOMConfigurator;
 import org.mortbay.log.Log;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import edu.rpi.rocs.server.hibernate.util.HibernateUtil;
 import edu.rpi.rocs.server.objectmodel.SemesterDB;
@@ -59,7 +60,7 @@ public class Scheduler extends GenericPortlet {
 		public String changeTime;
 	}
 	
-	Logger root = null;
+	final Logger log = LoggerFactory.getLogger(Scheduler.class);
 		
 	/**
 	 * Base path to where CourseDB XML files are stored
@@ -89,22 +90,24 @@ public class Scheduler extends GenericPortlet {
 	 *
 	 */
 	private class ParseXMLFilesTask extends TimerTask {
-
+		private final Logger log = LoggerFactory.getLogger(ParseXMLFilesTask.class);
+		
 		protected String lastModifiedDate(final URL path) throws IOException {
-			root.info("Checking existence of "+path);
+			log.info("Checking existence of "+path);
 			final SimpleDateFormat format = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss z");
 
 			final HttpURLConnection conn = (HttpURLConnection)path.openConnection();
 			conn.setRequestMethod("HEAD");
 			conn.connect();
 			if(conn.getResponseCode() >= 400) {
+				log.info("File '"+path+"' does not exist");
 				return null;
 			}
 			final long lastModifiedMS = conn.getLastModified();
 			
 			final Date date = new Date();
 			date.setTime(lastModifiedMS);
-			root.info("File exists and was last modified "+format.format(date));
+			log.info("File exists and was last modified "+format.format(date));
 			return format.format(date);
 		}
 		
@@ -124,7 +127,7 @@ public class Scheduler extends GenericPortlet {
 				return doc;
 			}
 			catch(IOException e) {
-				root.warn("Unable to load XML file "+targetUrl+" from server", e);
+				log.warn("Unable to load XML file "+targetUrl+" from server", e);
 			}
 			return null;
 		}
@@ -173,7 +176,7 @@ public class Scheduler extends GenericPortlet {
 				for(Document file : Scheduler.documents) {
 					long start = System.currentTimeMillis();
 					SemesterParser.parse(file.path, file.changeTime);
-					root.info("Parsed "+file.path+" in "+(System.currentTimeMillis()-start)+" ms");
+					log.info("Parsed "+file.path+" in "+(System.currentTimeMillis()-start)+" ms");
 				}
 				System.gc();
 			}
@@ -202,7 +205,7 @@ public class Scheduler extends GenericPortlet {
 	PortletConfig theConfig=null;
 	
 	public Logger getLogger() {
-		return root;
+		return log;
 	}
 	
 	/**
@@ -212,16 +215,17 @@ public class Scheduler extends GenericPortlet {
 		URL temp=null;
 		temp = Loader.getResource("log4j.xml");
 		DOMConfigurator.configure(temp);
-		root = Logger.getRootLogger();
 		try {
 			temp = theConfig.getPortletContext().getResource("/xml/hibernate.cfg.xml");
-		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
-		if(temp==null) System.out.println("Unable to find hibernate.cfg.xml");
+		catch (MalformedURLException e) {
+			log.error("Malformed URL attempting to locate hibernate configuration", e);
+		}
+		if(temp == null) {
+			log.error("Could not find hibernate configuration");
+		}
 		else {
-			System.out.println("Path to config: "+temp);
+			log.debug("Path to config: "+temp);
 		
 			HibernateUtil.init(temp);
 			theInstance = this;
@@ -345,24 +349,16 @@ public class Scheduler extends GenericPortlet {
 	 * @return A map containing the user info as defined by JSR-168
 	 */
 	public Map<?, ?> getUserInfo(String userid) {
-		// TODO Auto-generated method stub
 		return userInfoMap.get(Integer.valueOf(userid));
-	}
-	
-	/**
-	 * Removes the refresh timer when the Scheduler is destroyed.
-	 */
-	protected void finalize() throws Throwable {
-		semesterRefreshTimer.cancel();
-		super.finalize();
 	}
 	
 	/**
 	 * Destroys the Scheduler and stops the scheduler refresh timer for when the portlet is undeployed.
 	 */
 	public void destroy() {
-		root.warn("Destroying Scheduler");
+		log.warn("Destroying Scheduler");
 		semesterRefreshTimer.cancel();
+		semesterRefreshTimer = null;
 		super.destroy();
 	}
 }

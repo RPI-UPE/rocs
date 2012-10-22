@@ -219,7 +219,9 @@ public class Semester implements Serializable, Comparable<Semester> {
 		timestamp = parsedSemester.timestamp;
 		for(Course c : getCourses()) {
 			Course d = parsedSemester.getCourse(c.getId());
-			if(d==null) c.delete();
+			if(d==null) {
+				c.delete();
+			}
 			else {
 				c.examineNewVersion(d);
 			}
