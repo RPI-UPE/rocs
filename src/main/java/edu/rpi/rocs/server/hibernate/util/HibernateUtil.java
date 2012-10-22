@@ -1,25 +1,26 @@
 package edu.rpi.rocs.server.hibernate.util;
 
+import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class HibernateUtil {
 	private static SessionFactory sessionFactory = null;
+	private static final Logger log = LoggerFactory.getLogger(HibernateUtil.class);
 	
-	public static void init(URL confpath) {
-		if(sessionFactory==null) sessionFactory = buildSessionFactory(confpath);
+	public static void init(final URL confpath) {
+		if(sessionFactory==null) {
+			sessionFactory = buildSessionFactory(confpath);
+		}
 	}
 	
-	private static SessionFactory buildSessionFactory(URL confpath) {
+	private static SessionFactory buildSessionFactory(final URL confpath) {
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
-			/*
-			if(!f.exists()) {
-				throw new ExceptionInInitializerError(new Exception("Unable to locate hibernate configuration file for ROCS at "+f.getAbsolutePath()+"."));
-			}
-			*/
 			return new Configuration().configure(confpath)
 						.addURL(new URL(confpath, "Period.hbm.xml"))
 						.addURL(new URL(confpath, "Section.hbm.xml"))
@@ -32,9 +33,13 @@ public class HibernateUtil {
 						.addURL(new URL(confpath, "CrossListing.hbm.xml"))
 						.buildSessionFactory();
 		}
-		catch(Throwable ex) {
-			System.err.println("Initial SessionFactory creation failed. "+ex);
-			throw new ExceptionInInitializerError(ex);
+		catch(ClassNotFoundException e) {
+			log.error("Unable to find MySQL JDBC driver", e);
+			throw new ExceptionInInitializerError(e);
+		}
+		catch(MalformedURLException e) {
+			log.error("Malformed URL attempting to locate partial hibernate mapping", e);
+			throw new ExceptionInInitializerError(e);
 		}
 	}
 	

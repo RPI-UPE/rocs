@@ -40,7 +40,7 @@ public class SectionParser{
 				section.setSeats(Integer.parseInt(val));
 			}
 			else {
-				throw new InvalidCourseDatabaseException("Section node has invalid attribute.");
+				throw new InvalidCourseDatabaseException("Section node has invalid attribute '"+name+"'.");
 			}
 		}
 		NodeList children = src.getChildNodes();

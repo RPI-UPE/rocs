@@ -1,18 +1,21 @@
 package edu.rpi.rocs;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.List;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.TreeMap;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
@@ -26,6 +29,7 @@ import javax.portlet.RenderResponse;
 import org.apache.log4j.Logger;
 import org.apache.log4j.helpers.Loader;
 import org.apache.log4j.xml.DOMConfigurator;
+import org.mortbay.log.Log;
 
 import edu.rpi.rocs.server.hibernate.util.HibernateUtil;
 import edu.rpi.rocs.server.objectmodel.SemesterDB;
@@ -64,7 +68,7 @@ public class Scheduler extends GenericPortlet {
 	/**
 	 * List of XML documents to be loaded by the scheduler
 	 */
-	public static ArrayList<Document> documents=new ArrayList<Document>();
+	public static List<Document> documents=new ArrayList<Document>();
 	/**
 	 * The current instance of the Scheduler
 	 */
@@ -85,32 +89,75 @@ public class Scheduler extends GenericPortlet {
 	 *
 	 */
 	private class ParseXMLFilesTask extends TimerTask {
-		/**
-		 * Parses an Apache directory listing for XML files to be parsed for Course databases.
-		 * 
-		 * @param html Contents of an HTML file as a String
-		 * @return A list of XML filenames which may contain CourseDBs.
-		 */
-		public ArrayList<Document> parseHTML(String html) {
-			ArrayList<Document> results=new ArrayList<Document>();
-			Pattern p = Pattern.compile("[^h]*(href=\"([^\"]*)\")>[^<]*</a>\\s*([^\\s]*)\\s([^\\s]*)|h[^r]", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE);
-			Matcher m = p.matcher(html);
-			while(m.find()) {
-				String path = m.group(1);
-				String date = m.group(3)+" "+m.group(4);
-				if(path!=null) {
-					path = path.replaceAll("\"", "");
-					path = path.replace("href=", "");
-					path = path.replace("HREF=", "");
-					if(path.endsWith(".xml")) {
-						Document d = new Document();
-						d.path = path;
-						d.changeTime = date;
-						results.add(d);
-					}
-				}
+
+		protected String lastModifiedDate(final URL path) throws IOException {
+			root.info("Checking existence of "+path);
+			final SimpleDateFormat format = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss z");
+
+			final HttpURLConnection conn = (HttpURLConnection)path.openConnection();
+			conn.setRequestMethod("HEAD");
+			conn.connect();
+			if(conn.getResponseCode() >= 400) {
+				return null;
 			}
-			return results;
+			final long lastModifiedMS = conn.getLastModified();
+			
+			final Date date = new Date();
+			date.setTime(lastModifiedMS);
+			root.info("File exists and was last modified "+format.format(date));
+			return format.format(date);
+		}
+		
+		protected Document generateDocument(final URL baseDir, final Calendar date) {
+			final DateFormat formatter = new SimpleDateFormat("yyyyMM'.xml'");
+			String lastModified = null;
+			URL targetUrl = null;
+			try {
+				targetUrl = new URL(baseDir, formatter.format(date.getTime()));
+				lastModified = lastModifiedDate(targetUrl);
+				if(lastModified == null) {
+					return null;
+				}
+				Document doc = new Document();
+				doc.path = targetUrl.toString();
+				doc.changeTime = lastModified;
+				return doc;
+			}
+			catch(IOException e) {
+				root.warn("Unable to load XML file "+targetUrl+" from server", e);
+			}
+			return null;
+		}
+		
+		/**
+		 * Gets a list of available semester documents by polling SIS
+		 * @return
+		 */
+		protected List<Document> getAvailableSemesters(final URL baseDir) {
+			List<Document> result = new ArrayList<Document>();
+			Calendar now = GregorianCalendar.getInstance();
+			int month = (int)(now.get(Calendar.MONTH)/4);
+			now.set(Calendar.DAY_OF_MONTH, 1);
+			now.set(Calendar.MONTH, month*4);
+			
+			Document d;
+			d = generateDocument(baseDir, now);
+			if(d != null) {
+				result.add(d);
+			}
+			
+			now.add(Calendar.MONTH, 4);
+			d = generateDocument(baseDir, now);
+			if(d != null) {
+				result.add(d);
+			}
+			
+			now.add(Calendar.MONTH, 4);
+			d = generateDocument(baseDir, now);
+			if(d != null) {
+				result.add(d);
+			}
+			return result;
 		}
 		
 		/**
@@ -121,26 +168,17 @@ public class Scheduler extends GenericPortlet {
 		public void run() {
 			Scheduler.getInstance().getLogger().info("Looking for XML files...");
 			try {
-				URL url = new URL(xmlPath);
-				BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
-				String data="";
-				String inputLine;
-				while((inputLine = in.readLine())!= null) {
-					data += inputLine;
-				}
-				in.close();
-				
-				Scheduler.documents = parseHTML(data);
+				final URL url = new URL(xmlPath);
+				Scheduler.documents = getAvailableSemesters(url);
 				for(Document file : Scheduler.documents) {
 					long start = System.currentTimeMillis();
-					String newPath = Scheduler.xmlPath + file.path;
-					SemesterParser.parse(newPath, file.changeTime);
+					SemesterParser.parse(file.path, file.changeTime);
 					root.info("Parsed "+file.path+" in "+(System.currentTimeMillis()-start)+" ms");
 				}
 				System.gc();
 			}
-			catch(Exception e) {
-				e.printStackTrace();
+			catch(MalformedURLException e) {
+				Log.warn("Unable to process path to XML documents: "+xmlPath, e);
 			}
 		}
 	}
@@ -323,6 +361,7 @@ public class Scheduler extends GenericPortlet {
 	 * Destroys the Scheduler and stops the scheduler refresh timer for when the portlet is undeployed.
 	 */
 	public void destroy() {
+		root.warn("Destroying Scheduler");
 		semesterRefreshTimer.cancel();
 		super.destroy();
 	}

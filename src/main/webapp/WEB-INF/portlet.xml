@@ -18,7 +18,7 @@
 		</init-param>
 		<init-param>
 			<name>edu.rpi.rocs.Scheduler.xmlPath</name>
-			<value>http://sis.rpi.edu/reg/rocs/</value>
+			<value>https://sis.rpi.edu/reg/rocs/</value>
 		</init-param>
 		<init-param>
 			<name>edu.rpi.rocs.Scheduler.refreshInterval</name>

@@ -32,7 +32,6 @@
 	  num CDATA #REQUIRED
 	  students CDATA #REQUIRED
 	  seats CDATA #REQUIRED
-	  closed CDATA #REQUIRED
 >
 
 <!ATTLIST Period
