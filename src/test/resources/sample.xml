@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE CourseDB SYSTEM "https://raw.github.com/RPI-UPE/rocs/master/src/xml/ROCS.dtd">
+<!DOCTYPE CourseDB SYSTEM "https://raw.github.com/RPI-UPE/rocs/master/src/main/webapp/xml/ROCS.dtd">
 <CourseDB timestamp="1238421894" semesternumber="0" semesterdesc="DTD Sample">
   <CrossListing seats="0">
     <CRN>45307</CRN>
